@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="fragments/head :: head('Главное')"></head>
+<body>
+<nav th:replace="fragments/header :: header('crm')"></nav>
+<h1>Контакт-центр</h1>
+<div id="groupCommandPanel">
+    <div class="btn-group" role="group" aria-label="Переключатель">
+        <button type="button" class="btn btn-outline-primary active">Список</button>
+        <button type="button" class="btn btn-outline-primary">Канбан</button>
+        <button type="button" class="btn btn-outline-primary">Календарь</button>
+        <button type="button" class="btn btn-outline-primary">Доски</button>
+        <button type="button" class="btn btn-outline-primary">Текущая доска</button>
+    </div>
+    <div class="btn-group">
+        <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            Действия
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Печать</a></li>
+            <li><a class="dropdown-item" href="#">Предпросмотр</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Обновить</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Показать недействительные</a></li>
+            <li><a class="dropdown-item" href="#">Помощь</a></li>
+        </ul>
+    </div>
+</div>
+<script type="text/javascript" th:src="@{/js/crm/form.js}"></script>
+</body>
+</html>
