@@ -24,7 +24,12 @@ public class WorldCountryService {
             checkPredefinedValueEditing(country);
         }
 
-        return checkEntityUniqueness(country);
+        List<ErrorMessage> result = checkEntityUniqueness(country);
+        if (result.isEmpty()) {
+            worldCountryRepository.save(country);
+        }
+
+        return result;
     }
 
     // Alias: ПроверитьИзменениеПредопределенногоЭлемента
