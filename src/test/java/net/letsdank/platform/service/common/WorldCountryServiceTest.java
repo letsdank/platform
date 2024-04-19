@@ -44,9 +44,7 @@ public class WorldCountryServiceTest {
         // Редактируем название страны
         newCountry.setName("РОССИЯАА");
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            worldCountryService.save(newCountry);
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> worldCountryService.save(newCountry));
 
         String expectedMessage = "Не допускается изменение наименования для страны РОССИЯ";
         assertEquals(expectedMessage, exception.getMessage());
@@ -55,9 +53,7 @@ public class WorldCountryServiceTest {
         newCountry.setName("РОССИЯ");
         newCountry.setCode("644");
 
-        exception = assertThrows(IllegalArgumentException.class, () -> {
-            worldCountryService.save(newCountry);
-        });
+        exception = assertThrows(IllegalArgumentException.class, () -> worldCountryService.save(newCountry));
 
         expectedMessage = "Не допускается изменение кода для страны РОССИЯ";
         assertEquals(expectedMessage, exception.getMessage());

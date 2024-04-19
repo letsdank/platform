@@ -12,7 +12,7 @@
             <a class="page-link" href="#">...</a>
         </li>
         <li class="page-item"
-            th:each="page : ${#numbers.sequence(currentPage > 2 ? currentPage - 2 : 1, currentPage + 2 < totalPages ? currentPage + 2 : totalPages)}"
+            th:each="page : ${#numbers.sequence((currentPage > 2 ? currentPage - 2 : 1), currentPage + 2 < totalPages ? currentPage + 2 : totalPages)}"
             th:classappend="${page == currentPage} ? 'active'">
             <a th:replace="fragments/paging :: paging(${baseUrl}, ${page}, ${page}, 'Страница ' + ${page})"></a>
         </li>
