@@ -3,6 +3,7 @@ package net.letsdank.platform.service.common;
 import lombok.AllArgsConstructor;
 import net.letsdank.platform.entity.common.WorldCountry;
 import net.letsdank.platform.model.common.ErrorMessage;
+import net.letsdank.platform.model.common.PlatformResult;
 import net.letsdank.platform.repository.common.WorldCountryRepository;
 import net.letsdank.platform.utils.MessageService;
 import net.letsdank.platform.utils.StringUtils;
@@ -20,13 +21,15 @@ public class WorldCountryService {
     // Alias:
     // ПередЗаписью
     // ОбработкаПроверкиЗаполнения
-    public List<ErrorMessage> save(WorldCountry country) {
+    public PlatformResult save(WorldCountry country) {
+        PlatformResult result;
+
         if (country.getId() != null && country.isPredefined()) {
             checkPredefinedValueEditing(country);
         }
 
-        List<ErrorMessage> result = checkEntityUniqueness(country);
-        if (result.isEmpty()) {
+        result = checkEntityUniqueness(country);
+        if (result.isSuccess()) {
             worldCountryRepository.save(country);
         }
 
@@ -48,8 +51,8 @@ public class WorldCountryService {
     }
 
     // Alias: ПроверитьУникальностьЭлементов
-    private List<ErrorMessage> checkEntityUniqueness(WorldCountry country) {
-        List<ErrorMessage> result = new ArrayList<>();
+    private PlatformResult checkEntityUniqueness(WorldCountry country) {
+        PlatformResult result = new PlatformResult();
 
         String codeQuery;
         if (country.getCode().equals("0") || country.getCode().equals("00") || country.getCode().equals("000")) {
@@ -95,7 +98,7 @@ public class WorldCountryService {
             }
 
             if (message != null) {
-                result.add(new ErrorMessage(message, fieldName));
+                result.addError(message, fieldName);
             }
         }
 

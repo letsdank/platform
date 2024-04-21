@@ -1,60 +1,64 @@
 <div class="modal modal-lg fade" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" th:text="${item.name + ' (Страна мира)'}"></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form th:object="${item}">
-          <input type="hidden" th:field="*{id}">
-          <div class="row mb-3">
-            <label class="col-sm-3 col-form-label" for="name">Наименование:</label>
-            <div class="col-sm-6">
-              <input type="text" class="form-control" id="name" th:field="*{name}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="modalErrors"></div>
+            <div class="modal-header">
+                <h5 class="modal-title" th:text="${item.name + ' (Страна мира)'}"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="col-sm-2 world-countries-code-row">
-              <label class="col-sm-4 col-form-label" for="code">Код:</label>
-              <input type="text" class="form-control col-sm-4" id="code" th:field="*{code}">
-            </div>
-          </div>
-          <div class="row mb-3">
-            <label class="col-sm-3 col-form-label" for="fullName">Полное наименование:</label>
-            <div class="col-sm-6">
-              <input type="text" class="form-control" id="fullName" th:field="*{fullName}">
-            </div>
-          </div>
-          <div class="row mb-3">
-            <label class="col-sm-3 col-form-label" for="internationalName">Международное наименование:</label>
-            <div class="col-sm-6">
-              <input type="text" class="form-control" id="internationalName" th:field="*{internationalName}">
-            </div>
-          </div>
-          <div class="row mb-3 world-countries-code-alpha-rows">
-            <label class="col-sm-3 col-form-label" for="codeAlpha2">Код альфа-2:</label>
-            <div>
-              <input type="text" class="form-control" id="codeAlpha2" th:field="*{codeAlpha2}">
-            </div>
-            <div>
-              <label class="col-sm-4 col-form-label" for="codeAlpha3">Код альфа-3:</label>
-              <input type="text" class="form-control" id="codeAlpha3" th:field="*{codeAlpha3}">
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-sm-6 offset-sm-3">
-              <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="eaeu" th:field="*{eaeu}">
-                <label class="form-check-label" for="eaeu">
-                  Участник ЕАЭС
-                </label>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
+            <form th:object="${item}" class="modal-form" method="post" th:action="${'/entity/world-country/' + item.id}">
+                <div class="modal-body">
+                    <input type="hidden" th:field="*{id}">
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" for="name">Наименование:</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="name" th:field="*{name}">
+                        </div>
+                        <div class="col-sm-2 world-countries-code-row">
+                            <label class="col-sm-4 col-form-label" for="code">Код:</label>
+                            <input type="text" class="form-control col-sm-4" id="code" th:field="*{code}">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" for="fullName">Полное наименование:</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="fullName" th:field="*{fullName}">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="col-sm-3 col-form-label" for="internationalName">Международное
+                            наименование:</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="internationalName"
+                                   th:field="*{internationalName}">
+                        </div>
+                    </div>
+                    <div class="row mb-3 world-countries-code-alpha-rows">
+                        <label class="col-sm-3 col-form-label" for="codeAlpha2">Код альфа-2:</label>
+                        <div>
+                            <input type="text" class="form-control" id="codeAlpha2" th:field="*{codeAlpha2}">
+                        </div>
+                        <div>
+                            <label class="col-sm-4 col-form-label" for="codeAlpha3">Код альфа-3:</label>
+                            <input type="text" class="form-control" id="codeAlpha3" th:field="*{codeAlpha3}">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-6 offset-sm-3">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="eaeu" th:field="*{eaeu}">
+                                <label class="form-check-label" for="eaeu">
+                                    Участник ЕАЭС
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" value="Записать" class="btn btn-primary">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
 </div>
