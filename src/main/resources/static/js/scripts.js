@@ -47,7 +47,7 @@ function popupFormHandler(form, e) {
             modalErrors.innerHTML += `
                     <div class="alert alert-warning alert-dismissible fade show m-2" role="alert">
                         ${error.message}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
                     </div>`;
 
             if (error.fieldName !== null) {
@@ -69,17 +69,14 @@ function registerPopupForms(form) {
     })
 }
 
-const popupLinks = document.querySelectorAll('.open-popup');
-popupLinks.forEach((link) => {
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const popupUrl = link.getAttribute('href');
-        openPopup(popupUrl);
-    })
-})
-
 window.addEventListener('click', (e) => {
     if (e.target === null) return;
+
+    if (e.target.classList.contains("open-popup")) {
+        e.preventDefault();
+        const popupUrl = e.target.getAttribute('href');
+        openPopup(popupUrl);
+    }
 
     if (e.target.getAttribute("type") === "button" &&
         e.target.getAttribute("data-dismiss") === "modal") {

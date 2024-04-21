@@ -5,6 +5,11 @@
 <nav th:replace="~{fragments/header :: header('')}"></nav>
 <h1>Страны мира</h1>
 
+<div>
+    <a class="open-popup btn btn-primary" th:href="@{/entity/world-country/classifier}">Добавить из классификатора</a>
+    <a class="open-popup btn btn-secondary" th:href="@{/entity/world-country/add}">Добавить</a>
+</div>
+
 <div th:if="${page.items.size() > 0}">
     <table class="table table-hover table-responsive-xl">
         <thead>

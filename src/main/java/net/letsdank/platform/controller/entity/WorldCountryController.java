@@ -62,4 +62,17 @@ public class WorldCountryController {
         }
         return ResponseEntity.badRequest().body(result);
     }
+
+    @GetMapping("/classifier")
+    public String classifierModal(Model model) {
+        // TODO: ACL
+        model.addAttribute("items", service.getClassifier());
+        return "app/common/entity/world-country/classifier";
+    }
+
+    @GetMapping("/add")
+    public String addModal(Model model) {
+        model.addAttribute("item", new WorldCountry());
+        return "app/common/entity/world-country/add";
+    }
 }
