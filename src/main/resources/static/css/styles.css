@@ -16,12 +16,16 @@
     width: 3rem;
 }
 
+.world-countries-code-alpha-rows #codeAlpha2.is-invalid {
+    width: 4.5rem;
+}
+
 .world-countries-code-alpha-rows #codeAlpha3 {
     width: 18%;
 }
 
-.world-countries-code-alpha-rows #code {
-    width: 4rem;
+.world-countries-code-alpha-rows #codeAlpha3.is-invalid {
+    width: 25%;
 }
 
 .world-countries-code-row {
@@ -30,4 +34,8 @@
 
 .world-countries-code-row>input {
     width: 3.5rem;
+}
+
+.world-countries-code-row>input.is-invalid {
+    width: 5rem;
 }
