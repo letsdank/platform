@@ -2,6 +2,7 @@ package net.letsdank.platform.service.common;
 
 import lombok.AllArgsConstructor;
 import net.letsdank.platform.entity.common.WorldCountry;
+import net.letsdank.platform.model.common.ErrorMessage;
 import net.letsdank.platform.repository.common.WorldCountryRepository;
 import net.letsdank.platform.utils.MessageService;
 import net.letsdank.platform.utils.StringUtils;
@@ -107,5 +108,5 @@ public class WorldCountryService {
             country.getCodeAlpha2(), country.getCodeAlpha3(), country.getFullName(), country.getId());
     }
 
-    public record ErrorMessage(String message, String fieldName) {}
+
 }
