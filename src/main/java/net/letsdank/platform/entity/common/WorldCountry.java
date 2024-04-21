@@ -9,6 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
+// TODO: Nullable
 public class WorldCountry {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

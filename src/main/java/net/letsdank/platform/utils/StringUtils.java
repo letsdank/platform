@@ -67,4 +67,40 @@ public class StringUtils {
         result.append(templateString);
         return result.toString();
     }
+
+    /**
+     * Checks if a string contains only digits.
+     *
+     * @param value the string to be checked
+     * @return <code>true</code> if the string contains only digits or is empty,
+     * <code>false</code> if the string contains other characters
+     * @see #isDigitsOnly(String, boolean)
+     */
+    public static boolean isDigitsOnly(String value) {
+        return isDigitsOnly(value, true);
+    }
+
+    /**
+     * Checks if a string contains only digits.
+     *
+     * @param value the string to be checked
+     * @param spacesDisallowed if <code>false</code>, spaces are not allowed in the string
+     * @return <code>true</code> if the string contains only digits or is empty,
+     * <code>false</code> if the string contains other characters
+     * <p>Example:</p>
+     * <pre>
+     * isDigitsOnly("0123"); // true
+     * isDigitsOnly("0123abc"); // false
+     * isDigitsOnly("01 2 3", false); // true
+     * </pre>
+     */
+    public static boolean isDigitsOnly(String value, boolean spacesDisallowed) {
+        if (!spacesDisallowed) {
+            value = value.replace(" ", "");
+        }
+
+        if (value.length() == 0) return true;
+
+        return value.matches("\\d*");
+    }
 }

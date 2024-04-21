@@ -1,6 +1,7 @@
 package net.letsdank.platform.service.common;
 
 import net.letsdank.platform.entity.common.WorldCountry;
+import net.letsdank.platform.model.common.ErrorMessage;
 import net.letsdank.platform.repository.common.WorldCountryRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -79,12 +80,12 @@ public class WorldCountryServiceTest {
         newCountry.setCodeAlpha2("RS");
         newCountry.setCodeAlpha3("SRB");
 
-        List<WorldCountryService.ErrorMessage> emptyError = new ArrayList<>();
+        List<ErrorMessage> emptyError = new ArrayList<>();
         assertEquals(emptyError, worldCountryService.save(newCountry));
 
         // Меняем название
         newCountry.setName("РОССИЯ");
-        List<WorldCountryService.ErrorMessage> result = worldCountryService.save(newCountry);
+        List<ErrorMessage> result = worldCountryService.save(newCountry);
         assertNotEquals(emptyError, result);
         assertEquals("name", result.get(0).fieldName());
 
