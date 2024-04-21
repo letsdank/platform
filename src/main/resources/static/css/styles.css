@@ -1,0 +1,33 @@
+.world-countries-code-alpha-rows {
+    flex-direction: row;
+}
+
+.world-countries-code-alpha-rows>div {
+    display: flex;
+    gap: 12px;
+    width: auto;
+}
+
+.world-countries-code-alpha-rows>div:has(#codeAlpha2) {
+    width: min-content;
+}
+
+.world-countries-code-alpha-rows #codeAlpha2 {
+    width: 3rem;
+}
+
+.world-countries-code-alpha-rows #codeAlpha3 {
+    width: 18%;
+}
+
+.world-countries-code-alpha-rows #code {
+    width: 4rem;
+}
+
+.world-countries-code-row {
+    display: flex;
+}
+
+.world-countries-code-row>input {
+    width: 3.5rem;
+}
