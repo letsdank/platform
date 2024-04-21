@@ -1,10 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<head th:replace="fragments/head :: head('Страны мира')"></head>
 <body>
+<nav th:replace="fragments/header :: header('')"></nav>
+<h1>Страны мира</h1>
 
+<div th:if="${page.items.size() > 0}">
+    <table class="table table-hover table-responsive-xl">
+        <thead>
+        <tr>
+            <th scope="col">Наименование</th>
+            <th scope="col">Код</th>
+            <th scope="col">Код альфа-2</th>
+            <th scope="col">Код альфа-3</th>
+            <th scope="col">Участник ЕАЭС</th>
+            <th scope="col">Полное наименование</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${page.items}">
+            <td>
+                <a th:href="${'/entity/world-country/' + item.id}" th:text="${item.name}" class="open-popup"></a>
+            </td>
+            <td th:text="${item.code}"></td>
+            <td th:text="${item.codeAlpha2}"></td>
+            <td th:text="${item.codeAlpha3}"></td>
+            <td th:text="${item.eaeu ? 'Да' : ''}"></td>
+            <td th:text="${item.fullName}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div th:unless="${page.items.size() > 0}">
+    <span>Список пуст</span>
+</div>
+
+<div id="popupContainer">
+
+</div>
+
+<script type="text/javascript" th:src="@{/js/scripts.js}"></script>
+<script type="text/javascript" th:src="@{/js/entities/worldCountry.js}"></script>
 </body>
 </html>
