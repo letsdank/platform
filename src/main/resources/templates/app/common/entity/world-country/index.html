@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head th:replace="fragments/head :: head('Страны мира')"></head>
+<head th:replace="~{fragments/head :: head('Страны мира')}"></head>
 <body>
-<nav th:replace="fragments/header :: header('')"></nav>
+<nav th:replace="~{fragments/header :: header('')}"></nav>
 <h1>Страны мира</h1>
 
 <div th:if="${page.items.size() > 0}">
@@ -35,7 +35,7 @@
     <span>Список пуст</span>
 </div>
 
-<div th:include="fragments/paging-nav :: nav('entity/world-country', ${page})"></div>
+<div th:replace="~{fragments/paging-nav :: nav('entity/world-country', ${page})}"></div>
 <div id="popupContainer">
 
 </div>
