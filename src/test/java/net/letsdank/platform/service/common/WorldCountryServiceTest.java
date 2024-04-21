@@ -2,6 +2,7 @@ package net.letsdank.platform.service.common;
 
 import net.letsdank.platform.entity.common.WorldCountry;
 import net.letsdank.platform.model.common.ErrorMessage;
+import net.letsdank.platform.model.common.PlatformResult;
 import net.letsdank.platform.repository.common.WorldCountryRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -80,50 +81,49 @@ public class WorldCountryServiceTest {
         newCountry.setCodeAlpha2("RS");
         newCountry.setCodeAlpha3("SRB");
 
-        List<ErrorMessage> emptyError = new ArrayList<>();
-        assertEquals(emptyError, worldCountryService.save(newCountry));
+        assertTrue(worldCountryService.save(newCountry).isSuccess());
 
         // Меняем название
         newCountry.setName("РОССИЯ");
-        List<ErrorMessage> result = worldCountryService.save(newCountry);
-        assertNotEquals(emptyError, result);
-        assertEquals("name", result.get(0).fieldName());
+        PlatformResult result = worldCountryService.save(newCountry);
+        assertFalse(result.isSuccess());
+        assertEquals("name", result.getErrors().get(0).fieldName());
 
         // Меняем код
         newCountry.setName("СЕРБИЯ");
         newCountry.setCode("643");
         result = worldCountryService.save(newCountry);
-        assertNotEquals(emptyError, result);
-        assertEquals("code", result.get(0).fieldName());
+        assertFalse(result.isSuccess());
+        assertEquals("code", result.getErrors().get(0).fieldName());
 
         // Меняем полное название
         newCountry.setCode("688");
         newCountry.setFullName("Российская Федерация");
         result = worldCountryService.save(newCountry);
-        assertNotEquals(emptyError, result);
-        assertEquals("fullName", result.get(0).fieldName());
+        assertFalse(result.isSuccess());
+        assertEquals("fullName", result.getErrors().get(0).fieldName());
 
         // Меняем код Альфа-2
         newCountry.setFullName("Республика Сербия");
         newCountry.setCodeAlpha2("RU");
         result = worldCountryService.save(newCountry);
-        assertNotEquals(emptyError, result);
-        assertEquals("codeAlpha2", result.get(0).fieldName());
+        assertFalse(result.isSuccess());
+        assertEquals("codeAlpha2", result.getErrors().get(0).fieldName());
 
         // Меняем код Альфа-3
         newCountry.setCodeAlpha2("RS");
         newCountry.setCodeAlpha3("RUS");
         result = worldCountryService.save(newCountry);
-        assertNotEquals(emptyError, result);
-        assertEquals("codeAlpha3", result.get(0).fieldName());
+        assertFalse(result.isSuccess());
+        assertEquals("codeAlpha3", result.getErrors().get(0).fieldName());
 
         // Выбиваем случай, когда 2 совпадения у разных значений
         newCountry.setCodeAlpha2("DE");
         result = worldCountryService.save(newCountry);
-        assertNotEquals(emptyError, result);
-        assertEquals(2, result.size());
-        assertEquals("codeAlpha3", result.get(0).fieldName());
-        assertEquals("codeAlpha2", result.get(1).fieldName());
+        assertFalse(result.isSuccess());
+        assertEquals(2, result.getErrors().size());
+        assertEquals("codeAlpha3", result.getErrors().get(0).fieldName());
+        assertEquals("codeAlpha2", result.getErrors().get(1).fieldName());
     }
 
     // Мок данных
