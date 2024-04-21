@@ -60,7 +60,6 @@ public class BankService {
         } else {
             // TODO: Непонятно, что это за функция (изучить)
             // ЗаполнениеОбъектовУНФ.УдалитьПроверяемыйРеквизит(ПроверяемыеРеквизиты, "Код");
-            bank.setCode(null);
         }
 
         String message = isSwiftValid(bank.getSwiftBic());

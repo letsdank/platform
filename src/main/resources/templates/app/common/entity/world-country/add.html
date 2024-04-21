@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div id="modalErrors"></div>
             <div class="modal-header">
-                <h5 class="modal-title" th:text="${item.name + ' (Страна мира)'}"></h5>
+                <h5 class="modal-title">Страна мира (создание)</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
             </div>
             <form th:object="${item}" class="modal-form" method="post" th:action="${'/entity/world-country/' + item.id}">
