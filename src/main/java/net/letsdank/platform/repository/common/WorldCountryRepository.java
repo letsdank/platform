@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface WorldCountryRepository extends JpaRepository<WorldCountry, Long> {
     @Query("SELECT c FROM WorldCountry c " +
@@ -15,4 +16,11 @@ public interface WorldCountryRepository extends JpaRepository<WorldCountry, Long
             "OR c.fullName = :fullName) " +
             "AND c.id != :id ORDER BY c.id limit 10")
     List<WorldCountry> findDuplicates(String code, String name, String alpha2Code, String alpha3Code, String fullName, Long id);
+
+    boolean existsByCode(String code);
+    Optional<WorldCountry> findByCode(String code);
+
+    @Query("SELECT c.code FROM WorldCountry c " +
+            "WHERE c.predefined = true")
+    List<String> findPredefinedCodes();
 }

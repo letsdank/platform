@@ -6,6 +6,8 @@ import net.letsdank.platform.model.common.PageInfo;
 import net.letsdank.platform.model.common.PlatformResult;
 import net.letsdank.platform.repository.common.WorldCountryRepository;
 import net.letsdank.platform.service.common.WorldCountryService;
+import net.letsdank.platform.utils.MessageService;
+import net.letsdank.platform.utils.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -67,7 +70,53 @@ public class WorldCountryController {
     public String classifierModal(Model model) {
         // TODO: ACL
         model.addAttribute("items", service.getClassifier());
+        model.addAttribute("predefined", repository.findPredefinedCodes());
+
         return "app/common/entity/world-country/classifier";
+    }
+
+    @GetMapping("/classifier/{code}")
+    public String classifierItemModal(Model model, @PathVariable String code) {
+        List<WorldCountry> items = service.getClassifier();
+        Optional<WorldCountry> item = items.stream()
+                .filter(i -> i.getCode().equals(code))
+                .findFirst();
+        if (item.isEmpty()) {
+            return "redirect:/entity/world-country/classifier"; // TODO: Вывести ошибку
+        }
+
+        // Здесь в любом случае выводим модальное окно, только нужно понять
+        // данные уже существуют или нет, и выводить от этого разные сообщения
+        boolean exists = repository.existsByCode(code);
+        String message = StringUtils.substituteParameters(MessageService.getMessage(
+                exists ? "common.world-country.classifier.exists" : "common.world-country.classifier.add"),
+                item.get().getName());
+
+        model.addAttribute("yes", "/entity/world-country/classifier/" + code + "/add");
+        model.addAttribute("message", message);
+
+        return "fragments/modals/dialog-yes-no";
+    }
+
+    @GetMapping("/classifier/{code}/add")
+    public String addFromClassifier(@PathVariable String code) {
+        List<WorldCountry> items = service.getClassifier();
+        Optional<WorldCountry> item = items.stream()
+                .filter(i -> i.getCode().equals(code))
+                .findFirst();
+        if (item.isEmpty()) {
+            return "redirect:/entity/world-country/classifier"; // TODO: Вывести ошибку
+        }
+
+        // Если запись существует, то просто обновляем ее
+        Optional<WorldCountry> existing = repository.findByCode(code);
+        existing.ifPresent(country -> {
+            item.get().setId(country.getId());
+            item.get().setPredefined(country.isPredefined());
+        });
+
+        repository.save(item.get());
+        return "redirect:/entity/world-country";
     }
 
     @GetMapping("/add")

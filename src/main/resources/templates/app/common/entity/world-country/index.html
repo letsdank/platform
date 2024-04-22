@@ -6,8 +6,18 @@
 <h1>Страны мира</h1>
 
 <div>
-    <a class="open-popup btn btn-primary" th:href="@{/entity/world-country/classifier}">Добавить из классификатора</a>
-    <a class="open-popup btn btn-secondary" th:href="@{/entity/world-country/add}">Добавить</a>
+    <a class="open-popup btn btn-primary" th:href="@{/entity/world-country/classifier}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-files" viewBox="0 0 16 16">
+            <path d="M13 0H6a2 2 0 0 0-2 2 2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 2 2 0 0 0 2-2V2a2 2 0 0 0-2-2m0 13V4a2 2 0 0 0-2-2H5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1M3 4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/>
+        </svg>
+        Добавить из классификатора
+    </a>
+    <a class="open-popup btn btn-secondary" th:href="@{/entity/world-country/add}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
+        </svg>
+        Добавить
+    </a>
 </div>
 
 <div th:if="${page.items.size() > 0}">
@@ -25,6 +35,7 @@
         <tbody>
         <tr th:each="item : ${page.items}">
             <td>
+                <img th:src="${'/img/entity' + (item.predefined ? '-dot' : '') + '.png'}" alt="Страна мира">
                 <a th:href="${'/entity/world-country/' + item.id}" th:text="${item.name}" class="open-popup"></a>
             </td>
             <td th:text="${item.code}"></td>
