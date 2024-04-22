@@ -37,4 +37,7 @@ public class WorldCountry {
 
     @Column(length = 100)
     private String internationalName;
+
+    @Column(columnDefinition = "boolean default false")
+    private boolean deleted;
 }
