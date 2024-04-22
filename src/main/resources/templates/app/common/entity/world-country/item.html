@@ -9,6 +9,7 @@
             <form th:object="${item}" class="modal-form" method="post" th:action="${'/entity/world-country/' + item.id}">
                 <div class="modal-body">
                     <input type="hidden" th:field="*{id}">
+                    <input type="hidden" th:field="*{predefined}">
                     <div class="row mb-3">
                         <label class="col-sm-3 col-form-label" for="name">Наименование:</label>
                         <div class="col-sm-6">
@@ -55,6 +56,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <a th:href="${'/entity/world-country/' + item.id + '/delete'}" class="btn btn-danger">Удалить</a>
                     <input type="submit" value="Записать" class="btn btn-primary">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                 </div>

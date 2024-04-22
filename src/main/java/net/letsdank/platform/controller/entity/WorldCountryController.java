@@ -11,7 +11,6 @@ import net.letsdank.platform.utils.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -33,10 +32,9 @@ public class WorldCountryController {
                            @RequestParam(defaultValue = "1") int page,
                            @RequestParam(defaultValue = "20") int size) {
         try {
-            Pageable paging = PageRequest.of(page - 1, size)
-                    .withSort(Sort.Direction.ASC, "name");
+            Pageable paging = PageRequest.of(page - 1, size);
 
-            Page<WorldCountry> pPage = repository.findAll(paging);
+            Page<WorldCountry> pPage = repository.findAllPaged(paging);
             model.addAttribute("page", new PageInfo<>(pPage));
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -87,7 +85,7 @@ public class WorldCountryController {
 
         // Здесь в любом случае выводим модальное окно, только нужно понять
         // данные уже существуют или нет, и выводить от этого разные сообщения
-        boolean exists = repository.existsByCode(code);
+        boolean exists = repository.existsByCodeAndDeletedFalse(code);
         String message = StringUtils.substituteParameters(MessageService.getMessage(
                 exists ? "common.world-country.classifier.exists" : "common.world-country.classifier.add"),
                 item.get().getName());
@@ -109,7 +107,7 @@ public class WorldCountryController {
         }
 
         // Если запись существует, то просто обновляем ее
-        Optional<WorldCountry> existing = repository.findByCode(code);
+        Optional<WorldCountry> existing = repository.findByCodeAndDeletedFalse(code);
         existing.ifPresent(country -> {
             item.get().setId(country.getId());
             item.get().setPredefined(country.isPredefined());
@@ -123,5 +121,17 @@ public class WorldCountryController {
     public String addModal(Model model) {
         model.addAttribute("item", new WorldCountry());
         return "app/common/entity/world-country/add";
+    }
+
+    @GetMapping("/{id}/delete")
+    public String delete(@PathVariable Long id) {
+        Optional<WorldCountry> country = repository.findById(id);
+        if (country.isEmpty()) {
+            return "redirect:/entity/world-country"; // TODO: Вывести ошибку
+        }
+
+        country.get().setDeleted(true);
+        repository.save(country.get());
+        return "redirect:/entity/world-country";
     }
 }
