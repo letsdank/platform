@@ -7,5 +7,275 @@
     "fullName": "Республика Абхазия",
     "eaeu": false,
     "internationalName": "Abkhazia"
+  },
+  {
+    "name": "АВСТРИЯ",
+    "codeAlpha2": "AT",
+    "codeAlpha3": "AUT",
+    "code": "040",
+    "fullName": "Австрийская Республика",
+    "eaeu": false,
+    "internationalName": "Austria"
+  },
+  {
+    "name": "АЗЕРБАЙДЖАН",
+    "codeAlpha2": "AZ",
+    "codeAlpha3": "AZE",
+    "code": "031",
+    "fullName": "Республика Азербайджан",
+    "eaeu": false,
+    "internationalName": "Azerbaijan"
+  },
+  {
+    "name": "АЛБАНИЯ",
+    "codeAlpha2": "AL",
+    "codeAlpha3": "ALB",
+    "code": "008",
+    "fullName": "Республика Албания",
+    "eaeu": false,
+    "internationalName": "Albania"
+  },
+  {
+    "name": "АЛЖИР",
+    "codeAlpha2": "DZ",
+    "codeAlpha3": "DZA",
+    "code": "012",
+    "fullName": "Алжирская Народная Демократическая Республика",
+    "eaeu": false,
+    "internationalName": "Algeria"
+  },
+  {
+    "name": "АМЕРИКАНСКОЕ САМОА",
+    "codeAlpha2": "AS",
+    "codeAlpha3": "ASM",
+    "code": "016",
+    "fullName": "",
+    "eaeu": false,
+    "internationalName": "American Samoa"
+  },
+  {
+    "name": "АНГИЛЬЯ",
+    "codeAlpha2": "AI",
+    "codeAlpha3": "AIA",
+    "code": "660",
+    "fullName": "",
+    "eaeu": false,
+    "internationalName": "Anguilla"
+  },
+  {
+    "name": "АНГОЛА",
+    "codeAlpha2": "AO",
+    "codeAlpha3": "AGO",
+    "code": "024",
+    "fullName": "Республика Ангола",
+    "eaeu": false,
+    "internationalName": "Angola"
+  },
+  {
+    "name": "АНДОРРА",
+    "codeAlpha2": "AD",
+    "codeAlpha3": "AND",
+    "code": "020",
+    "fullName": "Княжество Андорра",
+    "eaeu": false,
+    "internationalName": "Andorra"
+  },
+  {
+    "name": "АНТАРКТИДА",
+    "codeAlpha2": "AQ",
+    "codeAlpha3": "ATA",
+    "code": "010",
+    "fullName": "",
+    "eaeu": false,
+    "internationalName": "Antarctica"
+  },
+  {
+    "name": "АНТИГУА И БАРБУДА",
+    "codeAlpha2": "AG",
+    "codeAlpha3": "ATG",
+    "code": "",
+    "fullName": "",
+    "eaeu": false,
+    "internationalName": "Antigua and Barbuda"
+  },
+  {
+    "name": "АРГЕНТИНА",
+    "codeAlpha2": "AR",
+    "codeAlpha3": "ARG",
+    "code": "032",
+    "fullName": "Аргентинская Республика",
+    "eaeu": false,
+    "internationalName": "Argentina"
+  },
+  {
+    "name": "АРМЕНИЯ",
+    "codeAlpha2": "AM",
+    "codeAlpha3": "ARM",
+    "code": "051",
+    "fullName": "Республика Армения",
+    "eaeu": false,
+    "internationalName": "Armenia"
+  },
+  {
+    "name": "АРУБА",
+    "codeAlpha2": "AW",
+    "codeAlpha3": "ABW",
+    "code": "533",
+    "fullName": "",
+    "eaeu": false,
+    "internationalName": "Aruba"
+  },
+  {
+    "name": "АФГАНИСТАН",
+    "codeAlpha2": "AF",
+    "codeAlpha3": "AFG",
+    "code": "004",
+    "fullName": "Переходное Исламское Государство Афганистан",
+    "eaeu": false,
+    "internationalName": "Afghanistan"
+  },
+  {
+    "name": "БАГАМЫ",
+    "codeAlpha2": "BS",
+    "codeAlpha3": "BHS",
+    "code": "044",
+    "fullName": "Содружество Багамы",
+    "eaeu": false,
+    "internationalName": "The Bahamas"
+  },
+  {
+    "name": "БАНГЛАДЕШ",
+    "codeAlpha2": "BD",
+    "codeAlpha3": "BGD",
+    "code": "050",
+    "fullName": "Народная Республика Бангладеш",
+    "eaeu": false,
+    "internationalName": "Bangladesh"
+  },
+  {
+    "name": "БАРБАДОС",
+    "codeAlpha2": "BB",
+    "codeAlpha3": "BRB",
+    "code": "052",
+    "fullName": "",
+    "eaeu": false,
+    "internationalName": "Barbados"
+  },
+  {
+    "name": "БАХРЕЙН",
+    "codeAlpha2": "BH",
+    "codeAlpha3": "BHR",
+    "code": "048",
+    "fullName": "Королевство Бахрейн",
+    "eaeu": false,
+    "internationalName": "Bahrain"
+  },
+  {
+    "name": "БЕЛАРУСЬ",
+    "codeAlpha2": "BY",
+    "codeAlpha3": "BLR",
+    "code": "112",
+    "fullName": "Республика Беларусь",
+    "eaeu": true,
+    "internationalName": "Belarus"
+  },
+  {
+    "name": "БЕЛИЗ",
+    "codeAlpha2": "BZ",
+    "codeAlpha3": "BLZ",
+    "code": "084",
+    "fullName": "",
+    "eaeu": false,
+    "internationalName": "Belize"
+  },
+  {
+    "name": "БЕЛЬГИЯ",
+    "codeAlpha2": "BE",
+    "codeAlpha3": "BEL",
+    "code": "056",
+    "fullName": "Королевство Бельгии",
+    "eaeu": false,
+    "internationalName": "Belgium"
+  },
+  {
+    "name": "БЕНИН",
+    "codeAlpha2": "BJ",
+    "codeAlpha3": "BEN",
+    "code": "204",
+    "fullName": "Республика Бенин",
+    "eaeu": false,
+    "internationalName": "Benin"
+  },
+  {
+    "name": "БЕРМУДЫ",
+    "codeAlpha2": "BM",
+    "codeAlpha3": "BMU",
+    "code": "060",
+    "fullName": "",
+    "eaeu": false,
+    "internationalName": "Bermuda"
+  },
+  {
+    "name": "БОЛГАРИЯ",
+    "codeAlpha2": "BG",
+    "codeAlpha3": "BGR",
+    "code": "100",
+    "fullName": "Республика Болгария",
+    "eaeu": false,
+    "internationalName": "Bulgaria"
+  },
+  {
+    "name": "БОЛИВИЯ, МНОГОНАЦИОНАЛЬНОЕ ГОСУДАРСТВО",
+    "codeAlpha2": "BO",
+    "codeAlpha3": "BOL",
+    "code": "068",
+    "fullName": "Многонациональное Государство Боливия",
+    "eaeu": false,
+    "internationalName": "Plurinational State of Bolivia"
+  },
+  {
+    "name": "БОНЭЙР, СИНТ-ЭСТАТИУС И САБА",
+    "codeAlpha2": "BQ",
+    "codeAlpha3": "BES",
+    "code": "535",
+    "fullName": "",
+    "eaeu": false,
+    "internationalName": "Bonaire, Sint Eustatius and Saba"
+  },
+  {
+    "name": "БОСНИЯ И ГЕРЦЕГОВИНА",
+    "codeAlpha2": "BA",
+    "codeAlpha3": "BIH",
+    "code": "070",
+    "fullName": "",
+    "eaeu": false,
+    "internationalName": "Bolivia and Herzegovina"
+  },
+  {
+    "name": "БОТСВАНА",
+    "codeAlpha2": "BW",
+    "codeAlpha3": "BWA",
+    "code": "072",
+    "fullName": "Республика Ботсвана",
+    "eaeu": false,
+    "internationalName": "Botswana"
+  },
+  {
+    "name": "БРАЗИЛИЯ",
+    "codeAlpha2": "BR",
+    "codeAlpha3": "BRA",
+    "code": "076",
+    "fullName": "Федеративная Республика Бразилия",
+    "eaeu": false,
+    "internationalName": "Brazil"
+  },
+  {
+    "name": "РОССИЯ",
+    "codeAlpha2": "RU",
+    "codeAlpha3": "RUS",
+    "code": "643",
+    "fullName": "Российская Федерация",
+    "eaeu": true,
+    "internationalName": "The Russian Federation"
   }
 ]

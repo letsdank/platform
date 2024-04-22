@@ -39,3 +39,15 @@
 .world-countries-code-row>input.is-invalid {
     width: 5rem;
 }
+
+.table-scrollable {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.table-scrollable thead th {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 999;
+}

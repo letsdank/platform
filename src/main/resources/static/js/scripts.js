@@ -52,7 +52,7 @@ function popupFormHandler(form, e) {
 
             if (error.fieldName !== null) {
                 const formInput = document.querySelector(`input[name="${error.fieldName}"]`);
-                if (formInput !== null) formInput.classList.toggle("is-invalid");
+                if (formInput !== null) formInput.classList.add("is-invalid");
             }
         });
     });
@@ -74,6 +74,7 @@ window.addEventListener('click', (e) => {
 
     if (e.target.classList.contains("open-popup")) {
         e.preventDefault();
+        if (myModal !== null) myModal.hide();
         const popupUrl = e.target.getAttribute('href');
         openPopup(popupUrl);
     }

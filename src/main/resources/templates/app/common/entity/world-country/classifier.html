@@ -7,30 +7,33 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
             </div>
             <div class="modal-body">
-                <table class="table table-hover table-responsive-xl">
-                    <thead>
-                    <tr>
-                        <th scope="col">Наименование</th>
-                        <th scope="col">Код</th>
-                        <th scope="col">Код альфа 2</th>
-                        <th scope="col">Код альфа 3</th>
-                        <th scope="col">Участник ЕАЭС</th>
-                        <th scope="col">Наименование полное</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="item : ${items}">
-                        <td>
-                            <a th:href="${'/entity/world-country/classifier/' + item.code}" th:text="${item.name}" class="open-popup"></a>
-                        </td>
-                        <td th:text="${item.code}"></td>
-                        <td th:text="${item.codeAlpha2}"></td>
-                        <td th:text="${item.codeAlpha3}"></td>
-                        <td th:text="${item.eaeu ? 'Да' : ''}"></td>
-                        <td th:text="${item.fullName}"></td>
-                    </tr>
-                    </tbody>
-                </table>
+                <div class="table-scrollable">
+                    <table class="table table-hover table-responsive-xl" style="height: 400px">
+                        <thead>
+                        <tr>
+                            <th scope="col">Наименование</th>
+                            <th scope="col">Код</th>
+                            <th scope="col">Код альфа 2</th>
+                            <th scope="col">Код альфа 3</th>
+                            <th scope="col">Участник ЕАЭС</th>
+                            <th scope="col">Наименование полное</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item : ${items}">
+                            <td>
+                                <img th:src="${'/img/entity' + (predefined.contains(item.code) ? '-dot' : '-gray') + '.png'}" alt="Страна мира">
+                                <a title="Нажмите, чтобы добавить" th:href="${'/entity/world-country/classifier/' + item.code}" th:text="${item.name}" class="open-popup"></a>
+                            </td>
+                            <td th:text="${item.code}"></td>
+                            <td th:text="${item.codeAlpha2}"></td>
+                            <td th:text="${item.codeAlpha3}"></td>
+                            <td th:text="${item.eaeu ? 'Да' : ''}"></td>
+                            <td th:text="${item.fullName}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
