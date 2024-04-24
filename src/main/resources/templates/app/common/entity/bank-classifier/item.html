@@ -1,0 +1,123 @@
+<div class="modal modal-lg fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="modalErrors"></div>
+            <div class="modal-header">
+                <h5 class="modal-title" th:text="${item.name + ' (Участник расчетов)'}"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <form th:object="${item}" class="modal-form" method="post" th:action="${'/entity/bank-classifier/' + item.id}">
+                <div class="modal-body">
+                    <input type="hidden" th:field="*{id}">
+                    <input type="hidden" th:field="*{predefined}">
+                    <div class="row mb-2">
+                        <label class="col-sm-3 col-form-label" for="fullName">Наименование:</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="fullName" th:field="*{name}">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <label class="col-sm-3 col-form-label" for="parent">Регион:</label>
+                        <div class="col-sm-8 suggester" th:attr="data-suggest-url=@{/entity/bank-classifier/suggest-group}">
+                            <input type="hidden" th:field="*{parent}">
+                            <input type="text" class="form-control" id="parent" th:value="${item.parent?.name}">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <label class="col-sm-3 col-form-label" for="inn">ИНН:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="inn" th:field="*{inn}">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <label class="col-sm-3 col-form-label" for="phones">Телефоны:</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="phones" th:field="*{phones}">
+                        </div>
+                    </div>
+                    <div class="row mb-2 px-2">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="inactive" th:field="*{inactive}">
+                            <label class="form-check-label" for="inactive">
+                                Деятельность банка прекращена
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Реквизиты для платежей внутри страны</h4>
+                        <div class="row mb-2">
+                            <label class="col-sm-3 col-form-label" for="code">БИК:</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" id="code" th:field="*{code}">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label class="col-sm-3 col-form-label" for="corrAccount">Корр. счет:</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" id="corrAccount" th:field="*{corrAccount}">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label class="col-sm-3 col-form-label" for="city">Город:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="city" th:field="*{city}">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label class="col-sm-3 col-form-label" for="address">Адрес:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="address" th:field="*{address}">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label class="col-sm-3 col-form-label" for="bicRkc">БИК РКЦ:</label>
+                            <div class="col-sm-8 suggester" th:attr="data-suggest-url=@{/entity/bank-classifier/suggest-item}">
+                                <input type="hidden" th:field="*{bicRkc}">
+                                <input type="text" id="bicRkc" class="form-control" th:value="${item.bicRkc?.name}">
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Реквизиты для международных платежей</h4>
+                        <div class="row mb-2">
+                            <label class="col-sm-3 col-form-label" for="internationalName">Наименование / Bank name:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="internationalName" th:field="*{internationalName}">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label class="col-sm-3 col-form-label" for="swiftBic">SWIFT BIC:</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" id="swiftBic" th:field="*{swiftBic}">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label class="col-sm-3 col-form-label" for="internationalCity">Город / City:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="internationalCity" th:field="*{internationalCity}">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label class="col-sm-3 col-form-label" for="internationalAddress">Адрес / Address:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="internationalAddress" th:field="*{internationalAddress}">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label class="col-sm-3 col-form-label" for="country">Страна / Country:</label>
+                            <div class="col-sm-7 suggester" th:attr="data-suggest-url=@{/entity/world-country/suggest}">
+                                <input type="hidden" th:field="*{country}">
+                                <input type="text" class="form-control" id="country" th:value="${item.country?.name}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a th:href="${'/entity/world-country/' + item.id + '/delete'}" class="btn btn-danger">Удалить</a>
+                    <input type="submit" value="Записать" class="btn btn-primary">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

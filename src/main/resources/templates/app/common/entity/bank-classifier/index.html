@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{fragments/head :: head('Справочник БИК')}"></head>
+<body>
+<nav th:replace="~{fragments/header :: header('')}"></nav>
+<h1>Справочник БИК</h1>
+
+<style>
+    .bank-classifier-inactive {
+        --bs-table-color-state: var(--bs-gray-500);
+        --bs-link-opacity: 0.5;
+    }
+</style>
+
+<div>
+    <a class="open-popup btn btn-light" th:href="@{/entity/bank-classifier/create-item}">Создать</a>
+    <a class="open-popup btn btn-light" th:href="@{/entity/bank-classifier/create-group}">Создать группу</a>
+</div>
+
+<div th:if="${items.size() > 0}">
+    <table class="table table-responsive-xl table-group">
+        <thead>
+        <tr>
+            <th colspan="2" scope="col">Наименование банка</th>
+            <th scope="col">БИК</th>
+        </tr>
+        </thead>
+        <tbody>
+            <th:block th:each="group : ${items}">
+                <tr th:attr="data-group-id=${group.id}">
+                    <td th:rowspan="${group.children.size() + 1}" style="width: 20px">
+                        <img src="/img/group.png" alt="Группа">
+                    </td>
+                    <td th:text="${group.name}"></td>
+                    <td th:text="${group.code}"></td>
+                </tr>
+                <tr class="visually-hidden" th:each="item : ${group.children}" th:attr="data-parent-id=${item.parent.id},data-entity-id=${item.id}" th:classappend="${item.inactive ? 'bank-classifier-inactive' : ''}">
+                    <td>
+                        <img src="/img/entity.png" alt="Сущность">
+                        <a th:href="${'/entity/bank-classifier/' + item.id}" class="open-popup" th:text="${item.name}"></a>
+                    </td>
+                    <td th:text="${item.code}"></td>
+                </tr>
+            </th:block>
+        </tbody>
+    </table>
+</div>
+<div th:unless="${items.size() > 0}">
+    <span>Список пуст</span>
+</div>
+
+<div id="popupContainer">
+
+</div>
+
+<script type="text/javascript" th:src="@{/js/scripts.js}"></script>
+<script type="text/javascript" th:src="@{/js/entities/worldCountry.js}"></script>
+</body>
+</html>
