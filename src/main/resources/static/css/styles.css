@@ -51,3 +51,8 @@
     background-color: #fff;
     z-index: 999;
 }
+
+.alerts-container {
+    max-height: 270px;
+    overflow-y: auto;
+}

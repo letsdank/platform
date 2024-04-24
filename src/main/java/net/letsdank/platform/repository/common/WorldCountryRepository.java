@@ -1,6 +1,7 @@
 package net.letsdank.platform.repository.common;
 
 import net.letsdank.platform.entity.common.WorldCountry;
+import net.letsdank.platform.entity.finance.BankClassifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,6 +11,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface WorldCountryRepository extends JpaRepository<WorldCountry, Long> {
+    @Query("SELECT c FROM  WorldCountry c " +
+            "WHERE c.deleted = false AND c.name ilike %:query% " +
+            "ORDER by c.name ASC")
+    List<WorldCountry> findSuggestions(String query);
+
     @Query("SELECT c FROM WorldCountry c " +
             "WHERE c.deleted = false ORDER by c.name ASC")
     Page<WorldCountry> findAllPaged(Pageable pageable);

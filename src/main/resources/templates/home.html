@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head th:replace="fragments/head :: head('Главная')"></head>
+<head th:replace="~{fragments/head :: head('Главная')}"></head>
 <body>
-    <nav th:replace="fragments/header :: header('home')"></nav>
+    <nav th:replace="~{fragments/header :: header('home')}"></nav>
     <h1>Главная страница</h1>
 </body>
 </html>

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import net.letsdank.platform.entity.common.WorldCountry;
 import net.letsdank.platform.model.common.PageInfo;
 import net.letsdank.platform.model.common.PlatformResult;
+import net.letsdank.platform.model.common.SuggestResult;
 import net.letsdank.platform.repository.common.WorldCountryRepository;
 import net.letsdank.platform.service.common.WorldCountryService;
 import net.letsdank.platform.utils.MessageService;
@@ -133,5 +134,10 @@ public class WorldCountryController {
         country.get().setDeleted(true);
         repository.save(country.get());
         return "redirect:/entity/world-country";
+    }
+
+    @GetMapping("/suggest")
+    public ResponseEntity<SuggestResult> suggest(@RequestParam(name = "query") String query) {
+        return ResponseEntity.ok(service.suggest(query));
     }
 }

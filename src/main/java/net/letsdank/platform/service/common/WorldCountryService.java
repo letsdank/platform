@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import net.letsdank.platform.entity.common.WorldCountry;
 import net.letsdank.platform.model.common.ErrorMessage;
 import net.letsdank.platform.model.common.PlatformResult;
+import net.letsdank.platform.model.common.SuggestInfo;
+import net.letsdank.platform.model.common.SuggestResult;
 import net.letsdank.platform.repository.common.WorldCountryRepository;
 import net.letsdank.platform.utils.MessageService;
 import net.letsdank.platform.utils.StringUtils;
@@ -124,5 +126,18 @@ public class WorldCountryService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public SuggestResult suggest(String query) {
+        List<WorldCountry> countryList = worldCountryRepository.findSuggestions(query);
+        List<SuggestInfo> suggests = new ArrayList<>();
+        countryList.forEach(country -> {
+            SuggestInfo suggestInfo = new SuggestInfo();
+            suggestInfo.setId(country.getId());
+            suggestInfo.setName(country.getName());
+            suggests.add(suggestInfo);
+        });
+
+        return new SuggestResult(suggests.size(), suggests, query); // TODO: Переделать
     }
 }
