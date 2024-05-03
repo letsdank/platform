@@ -99,7 +99,7 @@ public class StringUtils {
             value = value.replace(" ", "");
         }
 
-        if (value.length() == 0) return true;
+        if (value.isEmpty()) return true;
 
         return value.matches("\\d*");
     }
