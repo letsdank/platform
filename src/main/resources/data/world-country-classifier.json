@@ -270,6 +270,276 @@
     "internationalName": "Brazil"
   },
   {
+    "name": "БРИТАНСКАЯ ТЕРРИТОРИЯ В ИНДИЙСКОМ ОКЕАНЕ",
+    "codeAlpha2": "IO",
+    "codeAlpha3": "IOT",
+    "code": "086",
+    "fullName": "",
+    "eaeu": false,
+    "internationalName": "The British Indian Ocean Territory"
+  },
+  {
+    "name": "БРУНЕЙ-ДАРУССАЛАМ",
+    "codeAlpha2": "BN",
+    "codeAlpha3": "BRN",
+    "code": "096",
+    "fullName": "",
+    "eaeu": false,
+    "internationalName": "Brunei Darussalam"
+  },
+  {
+    "name": "БУРКИНА-ФАСО",
+    "codeAlpha2": "BF",
+    "codeAlpha3": "BFA",
+    "code": "854",
+    "fullName": "",
+    "eaeu": false,
+    "internationalName": "Burkina Faso"
+  },
+  {
+    "name": "БУРУНДИ",
+    "codeAlpha2": "BD",
+    "codeAlpha3": "BDI",
+    "code": "108",
+    "fullName": "Республика Бурунди",
+    "eaeu": false,
+    "internationalName": "Burundi"
+  },
+  {
+    "name": "БУТАН",
+    "codeAlpha2": "BT",
+    "codeAlpha3": "BTN",
+    "code": "064",
+    "fullName": "Королевство Бутан",
+    "eaeu": false,
+    "internationalName": "Bhutan"
+  },
+  {
+    "name": "ВАНУАТУ",
+    "codeAlpha2": "VU",
+    "codeAlpha3": "VUT",
+    "code": "548",
+    "fullName": "Республика Вануату",
+    "eaeu": false,
+    "internationalName": "Vanuatu"
+  },
+  {
+    "name": "ВЕНГРИЯ",
+    "codeAlpha2": "HU",
+    "codeAlpha3": "HUN",
+    "code": "348",
+    "fullName": "Венгрия",
+    "eaeu": false,
+    "internationalName": "Hungary"
+  },
+  {
+    "name": "ВЕНЕСУЭЛА БОЛИВАРИАНСКАЯ РЕСПУБЛИКА",
+    "codeAlpha2": "VE",
+    "codeAlpha3": "VEN",
+    "code": "864",
+    "fullName": "Боливарианская Республика Венесуэла",
+    "eaeu": false,
+    "internationalName": "Bolivarian Republic of Venezuela"
+  },
+  {
+    "name": "ВИРГИНСКИЕ ОСТРОВА (БРИТАНСКИЕ)",
+    "codeAlpha2": "VG",
+    "codeAlpha3": "VGB",
+    "code": "092",
+    "fullName": "Британские Виргинские острова",
+    "eaeu": false,
+    "internationalName": "British Virgin Islands"
+  },
+  {
+    "name": "ВИРГИНСКИЕ ОСТРОВА (США)",
+    "codeAlpha2": "VI",
+    "codeAlpha3": "VIR",
+    "code": "850",
+    "fullName": "Виргинские острова Соединенных Штатов",
+    "eaeu": false,
+    "internationalName": "U.s. Virgin Islands"
+  },
+  {
+    "name": "ТИМОР-ЛЕСТЕ",
+    "codeAlpha2": "TL",
+    "codeAlpha3": "TLS",
+    "code": "626",
+    "fullName": "Демократическая Республика Тимор-Лесте",
+    "eaeu": false,
+    "internationalName": "Timor-Leste"
+  },
+  {
+    "name": "ВЬЕТНАМ",
+    "codeAlpha2": "VN",
+    "codeAlpha3": "VNM",
+    "code": "704",
+    "fullName": "Социалистическая Республика Вьетнам",
+    "eaeu": false,
+    "internationalName": "Viet Nam"
+  },
+  {
+    "name": "ГАБОН",
+    "codeAlpha2": "GA",
+    "codeAlpha3": "GAB",
+    "code": "266",
+    "fullName": "Габонская Республика",
+    "eaeu": false,
+    "internationalName": "Gabon"
+  },
+  {
+    "name": "ГАИТИ",
+    "codeAlpha2": "HT",
+    "codeAlpha3": "HTI",
+    "code": "332",
+    "fullName": "Республика Гаити",
+    "eaeu": false,
+    "internationalName": "Haiti"
+  },
+  {
+    "name": "ГАЙАНА",
+    "codeAlpha2": "GY",
+    "codeAlpha3": "GUY",
+    "code": "328",
+    "fullName": "Кооперативная Республика Гайана",
+    "eaeu": false,
+    "internationalName": "Guyana"
+  },
+  {
+    "name": "ГАМБИЯ",
+    "codeAlpha2": "GM",
+    "codeAlpha3": "GMB",
+    "code": "270",
+    "fullName": "Исламская Республика Гамбия",
+    "eaeu": false,
+    "internationalName": "The Gambia"
+  },
+  {
+    "name": "ГАНА",
+    "codeAlpha2": "GH",
+    "codeAlpha3": "GHA",
+    "code": "288",
+    "fullName": "Республика Гана",
+    "eaeu": false,
+    "internationalName": "Ghana"
+  },
+  {
+    "name": "ГВАДЕЛУПА",
+    "codeAlpha2": "GP",
+    "codeAlpha3": "GLP",
+    "code": "312",
+    "fullName": "",
+    "eaeu": false,
+    "internationalName": "Guadeloupe"
+  },
+  {
+    "name": "ГВАТЕМАЛА",
+    "codeAlpha2": "GT",
+    "codeAlpha3": "GTM",
+    "code": "320",
+    "fullName": "Республика Гватемала",
+    "eaeu": false,
+    "internationalName": "Guatemala"
+  },
+  {
+    "name": "ГВИНЕЯ",
+    "codeAlpha2": "GN",
+    "codeAlpha3": "GIN",
+    "code": "324",
+    "fullName": "Гвинейская Республика",
+    "eaeu": false,
+    "internationalName": "Guinea"
+  },
+  {
+    "name": "ГВИНЕЯ-БИСАУ",
+    "codeAlpha2": "GW",
+    "codeAlpha3": "GNB",
+    "code": "624",
+    "fullName": "Республика Гвинея-Бисау",
+    "eaeu": false,
+    "internationalName": "Guinea-Bissau"
+  },
+  {
+    "name": "ГЕРМАНИЯ",
+    "codeAlpha2": "DE",
+    "codeAlpha3": "DEU",
+    "code": "276",
+    "fullName": "Федеративная Республика Германия",
+    "eaeu": false,
+    "internationalName": "Germany"
+  },
+  {
+    "name": "ГЕРНСИ",
+    "codeAlpha2": "GG",
+    "codeAlpha3": "GGY",
+    "code": "831",
+    "fullName": "",
+    "eaeu": false,
+    "internationalName": "Guernsey"
+  },
+  {
+    "name": "ГИБРАЛТАР",
+    "codeAlpha2": "GI",
+    "codeAlpha3": "GIB",
+    "code": "292",
+    "fullName": "",
+    "eaeu": false,
+    "internationalName": "Gibraltar"
+  },
+  {
+    "name": "ГОНДУРАС",
+    "codeAlpha2": "HN",
+    "codeAlpha3": "HND",
+    "code": "340",
+    "fullName": "Республика Гондурас",
+    "eaeu": false,
+    "internationalName": "Honduras"
+  },
+  {
+    "name": "ГОНКОНГ",
+    "codeAlpha2": "HK",
+    "codeAlpha3": "HKG",
+    "code": "344",
+    "fullName": "Специальный административный регион Китая Гонконг",
+    "eaeu": false,
+    "internationalName": "Hong Kong"
+  },
+  {
+    "name": "ГРЕНАДА",
+    "codeAlpha2": "GD",
+    "codeAlpha3": "GRD",
+    "code": "308",
+    "fullName": "",
+    "eaeu": false,
+    "internationalName": "Grenada"
+  },
+  {
+    "name": "ГРЕНЛАНДИЯ",
+    "codeAlpha2": "GL",
+    "codeAlpha3": "GRL",
+    "code": "304",
+    "fullName": "",
+    "eaeu": false,
+    "internationalName": "Greenland"
+  },
+  {
+    "name": "ГРЕЦИЯ",
+    "codeAlpha2": "GR",
+    "codeAlpha3": "GRC",
+    "code": "300",
+    "fullName": "Греческая Республика",
+    "eaeu": false,
+    "internationalName": "Greece"
+  },
+  {
+    "name": "ГРУЗИЯ",
+    "codeAlpha2": "GE",
+    "codeAlpha3": "GEO",
+    "code": "268",
+    "fullName": "",
+    "eaeu": false,
+    "internationalName": "Georgia"
+  },
+  {
     "name": "РОССИЯ",
     "codeAlpha2": "RU",
     "codeAlpha3": "RUS",
