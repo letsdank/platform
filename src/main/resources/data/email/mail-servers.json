@@ -1,0 +1,76 @@
+{
+  "mail.ru": {
+    "services": [
+      {
+        "protocol": "smtp",
+        "host": "smtp.mail.ru",
+        "port": 465,
+        "encryption": "ssl",
+        "loginFormat": "username@domain",
+        "smtpAuthentication": "enabled"
+      },
+      {
+        "protocol": "smtp",
+        "host": "smtp.mail.ru",
+        "port": 587,
+        "encryption": "starttls",
+        "loginFormat": "username@domain",
+        "smtpAuthentication": "enabled"
+      },
+      {
+        "protocol": "imap",
+        "host": "imap.mail.ru",
+        "port": 993,
+        "encryption": "ssl",
+        "loginFormat": "username@domain",
+        "mustBeEnabled": false
+      },
+      {
+        "protocol": "pop3",
+        "host": "pop.mail.ru",
+        "port": 995,
+        "encryption": "ssl",
+        "loginFormat": "username@domain",
+        "mustBeEnabled": false
+      }
+    ],
+    "website": "https://help.mail.ru/mail/mailer",
+    "oauth": {
+      "authorizationUri": "https://oauth.mail.ru/login",
+      "tokenExchangeUri": "https://oauth.mail.ru/token",
+      "mailScope": [
+        "mail.imap",
+        "userinfo"
+      ],
+      "usePKCE": true,
+      "useClientSecret": true,
+      "authorizationParameters": {
+        "prompt_force": "1"
+      },
+      "tokenExchangeParameters": {
+        "ru": "1. Перейдите на страницу <a href=\\\"https://oauth.mail.ru/app/\\\">Мои приложения</a> и нажмите на кнопку <b>Создать приложение</b>.\\n2. Введите <b>Название проекта</b>, например, \\\"Бухгалтерия ООО Ромашка\\\".\\n3. Скопируйте и вставьте строку в поле <b>Все redirect_uri</b> из поля ниже:"
+      },
+      "redirectUriCaption": {
+        "ru": "Все redirect_uri"
+      },
+      "defaultRedirectUri": "https://localhost/oauth2",
+      "clientIdDescription":{
+        "ru": "4. Примите условия лицензионного соглашения и правил использования данных и нажмите на кнопку <b>Подключить сайт</b>.\n5. На открывшейся странице <b>Редактирование приложения</b> в разделе <b>Дополнительные возможности</b> включите <b>Доступ к почтовому ящику по IMAP, POP и SMTP</b> и нажмите на кнопку <b>Сохранить изменения</b>.\n6. В списке приложений нажмите на гиперссылку <b>Редактировать</b> напротив созданного приложения, скопируйте и вставьте в программу значения полей:"
+      },
+      "clientIdCaption": {
+        "ru": "ID Приложения / Client ID"
+      },
+      "clientSecretDescription": {},
+      "clientSecretCaption": {
+        "ru": "Секрет / Client Secret"
+      },
+      "additionalDescription": {
+        "ru": "После регистрации приложения в сервисе доступ к почте подключается не сразу, а через некоторое время. Рекомендуется подождать 5 минут, прежде чем продолжить настройку."
+      }
+    }
+  },
+  "list.ru": "mail.ru",
+  "inbox.ru": "mail.ru",
+  "bk.ru": "mail.ru",
+  "mxs.mail.ru": "mail.ru"
+}
