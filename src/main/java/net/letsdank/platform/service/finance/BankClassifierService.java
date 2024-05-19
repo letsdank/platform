@@ -6,7 +6,7 @@ import net.letsdank.platform.model.common.PlatformResult;
 import net.letsdank.platform.model.common.SuggestInfo;
 import net.letsdank.platform.model.common.SuggestResult;
 import net.letsdank.platform.repository.finance.BankClassifierRepository;
-import net.letsdank.platform.utils.MessageService;
+import net.letsdank.platform.utils.string.MessageService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

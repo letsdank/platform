@@ -8,6 +8,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface SafeStorageRepository extends JpaRepository<SafeStorageEntity, UUID> {
-    @Query("SELECT s.value FROM SafeStorageEntity s WHERE s.tableName =?1 AND s.entityId =?2 AND s.key =?3")
-    Optional<String> getByKey(String tableName, Long entityId, String key);
+    @Query("SELECT s FROM SafeStorageEntity s WHERE s.tableName =?1 AND s.entityId =?2 AND s.key =?3")
+    Optional<SafeStorageEntity> getByKey(String tableName, Long entityId, String key);
 }

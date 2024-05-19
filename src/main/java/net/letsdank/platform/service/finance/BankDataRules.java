@@ -1,6 +1,6 @@
 package net.letsdank.platform.service.finance;
 
-import net.letsdank.platform.utils.StringUtils;
+import net.letsdank.platform.utils.string.StringUtils;
 
 // Alias:
 // БанковскиеПравила

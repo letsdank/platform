@@ -4,13 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import net.letsdank.platform.entity.common.WorldCountry;
-import net.letsdank.platform.model.common.ErrorMessage;
 import net.letsdank.platform.model.common.PlatformResult;
 import net.letsdank.platform.model.common.SuggestInfo;
 import net.letsdank.platform.model.common.SuggestResult;
 import net.letsdank.platform.repository.common.WorldCountryRepository;
-import net.letsdank.platform.utils.MessageService;
-import net.letsdank.platform.utils.StringUtils;
+import net.letsdank.platform.utils.string.MessageService;
+import net.letsdank.platform.utils.string.StringUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -120,7 +119,7 @@ public class WorldCountryService {
     public List<WorldCountry> getClassifier() {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            ClassPathResource resource = new ClassPathResource("data/world-country-classifier.json");
+            ClassPathResource resource = new ClassPathResource("data/entity/world-country-classifier.json");
 
             return mapper.readValue(resource.getInputStream(), new TypeReference<>() {});
         } catch (IOException e) {

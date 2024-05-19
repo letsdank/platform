@@ -5,7 +5,7 @@ import net.letsdank.platform.entity.finance.Currency;
 import net.letsdank.platform.entity.finance.ExchangeRateSettingMethod;
 import net.letsdank.platform.model.common.ErrorMessage;
 import net.letsdank.platform.repository.finance.CurrencyRepository;
-import net.letsdank.platform.utils.MessageService;
+import net.letsdank.platform.utils.string.MessageService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

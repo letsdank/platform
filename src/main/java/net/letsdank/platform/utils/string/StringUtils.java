@@ -1,4 +1,4 @@
-package net.letsdank.platform.utils;
+package net.letsdank.platform.utils.string;
 
 // Alias:
 // СтроковыеФункцииКлиентСервер

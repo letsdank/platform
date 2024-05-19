@@ -1,4 +1,4 @@
-package net.letsdank.platform.model.storage;
+package net.letsdank.platform.service.common;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
@@ -6,14 +6,15 @@ import jakarta.persistence.Table;
 import jakarta.persistence.metamodel.EntityType;
 import jakarta.persistence.metamodel.Metamodel;
 import lombok.AllArgsConstructor;
+import net.letsdank.platform.entity.common.SafeStorageEntity;
 import net.letsdank.platform.repository.common.SafeStorageRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
-// Сервис работы с безопасным хранилищем
+/**
+ * Сервис работы с безопасным хранилищем.
+ */
 @Service
 @AllArgsConstructor
 public class SafeStorage {
@@ -31,10 +32,11 @@ public class SafeStorage {
         String tableName = getTableName(entityManager, entityClass);
 
         // 2) Получить значение из БД
-        Optional<String> rawValue = repository.getByKey(tableName, entityId, key);
+        Optional<SafeStorageEntity> rawValue = repository.getByKey(tableName, entityId, key);
 
         // 3) Расшифровать значение
-        return rawValue.map(crypto::decrypt).orElse(null);
+        return rawValue.map(entity -> crypto.decrypt(entity.getValue())).orElse(null);
+
     }
 
     public void setValue(Class<?> entityClass, Long entityId, String key, String value) {
@@ -42,7 +44,31 @@ public class SafeStorage {
             throw new IllegalArgumentException("Entity class must be annotated with @Entity");
         }
 
-        // Устанавливаем значение в хранилище
+        // 1) Получить из Entity класса название таблицы в БД
+        String tableName = getTableName(entityManager, entityClass);
+
+        // 2) Зашифровать значение
+        String encryptedValue = crypto.encrypt(value);
+
+        // 3) Сохранить значение в БД
+        Optional<SafeStorageEntity> oldValue = repository.getByKey(tableName, entityId, key);
+        if (oldValue.isPresent()) {
+            SafeStorageEntity entity = oldValue.get();
+            entity.setValue(encryptedValue);
+            repository.save(entity);
+
+            return;
+        }
+
+        // Если значение пустое, то создаем новый Entity
+        SafeStorageEntity safeStorageEntity = new SafeStorageEntity();
+
+        safeStorageEntity.setTableName(tableName);
+        safeStorageEntity.setEntityId(entityId);
+        safeStorageEntity.setKey(key);
+        safeStorageEntity.setValue(encryptedValue);
+
+        repository.save(safeStorageEntity);
     }
 
     private boolean hasEntityAnnotation(Class<?> entityClass) {
