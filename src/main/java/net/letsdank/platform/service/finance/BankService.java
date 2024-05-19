@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import net.letsdank.platform.entity.finance.Bank;
 import net.letsdank.platform.model.common.ErrorMessage;
 import net.letsdank.platform.repository.finance.BankRepository;
-import net.letsdank.platform.utils.MessageService;
-import net.letsdank.platform.utils.StringUtils;
+import net.letsdank.platform.utils.string.MessageService;
+import net.letsdank.platform.utils.string.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

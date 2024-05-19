@@ -1,4 +1,4 @@
-package net.letsdank.platform.utils;
+package net.letsdank.platform.utils.string;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
