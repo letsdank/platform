@@ -32,7 +32,7 @@ public class BankService {
         if (Objects.equals(bank.getCountry().getName(), "РОССИЯ")) {
             // Если это не группа, проверяем значения, иначе пропускаем
             if (!bank.isGroup()) {
-                String message = null, fieldName = null;
+                String message, fieldName;
                 if (bank.getCorrAccount() != null && bank.getCorrAccount().length() != 20) {
                     message = MessageService.getMessage("common.bank.edit.corr-account.length");
                     fieldName = "corrAccount";

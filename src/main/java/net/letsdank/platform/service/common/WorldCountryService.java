@@ -43,14 +43,16 @@ public class WorldCountryService {
 
     // Alias: ПроверитьИзменениеПредопределенногоЭлемента
     private void checkPredefinedValueEditing(WorldCountry country) {
+        String message;
         WorldCountry previous = worldCountryRepository.getReferenceById(country.getId());
+
         if (!Objects.equals(previous.getName(), country.getName())) {
-            String message = MessageService.getMessage("common.world-country.edit.not-allowed.name");
+            message = MessageService.getMessage("common.world-country.edit.not-allowed.name");
             throw new IllegalArgumentException(StringUtils.substituteParameters(message, previous.getName()));
         }
 
         if (!Objects.equals(previous.getCode(), country.getCode())) {
-            String message = MessageService.getMessage("common.world-country.edit.not-allowed.code");
+            message = MessageService.getMessage("common.world-country.edit.not-allowed.code");
             throw new IllegalArgumentException(StringUtils.substituteParameters(message, previous.getName()));
         }
     }
