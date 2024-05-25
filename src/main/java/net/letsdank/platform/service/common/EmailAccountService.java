@@ -73,7 +73,9 @@ public class EmailAccountService {
             commands.add(command);
 
             // Запустить команду nslookup
+            // TODO:
         }
+        return result;
     }
 
     public Map<String, Object> getMailServerSettings() {
