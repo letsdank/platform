@@ -48,7 +48,7 @@ public class Currency {
     @Column(length = 100)
     private String exchangeRateCalc;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private ExchangeRateSettingMethod exchangeRateSetting;
 
     @OneToMany(mappedBy = "currency")
