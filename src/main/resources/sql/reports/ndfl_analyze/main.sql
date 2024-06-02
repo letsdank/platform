@@ -40,13 +40,13 @@ SELECT DISTINCT CASE
                 withheld_income.individual_id                                              as individual_id,
                 withheld_income.registration_in_tax_authority                              AS registration_in_tax_authority,
                 CASE
-                    WHEN withheld_income.income_category = 'dividentsAtRate05' AND
+                    WHEN withheld_income.income_category = 'dividendsAtRate05' AND
                          COALESCE(taxpayer_status.status, 'resident') <> 'resident' THEN 'rate05'
-                    WHEN withheld_income.income_category = 'dividentsAtRate10' AND
+                    WHEN withheld_income.income_category = 'dividendsAtRate10' AND
                          COALESCE(taxpayer_status.status, 'resident') <> 'resident' THEN 'rate10'
-                    WHEN withheld_income.income_category = 'dividentsAtRate12' AND
+                    WHEN withheld_income.income_category = 'dividendsAtRate12' AND
                          COALESCE(taxpayer_status.status, 'resident') <> 'resident' THEN 'rate12'
-                    WHEN withheld_income.income_category = 'dividents' AND
+                    WHEN withheld_income.income_category = 'dividends' AND
                          COALESCE(taxpayer_status.status, 'resident') <> 'resident' THEN 'rate15'
                     WHEN withheld_income.income_category = 'royaltiesAtRate03' AND
                          COALESCE(taxpayer_status.status, 'resident') <> 'resident' THEN 'rate03'
@@ -77,7 +77,7 @@ SELECT DISTINCT CASE
                                                                                  END
                                                                              ELSE 'rate13'
                         END
-                    WHEN withheld_income.income_category = 'dividents' OR withheld_income.income_code = 'code1010'
+                    WHEN withheld_income.income_category = 'dividends' OR withheld_income.income_code = 'code1010'
                         THEN CASE
                                  WHEN COALESCE(taxpayer_status.status, 'resident') <> 'resident' THEN 'rate15'
                                  WHEN DATE_TRUNC('MONTH', withheld_income.tax_period_month) >= DATETIME(2015, 1, 1)
@@ -143,13 +143,13 @@ SELECT DISTINCT 2                                                     AS record_
                 withheld_income.individual_id                         as individual_id,
                 withheld_income.registration_in_tax_authority         AS registration_in_tax_authority,
                 CASE
-                    WHEN withheld_income.income_category = 'dividentsAtRate05' AND
+                    WHEN withheld_income.income_category = 'dividendsAtRate05' AND
                          COALESCE(taxpayer_status.status, 'resident') <> 'resident' THEN 'rate05'
-                    WHEN withheld_income.income_category = 'dividentsAtRate10' AND
+                    WHEN withheld_income.income_category = 'dividendsAtRate10' AND
                          COALESCE(taxpayer_status.status, 'resident') <> 'resident' THEN 'rate10'
-                    WHEN withheld_income.income_category = 'dividentsAtRate12' AND
+                    WHEN withheld_income.income_category = 'dividendsAtRate12' AND
                          COALESCE(taxpayer_status.status, 'resident') <> 'resident' THEN 'rate12'
-                    WHEN withheld_income.income_category = 'dividents' AND
+                    WHEN withheld_income.income_category = 'dividends' AND
                          COALESCE(taxpayer_status.status, 'resident') <> 'resident' THEN 'rate15'
                     WHEN withheld_income.income_category = 'royaltiesAtRate03' AND
                          COALESCE(taxpayer_status.status, 'resident') <> 'resident' THEN 'rate03'
@@ -180,7 +180,7 @@ SELECT DISTINCT 2                                                     AS record_
                                                                                  END
                                                                              ELSE 'rate13'
                         END
-                    WHEN withheld_income.income_category = 'dividents' OR withheld_income.income_code = 'code1010'
+                    WHEN withheld_income.income_category = 'dividends' OR withheld_income.income_code = 'code1010'
                         THEN CASE
                                  WHEN COALESCE(taxpayer_status.status, 'resident') <> 'resident' THEN 'rate15'
                                  WHEN DATE_TRUNC('MONTH', withheld_income.tax_period_month) >= DATETIME(2015, 1, 1)
