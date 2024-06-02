@@ -1,0 +1,364 @@
+{
+  "Международные единицы измерения, включенные в ОКЕИ": [
+    {
+      "Единицы длины": [
+        {
+          "code": "003",
+          "name": "Миллиметр",
+          "abbreviation": "мм",
+          "internationalAbbreviation": "mm",
+          "codeAbbreviation": "ММ",
+          "internationalCodeAbbreviation": "MMT",
+          "numerator": 1,
+          "denominator": 1000,
+          "measuredUnitType": "LENGTH"
+        },
+        {
+          "code": "004",
+          "name": "Сантиметр",
+          "abbreviation": "см",
+          "internationalAbbreviation": "cm",
+          "codeAbbreviation": "СМ",
+          "internationalCodeAbbreviation": "CMT",
+          "numerator": 1,
+          "denominator": 100,
+          "measuredUnitType": "LENGTH"
+        },
+        {
+          "code": "005",
+          "name": "Дециметр",
+          "abbreviation": "дм",
+          "internationalAbbreviation": "dm",
+          "codeAbbreviation": "DM",
+          "internationalCodeAbbreviation": "DMT",
+          "numerator": 1,
+          "denominator": 10,
+          "measuredUnitType": "LENGTH"
+        },
+        {
+          "code": "006",
+          "name": "Метр",
+          "abbreviation": "м",
+          "internationalAbbreviation": "m",
+          "codeAbbreviation": "М",
+          "internationalCodeAbbreviation": "MTR",
+          "numerator": 1,
+          "denominator": 1,
+          "measuredUnitType": "LENGTH"
+        },
+        {
+          "code": "008",
+          "name": "Километр (Тысяча метров)",
+          "abbreviation": "км",
+          "internationalAbbreviation": "km",
+          "codeAbbreviation": "КМ (ТЫС М)",
+          "internationalCodeAbbreviation": "KMT",
+          "numerator": 1000,
+          "denominator": 1,
+          "measuredUnitType": "LENGTH"
+        },
+        {
+          "code": "009",
+          "name": "Мегаметр (Миллион метров)",
+          "abbreviation": "Мм (10^6 м)",
+          "internationalAbbreviation": "Mm",
+          "codeAbbreviation": "МЕГАМ (МЛН М)",
+          "internationalCodeAbbreviation": "MAM",
+          "numerator": 1000000,
+          "denominator": 1,
+          "measuredUnitType": "LENGTH"
+        },
+        {
+          "code": "039",
+          "name": "Дюйм (25,4 мм)",
+          "abbreviation": "дюйм",
+          "internationalAbbreviation": "in",
+          "codeAbbreviation": "ДЮЙМ",
+          "internationalCodeAbbreviation": "INH",
+          "numerator": 254,
+          "denominator": 10000,
+          "measuredUnitType": "LENGTH"
+        },
+        {
+          "code": "041",
+          "name": "Фут (0,3048 м)",
+          "abbreviation": "фут",
+          "internationalAbbreviation": "ft",
+          "codeAbbreviation": "ФУТ",
+          "internationalCodeAbbreviation": "FOT",
+          "numerator": 3048,
+          "denominator": 10000,
+          "measuredUnitType": "LENGTH"
+        },
+        {
+          "code": "043",
+          "name": "Ярд (0,9144 м)",
+          "abbreviation": "ярд",
+          "internationalAbbreviation": "yd",
+          "codeAbbreviation": "ЯРД",
+          "internationalCodeAbbreviation": "YRD",
+          "numerator": 9144,
+          "denominator": 10000,
+          "measuredUnitType": "LENGTH"
+        },
+        {
+          "code": "047",
+          "name": "Морская миля (1852 м)",
+          "abbreviation": "миля",
+          "internationalAbbreviation": "n mile",
+          "codeAbbreviation": "МИЛЬ",
+          "internationalCodeAbbreviation": "NMI",
+          "numerator": 1852,
+          "denominator": 1,
+          "measuredUnitType": "LENGTH"
+        }
+      ],
+      "Единицы площади": [
+        {
+          "code": "050",
+          "name": "Квадратный миллиметр",
+          "abbreviation": "мм2",
+          "internationalAbbreviation": "mm2",
+          "codeAbbreviation": "ММ2",
+          "internationalCodeAbbreviation": "MMK",
+          "numerator": 1,
+          "denominator": 1000000,
+          "measuredUnitType": "SQUARE"
+        },
+        {
+          "code": "051",
+          "name": "Квадратный сантиметр",
+          "abbreviation": "см2",
+          "internationalAbbreviation": "cm2",
+          "codeAbbreviation": "СМ2",
+          "internationalCodeAbbreviation": "MMK",
+          "numerator": 1,
+          "denominator": 10000,
+          "measuredUnitType": "SQUARE"
+        },
+        {
+          "code": "053",
+          "name": "Квадратный дециметр",
+          "abbreviation": "дм2",
+          "internationalAbbreviation": "dm2",
+          "codeAbbreviation": "ДМ2",
+          "internationalCodeAbbreviation": "DMK",
+          "numerator": 1,
+          "denominator": 100,
+          "measuredUnitType": "SQUARE"
+        },
+        {
+          "code": "055",
+          "name": "Квадратный метр",
+          "abbreviation": "м2",
+          "internationalAbbreviation": "m2",
+          "codeAbbreviation": "М2",
+          "internationalCodeAbbreviation": "MTK",
+          "numerator": 1,
+          "denominator": 1,
+          "measuredUnitType": "SQUARE"
+        },
+        {
+          "code": "058",
+          "name": "Тысяча квадратных метров",
+          "abbreviation": "1000 м2",
+          "internationalAbbreviation": "daa",
+          "codeAbbreviation": "ТЫС М2",
+          "internationalCodeAbbreviation": "DAA",
+          "numerator": 1000,
+          "denominator": 1,
+          "measuredUnitType": "SQUARE"
+        },
+        {
+          "code": "059",
+          "name": "Гектар",
+          "abbreviation": "га",
+          "internationalAbbreviation": "ha",
+          "codeAbbreviation": "ГА",
+          "internationalCodeAbbreviation": "HAR",
+          "numerator": 10000,
+          "denominator": 1,
+          "measuredUnitType": "SQUARE"
+        },
+        {
+          "code": "061",
+          "name": "Квадратный километр",
+          "abbreviation": "км2",
+          "internationalAbbreviation": "km2",
+          "codeAbbreviation": "КМ2",
+          "internationalCodeAbbreviation": "KMK",
+          "numerator": 1000000,
+          "denominator": 1,
+          "measuredUnitType": "SQUARE"
+        },
+        {
+          "code": "071",
+          "name": "Квадратный дюйм (645,16 мм2)",
+          "abbreviation": "дюйм2",
+          "internationalAbbreviation": "in2",
+          "codeAbbreviation": "ДЮЙМ2",
+          "internationalCodeAbbreviation": "INK",
+          "numerator": 64.516,
+          "denominator": 100000,
+          "measuredUnitType": "SQUARE"
+        },
+        {
+          "code": "073",
+          "name": "Квадратный фут (0,092903 мм2)",
+          "abbreviation": "фут2",
+          "internationalAbbreviation": "ft2",
+          "codeAbbreviation": "ФУТ2",
+          "internationalCodeAbbreviation": "FTK",
+          "numerator": 929.03,
+          "denominator": 100000,
+          "measuredUnitType": "SQUARE"
+        },
+        {
+          "code": "075",
+          "name": "Квадратный ярд (0,8361274 мм2)",
+          "abbreviation": "ярд2",
+          "internationalAbbreviation": "yd2",
+          "codeAbbreviation": "ЯРД2",
+          "internationalCodeAbbreviation": "YDK",
+          "numerator": 8361.274,
+          "denominator": 10000,
+          "measuredUnitType": "SQUARE"
+        },
+        {
+          "code": "109",
+          "name": "Ар (100 м2)",
+          "abbreviation": "а",
+          "internationalAbbreviation": "a",
+          "codeAbbreviation": "AP",
+          "internationalCodeAbbreviation": "ARE",
+          "numerator": 100,
+          "denominator": 1,
+          "measuredUnitType": "SQUARE"
+        }
+      ],
+      "Единицы объема": [
+        {
+          "code": "110",
+          "name": "Кубический миллиметр",
+          "abbreviation": "мм3",
+          "internationalAbbreviation": "mm3",
+          "codeAbbreviation": "ММ3",
+          "internationalCodeAbbreviation": "MMQ",
+          "numerator": 0,
+          "denominator": 0,
+          "measuredUnitType": null
+        },
+        {
+          "code": "111",
+          "name": "Кубический сантиметр (Миллилитр)",
+          "abbreviation": "см3 (мл)",
+          "internationalAbbreviation": "cm3 (ml)",
+          "codeAbbreviation": "СМ3 (МЛ)",
+          "internationalCodeAbbreviation": "CMQ (MLT)",
+          "numerator": 1,
+          "denominator": 1000000,
+          "measuredUnitType": "VOLUME"
+        },
+        {
+          "code": "112",
+          "name": "Литр (Кубический дециметр)",
+          "abbreviation": "л (дм3)",
+          "internationalAbbreviation": "l (L)\ndm3",
+          "codeAbbreviation": "Л (ДМ3)",
+          "internationalCodeAbbreviation": "LTR (DMQ)",
+          "numerator": 1,
+          "denominator": 1000,
+          "measuredUnitType": "VOLUME"
+        },
+        {
+          "code": "113",
+          "name": "Кубический метр",
+          "abbreviation": "м3",
+          "internationalAbbreviation": "m3",
+          "codeAbbreviation": "М3",
+          "internationalCodeAbbreviation": "MTQ",
+          "numerator": 1,
+          "denominator": 1,
+          "measuredUnitType": "VOLUME"
+        },
+        {
+          "code": "118",
+          "name": "Децилитр",
+          "abbreviation": "дл",
+          "internationalAbbreviation": "dl",
+          "codeAbbreviation": "ДЛ",
+          "internationalCodeAbbreviation": "DLT",
+          "numerator": 1,
+          "denominator": 10000,
+          "measuredUnitType": "VOLUME"
+        },
+        {
+          "code": "122",
+          "name": "Гектолитр",
+          "abbreviation": "гл",
+          "internationalAbbreviation": "hl",
+          "codeAbbreviation": "ГЛ",
+          "internationalCodeAbbreviation": "HLT",
+          "numerator": 1,
+          "denominator": 10,
+          "measuredUnitType": "VOLUME"
+        },
+        {
+          "code": "126",
+          "name": "Мегалитр",
+          "abbreviation": "Мл",
+          "internationalAbbreviation": "Ml",
+          "codeAbbreviation": "МЕГАЛ",
+          "internationalCodeAbbreviation": "MAL",
+          "numerator": 1000,
+          "denominator": 1,
+          "measuredUnitType": "VOLUME"
+        },
+        {
+          "code": "131",
+          "name": "Кубический дюйм (16387,1 мм3)",
+          "abbreviation": "дюйм3",
+          "internationalAbbreviation": "in3",
+          "codeAbbreviation": "ДЮЙМ3",
+          "internationalCodeAbbreviation": "INQ",
+          "numerator": 163.871,
+          "denominator": 10000000,
+          "measuredUnitType": "VOLUME"
+        },
+        {
+          "code": "132",
+          "name": "Кубический фут (0,02831685 мм3)",
+          "abbreviation": "фут3",
+          "internationalAbbreviation": "ft3",
+          "codeAbbreviation": "ФУТ3",
+          "internationalCodeAbbreviation": "FTQ",
+          "numerator": 2831.685,
+          "denominator": 100000,
+          "measuredUnitType": "VOLUME"
+        },
+        {
+          "code": "133",
+          "name": "Кубический ярд (0,764555 мм3)",
+          "abbreviation": "ярд3",
+          "internationalAbbreviation": "yd3",
+          "codeAbbreviation": "ЯРД3",
+          "internationalCodeAbbreviation": "YDQ",
+          "numerator": 764.555,
+          "denominator": 1000,
+          "measuredUnitType": "VOLUME"
+        },
+        {
+          "code": "159",
+          "name": "Миллион кубических метров",
+          "abbreviation": "10^6 м3",
+          "internationalAbbreviation": "10^6 m3",
+          "codeAbbreviation": "МЛН М3",
+          "internationalCodeAbbreviation": "HMQ",
+          "numerator": 1000000,
+          "denominator": 1,
+          "measuredUnitType": "VOLUME"
+        }
+      ]
+    }
+  ]
+}
