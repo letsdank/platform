@@ -23,6 +23,7 @@ public class EmailAccountService {
                     domain, dnsServer);
 
             try {
+                // TODO: Выписать в отдельный функциональный класс (ФайловаяСистема)
                 Process process = Runtime.getRuntime().exec(command);
 
                 BufferedReader outputReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
