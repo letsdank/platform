@@ -20,8 +20,8 @@
         <tbody>
         <tr th:each="item : ${items}">
             <td>
-                <img th:src="${'/img/entity' + (item.predefined ? '-dot' : '') + '.png'}" alt="Страна мира">
-                <a th:href="${'/entity/world-country/' + item.id}" th:text="${item.name}" class="open-popup"></a>
+                <img th:src="${'/img/entity' + (item.predefined ? '-dot' : '') + '.png'}" alt="Настройки почты">
+                <a th:href="${'/entity/email-account/' + item.id}" th:text="${item.name}" class="open-popup"></a>
             </td>
             <td th:text="${item.username}"></td>
             <td th:text="${item.address}"></td>
