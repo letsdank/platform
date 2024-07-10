@@ -11,10 +11,12 @@ class EmailServiceTest {
         String domain = "example.com";
         String punycode = "example.com";
         assertEquals(punycode, EmailService.convertToPunycode(domain));
+        assertEquals(domain, EmailService.punycodeToString(punycode));
 
         domain = " café.fr";
         punycode = "xn--caf-dma.fr";
         assertEquals(punycode, EmailService.convertToPunycode(domain));
+        // assertEquals(domain, EmailService.convertToPunycode(punycode));
 
         domain = "中国新闻网.cn";
         punycode = "xn--fiqs8s.cn";
@@ -25,5 +27,11 @@ class EmailServiceTest {
         domain = "рф.рф";
         punycode = "xn--p1ai.xn--p1ai";
         assertEquals(punycode, EmailService.convertToPunycode(domain));
+        assertEquals(domain, EmailService.punycodeToString(punycode));
+
+        domain = "госуслуги.рф";
+        punycode = "xn--c1aapkosapc.xn--p1ai";
+        assertEquals(punycode, EmailService.convertToPunycode(domain));
+        assertEquals(domain, EmailService.punycodeToString(punycode));
     }
 }
