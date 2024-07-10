@@ -27,6 +27,19 @@ public class EmailService {
         return (char) (base + 22 + 75 * (base < 26 ? 1 : 0));
     }
 
+    private static int codePointToOrdinal(int code) {
+        int code0 = '0';
+        int codeA = 'a';
+
+        if (code - code0 < 10) {
+            return code - code0 + 26;
+        } else if (code - codeA < 26) {
+            return code - codeA;
+        }
+
+        throw new RuntimeException("Bad input data");
+    }
+
     private static int adaptOffset(int delta, int currentPosition, boolean firstAdaption) {
         delta = firstAdaption ? delta / 700 : delta / 2;
         delta += delta / currentPosition;
@@ -74,6 +87,26 @@ public class EmailService {
 
         encodedHostAddress.setLength(encodedHostAddress.length() - 1);
         return encodedHostAddress.toString();
+    }
+
+    private static String decodePunycodeWithDelimiter(String str) {
+        return decodePunycodeWithDelimiter(str, "\\.");
+    }
+
+    private static String decodePunycodeWithDelimiter(String str, String delimiter) {
+        if (str.isEmpty()) return str;
+
+        String[] substrings = str.split(delimiter);
+        StringBuilder decodedHostName = new StringBuilder();
+        int delimiterPosition = 0;
+        for (String substring : substrings) {
+            delimiterPosition += substring.length();
+            decodedHostName.append(decodePunycode(substring));
+            decodedHostName.append(str.charAt(delimiterPosition));
+        }
+
+        decodedHostName.setLength(decodedHostName.length() - 1);
+        return decodedHostName.toString();
     }
 
     // Alias: КодироватьСтрокуPunycode
@@ -160,5 +193,108 @@ public class EmailService {
         String encodedString = "xn--" + buffer;
         encodedString = encodedString.replace("---", "--");
         return encodedString;
+    }
+
+    // Alias: ДекодироватьСтрокуPunycode
+    private static String decodePunycode(String encoded) {
+        if (!encoded.startsWith("xn--")) {
+            return encoded;
+        } else {
+            if (countOccurrences(encoded, "-")== 3) {
+                encoded = encoded.replace("xn--", "");
+            } else {
+                encoded = encoded.replace("xn-", "");
+            }
+        }
+
+        StringBuilder buffer = new StringBuilder();
+        int code = 128;
+        int insertPosition = 0;
+        int offset = 72;
+
+        int readPosition = encoded.lastIndexOf("-");
+        if (readPosition > 0) {
+            for (int i = 1; i < readPosition; i++) {
+                char c = encoded.charAt(i - 1);
+                if (!isAsciiSymbol(c)) {
+                    throw new RuntimeException("Bad input data");
+                }
+                buffer.append(c);
+            }
+        }
+        readPosition++;
+
+        while (readPosition < encoded.length()) {
+            int previousInsertPosition = insertPosition;
+            int multiplier = 1;
+            int shift = 36;
+
+            while (true) {
+                if (readPosition > encoded.length()) {
+                    throw new RuntimeException("Bad input data");
+                }
+
+                char c = encoded.charAt(readPosition);
+                readPosition++;
+
+                int codePoint = (int) c;
+                int ordinal = codePointToOrdinal(codePoint);
+
+                if (ordinal > (Integer.MAX_VALUE - insertPosition) / multiplier) {
+                    throw new RuntimeException("Overflow");
+                }
+
+                insertPosition += ordinal * multiplier;
+                int order = 0;
+                if (shift <= offset) {
+                    order = 1;
+                } else if (shift >= offset + 26) {
+                    order = 26;
+                } else {
+                    order = shift - offset;
+                }
+
+                if (ordinal < order) break;
+
+                multiplier *= 36 - order;
+                shift += 36;
+            }
+
+            if ((insertPosition / (buffer.length() + 1)) > (Integer.MAX_VALUE - code)) {
+                throw new RuntimeException("Overflow");
+            }
+
+            offset = adaptOffset(insertPosition - previousInsertPosition, buffer.length() + 1, previousInsertPosition == 0);
+
+            code += insertPosition / (buffer.length() + 1);
+            insertPosition %= buffer.length() + 1;
+            buffer.insert(insertPosition, (char) code);
+            insertPosition++;
+        }
+
+        return buffer.toString();
+    }
+
+    public static String punycodeToString(String str) {
+        URLInfo url  = URLUtils.getURLInfo(str);
+        String host = url.getHost();
+        String decodedHost = decodePunycodeWithDelimiter(host);
+        String result = str.replace(host, decodedHost);
+
+        String login = url.getLogin();
+        String decodedLogin = decodePunycodeWithDelimiter(login);
+        result = result.replace(login, decodedLogin);
+        return result;
+    }
+
+    // TODO: Вынести в общие платформ утилиты
+    private static int countOccurrences(String s, String substr) {
+        int count = 0;
+        int pos = 0;
+        while ((pos = s.indexOf(substr, pos)) != -1) {
+            count++;
+            pos++;
+        }
+        return count;
     }
 }
