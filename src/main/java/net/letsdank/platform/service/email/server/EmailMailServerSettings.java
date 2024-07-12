@@ -1,12 +1,15 @@
 package net.letsdank.platform.service.email.server;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.NoArgsConstructor;
+import net.letsdank.platform.service.email.mapper.EmailMailServerSettingsDeserializer;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 @NoArgsConstructor
+@JsonDeserialize(using = EmailMailServerSettingsDeserializer.class)
 public class EmailMailServerSettings {
     private final Map<String, Object> servers = new HashMap<>();
 
@@ -34,5 +37,13 @@ public class EmailMailServerSettings {
             return (EmailServer) servers.get(key);
         }
         return null;
+    }
+
+    public void addServer(String key, EmailServer server) {
+        servers.put(key, server);
+    }
+
+    public void addAlias(String key, String alias) {
+        servers.put(key, alias);
     }
 }
