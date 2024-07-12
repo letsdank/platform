@@ -47,7 +47,8 @@
       "authorizationParameters": {
         "prompt_force": "1"
       },
-      "tokenExchangeParameters": {
+      "tokenExchangeParameters": "",
+      "redirectUriDescription": {
         "ru": "1. Перейдите на страницу <a href=\\\"https://oauth.mail.ru/app/\\\">Мои приложения</a> и нажмите на кнопку <b>Создать приложение</b>.\\n2. Введите <b>Название проекта</b>, например, \\\"Бухгалтерия ООО Ромашка\\\".\\n3. Скопируйте и вставьте строку в поле <b>Все redirect_uri</b> из поля ниже:"
       },
       "redirectUriCaption": {

@@ -1,6 +1,8 @@
 package net.letsdank.platform.service.email;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.letsdank.platform.service.email.server.EmailMailServerSettings;
+import net.letsdank.platform.service.email.server.EmailServer;
 import net.letsdank.platform.service.email.settings.*;
 import net.letsdank.platform.utils.mail.InternetMail;
 import net.letsdank.platform.utils.mail.InternetMailMessage;
@@ -11,11 +13,14 @@ import net.letsdank.platform.utils.url.URLInfo;
 import net.letsdank.platform.utils.url.URLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class EmailAccountService {
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailAccountService.class);
@@ -89,7 +94,7 @@ public class EmailAccountService {
         URLInfo info = URLUtils.getURLInfo(email);
         String mailDomain = info.getHost();
 
-        Object foundSettings = null;
+        EmailServer foundSettings;
         String mailServerName = "";
 
         EmailMailServerSettings mailServersSettings = getMailServerSettings();
@@ -134,12 +139,22 @@ public class EmailAccountService {
         return new EmailConnectionSettings(profile, mailServerName, authorizationSettings);
     }
 
+    // Alias: НастройкиАвторизацииСервера
     private static Object getAuthorizationSettingsForServer(Object settings, String serverName, String domain) {
         return null; // TODO: Implement
     }
 
+    // Alias: НастройкиПочтовыхСерверов
     private static EmailMailServerSettings getMailServerSettings() {
-        return new EmailMailServerSettings(); // TODO: Implement
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            // TODO: Вынести в отдельный общий сервер-репозиторий
+            ClassPathResource resource = new ClassPathResource("data/email/mail-servers.json");
+
+            return mapper.readValue(resource.getInputStream(), EmailMailServerSettings.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // Alias: ПодобратьНастройкиПочты
