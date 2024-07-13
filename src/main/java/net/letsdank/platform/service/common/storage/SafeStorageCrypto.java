@@ -1,4 +1,4 @@
-package net.letsdank.platform.service.common;
+package net.letsdank.platform.service.common.storage;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

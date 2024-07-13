@@ -1,4 +1,4 @@
-package net.letsdank.platform.service.common;
+package net.letsdank.platform.service.common.storage;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
