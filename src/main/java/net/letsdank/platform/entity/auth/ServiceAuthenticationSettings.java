@@ -2,12 +2,14 @@ package net.letsdank.platform.entity.auth;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 public class ServiceAuthenticationSettings {
     @Id
     @GeneratedValue
@@ -19,11 +21,14 @@ public class ServiceAuthenticationSettings {
     @Column(length = 200)
     private String ownerName;
 
-    @Column(columnDefinition = "TEXT")
-    private String authorizationAddress;
+    @Column(columnDefinition = "boolean default false")
+    private boolean deleted;
 
     @Column(columnDefinition = "TEXT")
-    private String grantKeyAddress;
+    private String authorizationUri;
+
+    @Column(columnDefinition = "TEXT")
+    private String grantKeyUri;
 
     @Column(length = 200)
     private String serviceName;
@@ -35,7 +40,7 @@ public class ServiceAuthenticationSettings {
     private String redirectUri;
 
     @Column(columnDefinition = "boolean default false")
-    private boolean usePKCE;
+    private boolean usePkce;
 
     @Column(columnDefinition = "TEXT")
     private String scopes;

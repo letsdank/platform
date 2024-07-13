@@ -12,12 +12,13 @@ import java.util.Map;
 @Setter
 public class EmailServerOAuthSettings {
     private String authorizationURI;
+    private String deviceAuthorizationURI;
     private String tokenExchangeURI;
     private List<String> mailScope;
     private boolean usePKCE;
     private boolean useClientSecret;
     private Map<String, String> authorizationParameters;
-    private String tokenExchangeParameters;
+    private Map<String, String> tokenExchangeParameters;
     private InternationalString redirectURIDescription;
     private InternationalString redirectURICaption;
     private String defaultRedirectURI;
