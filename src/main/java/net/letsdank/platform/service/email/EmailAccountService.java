@@ -2,7 +2,9 @@ package net.letsdank.platform.service.email;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.letsdank.platform.service.email.server.EmailMailServerSettings;
-import net.letsdank.platform.service.email.server.EmailServer;
+import net.letsdank.platform.service.email.server.EmailServerAddress;
+import net.letsdank.platform.service.email.server.EmailServerAddressEncryption;
+import net.letsdank.platform.service.email.server.EmailServerSettings;
 import net.letsdank.platform.service.email.settings.*;
 import net.letsdank.platform.utils.mail.InternetMail;
 import net.letsdank.platform.utils.mail.InternetMailMessage;
@@ -94,7 +96,7 @@ public class EmailAccountService {
         URLInfo info = URLUtils.getURLInfo(email);
         String mailDomain = info.getHost();
 
-        EmailServer foundSettings;
+        EmailServerSettings foundSettings;
         String mailServerName = "";
 
         EmailMailServerSettings mailServersSettings = getMailServerSettings();
@@ -206,8 +208,39 @@ public class EmailAccountService {
     }
 
     // Alias: СформироватьПрофиль
-    private static InternetMailProfile formProfile(Object settings, String email, String password) {
-        return null; // TODO: Implement
+    private static InternetMailProfile formProfile(EmailServerSettings settings, String emailAddress) {
+        return formProfile(settings, emailAddress, "");
+    }
+
+    // Alias: СформироватьПрофиль
+    private static InternetMailProfile formProfile(EmailServerSettings settings, String emailAddress, String password) {
+        URLInfo info = URLUtils.getURLInfo(emailAddress);
+
+        InternetMailProfile profile = new InternetMailProfile();
+        for (EmailServerAddress address : settings.getServices()) {
+            if (address.getProtocol() == InternetMailProtocol.IMAP && profile.getSmtpServerAddress() == null) {
+                if ("Enabled".equals(address.getSmtpAuthentication()) || address.getSmtpAuthentication() == null) {
+                    String username = "username".equals(address.getLoginFormat()) ? info.getLogin() : emailAddress;
+                    profile.setSmtpUsername(username);
+                    profile.setSmtpPassword(password);
+                }
+
+                profile.setUseSSLForSmtp(address.getEncryption() == EmailServerAddressEncryption.SSL);
+                profile.setSmtpServerAddress(address.getHost());
+                profile.setSmtpPort(address.getPort());
+            }
+
+            if (address.getProtocol() == InternetMailProtocol.IMAP && profile.getImapServerAddress() == null) {
+                String username = "username".equals(address.getLoginFormat()) ? info.getLogin() : emailAddress;
+                profile.setUseSSLForImap(address.getEncryption() == EmailServerAddressEncryption.SSL);
+                profile.setImapUsername(username);
+                profile.setImapPassword(password);
+                profile.setImapServerAddress(address.getHost());
+                profile.setImapPort(address.getPort());
+            }
+        }
+
+        return profile;
     }
 
     // Alias: ОпределитьНастройкиIMAP

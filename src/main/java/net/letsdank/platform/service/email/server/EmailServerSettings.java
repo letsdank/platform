@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class EmailServer {
+public class EmailServerSettings {
     private List<EmailServerAddress> services = new ArrayList<>();
     private String webSite;
     private EmailServerOAuthSettings oauthSettings;

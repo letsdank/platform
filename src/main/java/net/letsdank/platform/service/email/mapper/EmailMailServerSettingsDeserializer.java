@@ -37,8 +37,8 @@ public class EmailMailServerSettingsDeserializer extends StdDeserializer<EmailMa
         return settings;
     }
 
-    private EmailServer deserializeEmailServer(JsonNode node) {
-        EmailServer server = new EmailServer();
+    private EmailServerSettings deserializeEmailServer(JsonNode node) {
+        EmailServerSettings server = new EmailServerSettings();
         server.setWebSite(getString(node, "webSite"));
 
         for (JsonNode jsonService : node.findValues("services")) {
