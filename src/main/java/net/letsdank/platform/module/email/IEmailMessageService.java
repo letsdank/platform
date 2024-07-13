@@ -1,6 +1,6 @@
-package net.letsdank.platform.service.email;
+package net.letsdank.platform.module.email;
 
-import net.letsdank.platform.service.email.utils.PunycodeUtils;
+import net.letsdank.platform.module.email.utils.PunycodeUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,7 +9,7 @@ import java.util.List;
 // Alias:
 // РаботаСПочтовымиСообщениями
 // РаботаСПочтовымиСообщениямиСлужебный
-public class EmailService {
+public class IEmailMessageService {
 
     public static String convertToPunycode(String input) {
         return PunycodeUtils.convertToPunycode(input);
