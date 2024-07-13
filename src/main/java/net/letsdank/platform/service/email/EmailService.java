@@ -82,6 +82,10 @@ public class EmailService {
         for (String substring : substrings) {
             delimiterPosition += substring.length();
             encodedHostAddress.append(encodePunycode(substring));
+            if (input.length() == delimiterPosition) {
+                encodedHostAddress.append(input.charAt(delimiterPosition - 1)); // TODO: Так в коде не прописано, выяснить что не так
+                break;
+            }
             encodedHostAddress.append(input.charAt(delimiterPosition));
         }
 

@@ -31,6 +31,7 @@ public class InternetMailMessage {
         this.from = Pair.of(address, name);
     }
 
+    // TODO: Convert to InternetMailBodyType and use the Jakarta MailBody types
     public void addBody(String text, String type) {
         this.body.put(text, type);
     }

@@ -312,6 +312,7 @@ public class EmailAccountService {
             mail.connect(profile, protocol);
         } catch (Exception e) {
             errorMessage = e.getMessage();
+            if (errorMessage == null) errorMessage = "";
         }
 
         mail.disconnect();
@@ -356,6 +357,7 @@ public class EmailAccountService {
             mail.sendMessage(message);
         } catch (Exception e) {
             errorMessage = e.getMessage();
+            if (errorMessage == null) errorMessage = "";
         }
 
         mail.disconnect();

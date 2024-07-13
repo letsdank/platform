@@ -2,34 +2,34 @@
   "mail.ru": {
     "services": [
       {
-        "protocol": "smtp",
+        "protocol": "SMTP",
         "host": "smtp.mail.ru",
         "port": 465,
-        "encryption": "ssl",
+        "encryption": "SSL",
         "loginFormat": "username@domain",
         "smtpAuthentication": "enabled"
       },
       {
-        "protocol": "smtp",
+        "protocol": "SMTP",
         "host": "smtp.mail.ru",
         "port": 587,
-        "encryption": "starttls",
+        "encryption": "STARTTLS",
         "loginFormat": "username@domain",
         "smtpAuthentication": "enabled"
       },
       {
-        "protocol": "imap",
+        "protocol": "IMAP",
         "host": "imap.mail.ru",
         "port": 993,
-        "encryption": "ssl",
+        "encryption": "SSL",
         "loginFormat": "username@domain",
         "mustBeEnabled": false
       },
       {
-        "protocol": "pop3",
+        "protocol": "POP3",
         "host": "pop.mail.ru",
         "port": 995,
-        "encryption": "ssl",
+        "encryption": "SSL",
         "loginFormat": "username@domain",
         "mustBeEnabled": false
       }
