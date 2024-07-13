@@ -1,22 +1,25 @@
 package net.letsdank.platform.service.email;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import net.letsdank.platform.module.email.IEmailMessageService;
-import net.letsdank.platform.service.email.server.EmailMailServerSettings;
-import net.letsdank.platform.service.email.server.EmailServerAddress;
-import net.letsdank.platform.service.email.server.EmailServerAddressEncryption;
-import net.letsdank.platform.service.email.server.EmailServerSettings;
+import net.letsdank.platform.service.auth.ServiceAuthenticationSettingsObject;
+import net.letsdank.platform.service.auth.ServiceAuthenticationSettingsService;
+import net.letsdank.platform.service.email.server.*;
 import net.letsdank.platform.service.email.settings.*;
 import net.letsdank.platform.utils.mail.InternetMail;
 import net.letsdank.platform.utils.mail.InternetMailMessage;
 import net.letsdank.platform.utils.mail.InternetMailProfile;
 import net.letsdank.platform.utils.mail.InternetMailProtocol;
 import net.letsdank.platform.utils.string.StringUtils;
+import net.letsdank.platform.utils.string.XMLString;
 import net.letsdank.platform.utils.url.URLInfo;
 import net.letsdank.platform.utils.url.URLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,13 +27,17 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
+@Service
+@AllArgsConstructor
 public class EmailAccountService {
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailAccountService.class);
 
+    private final ServiceAuthenticationSettingsService serviceAuthenticationSettingsService;
 
     // Alias: ОпределитьИменаПочтовыхСерверовДомена
-    public static List<String> determineMailServersForDomain(String domain) {
+    public List<String> determineMailServersForDomain(String domain) {
         List<String> result = new ArrayList<>();
 
         List<String> dnsServers = IEmailMessageService.getDnsServers();
@@ -79,7 +86,7 @@ public class EmailAccountService {
     }
 
     // Alias: ОпределитьНастройкиУчетнойЗаписи
-    public static EmailSettingsResult determineEmailSettings(String email, String password,
+    public EmailSettingsResult determineEmailSettings(String email, String password,
                                                              boolean forSending, boolean forReceiving) {
         email = IEmailMessageService.convertToPunycode(email);
         EmailConnectionSettings foundSettings = getEmailSettingsByEmail(email, password);
@@ -88,12 +95,12 @@ public class EmailAccountService {
     }
 
     // Alias: НастройкиПодключенияПоАдресуЭлектроннойПочты
-    public static EmailConnectionSettings getEmailSettingsByEmail(String email) {
+    public EmailConnectionSettings getEmailSettingsByEmail(String email) {
         return getEmailSettingsByEmail(email, "");
     }
 
     // Alias: НастройкиПодключенияПоАдресуЭлектроннойПочты
-    public static EmailConnectionSettings getEmailSettingsByEmail(String email, String password) {
+    public EmailConnectionSettings getEmailSettingsByEmail(String email, String password) {
         URLInfo info = URLUtils.getURLInfo(email);
         String mailDomain = info.getHost();
 
@@ -143,12 +150,89 @@ public class EmailAccountService {
     }
 
     // Alias: НастройкиАвторизацииСервера
-    private static Object getAuthorizationSettingsForServer(Object settings, String serverName, String domain) {
-        return null; // TODO: Implement
+    private ServiceAuthenticationSettingsObject getAuthorizationSettingsForServer(
+            EmailServerSettings settings, String serverName, String domain) {
+
+        ServiceAuthenticationSettingsObject authenticationSettings =
+                serviceAuthenticationSettingsService.getSettings(serverName, domain);
+        EmailServerOAuthSettings classifierSettings = settings.getOauthSettings();
+
+        if (classifierSettings == null) {
+            return authenticationSettings;
+        }
+
+        authenticationSettings.setServiceName(serverName);
+        authenticationSettings.setOwnerName(domain);
+
+        if (authenticationSettings.getAuthorizationUri() == null) {
+            authenticationSettings.setAuthorizationUri(classifierSettings.getAuthorizationURI());
+        }
+
+        if (authenticationSettings.getGrantKeyUri() == null) {
+            authenticationSettings.setGrantKeyUri(classifierSettings.getTokenExchangeURI());
+        }
+
+        List<String> scopes = classifierSettings.getMailScope();
+        authenticationSettings.setScopes(String.join(" ", scopes.toArray(new String[0])));
+        authenticationSettings.setUsePkce(classifierSettings.isUsePKCE());
+        authenticationSettings.setUseClientSecret(classifierSettings.isUseClientSecret());
+
+        Map<String, String> additionalAuthorizationParameters = classifierSettings.getAuthorizationParameters();
+        if (additionalAuthorizationParameters != null) {
+            List<String> parameters = new ArrayList<>();
+            for (Map.Entry<String, String> entry : additionalAuthorizationParameters.entrySet()) {
+                parameters.add(entry.getKey() + "=" + XMLString.convert(entry.getValue()));
+            }
+            authenticationSettings.setAdditionalAuthorizationParameters(
+                    String.join(" ", parameters.toArray(new String[0])));
+        }
+
+        Map<String, String> additionalGrantParameters = classifierSettings.getTokenExchangeParameters();
+        if (additionalGrantParameters != null) {
+            List<String> parameters = new ArrayList<>();
+            for (Map.Entry<String, String> entry : additionalGrantParameters.entrySet()) {
+                parameters.add(entry.getKey() + "=" + XMLString.convert(entry.getValue()));
+            }
+            authenticationSettings.setAdditionalGrantParameters(
+                    String.join(" ", parameters.toArray(new String[0])));
+        }
+
+        authenticationSettings.setRedirectUriDescription(
+                getStringForCurrentLanguage(classifierSettings.getRedirectURIDescription()));
+        authenticationSettings.setClientIdDescription(
+                getStringForCurrentLanguage(classifierSettings.getClientIDDescription()));
+        authenticationSettings.setClientIdDescription(
+                getStringForCurrentLanguage(classifierSettings.getClientIDDescription()));
+        authenticationSettings.setAdditionalDescription(
+                getStringForCurrentLanguage(classifierSettings.getAdditionalDescription()));
+
+        authenticationSettings.setRedirectUriCaption(getStringForCurrentLanguage(classifierSettings.getRedirectURICaption()));
+        authenticationSettings.setClientIdCaption(getStringForCurrentLanguage(classifierSettings.getClientIDCaption()));
+        authenticationSettings.setClientSecretCaption(getStringForCurrentLanguage(classifierSettings.getClientSecretCaption()));
+
+        authenticationSettings.setRedirectUri(classifierSettings.getDefaultRedirectURI());
+        authenticationSettings.setRedirectUriWebClient(classifierSettings.getDefaultRedirectURI());
+
+        authenticationSettings.setRegisterDeviceUri(classifierSettings.getDeviceAuthorizationURI());
+
+        return authenticationSettings;
+    }
+
+    // Alias: СтрокаДляТекущегоЯзыка
+    private String getStringForCurrentLanguage(InternationalString string) {
+        if (string == null) return "";
+
+        List<String> languages = Arrays.asList(LocaleContextHolder.getLocale().getLanguage(), "en");
+        for (String lang : languages) {
+            if (string.getValueFor(lang) != null)
+                return string.getValueFor(lang);
+        }
+
+        return "";
     }
 
     // Alias: НастройкиПочтовыхСерверов
-    private static EmailMailServerSettings getMailServerSettings() {
+    private EmailMailServerSettings getMailServerSettings() {
         try {
             ObjectMapper mapper = new ObjectMapper();
             // TODO: Вынести в отдельный общий сервер-репозиторий
@@ -161,12 +245,12 @@ public class EmailAccountService {
     }
 
     // Alias: ПодобратьНастройкиПочты
-    private static EmailSettingsResult pickEmailSettings(String email, String password, boolean forSending, boolean forReceiving) {
+    private EmailSettingsResult pickEmailSettings(String email, String password, boolean forSending, boolean forReceiving) {
         return pickEmailSettings(email, password, forSending, forReceiving, null);
     }
 
     // Alias: ПодобратьНастройкиПочты
-    private static EmailSettingsResult pickEmailSettings(String email, String password, boolean forSending, boolean forReceiving, InternetMailProfile profile) {
+    private EmailSettingsResult pickEmailSettings(String email, String password, boolean forSending, boolean forReceiving, InternetMailProfile profile) {
         boolean settingsReceived = profile != null;
 
         InternetMailProfile foundSmtpProfile = (settingsReceived && profile.getSmtpServerAddress() != null) ? profile : null;
@@ -209,12 +293,12 @@ public class EmailAccountService {
     }
 
     // Alias: СформироватьПрофиль
-    private static InternetMailProfile formProfile(EmailServerSettings settings, String emailAddress) {
+    private InternetMailProfile formProfile(EmailServerSettings settings, String emailAddress) {
         return formProfile(settings, emailAddress, "");
     }
 
     // Alias: СформироватьПрофиль
-    private static InternetMailProfile formProfile(EmailServerSettings settings, String emailAddress, String password) {
+    private InternetMailProfile formProfile(EmailServerSettings settings, String emailAddress, String password) {
         URLInfo info = URLUtils.getURLInfo(emailAddress);
 
         InternetMailProfile profile = new InternetMailProfile();
@@ -245,7 +329,7 @@ public class EmailAccountService {
     }
 
     // Alias: ОпределитьНастройкиIMAP
-    private static InternetMailProfile determineImapSettings(String emailAddress, String password) {
+    private InternetMailProfile determineImapSettings(String emailAddress, String password) {
         // TODO: Сделать многопоточность, так как долго длится проверка по перебору
         for (InternetMailProfile profile : getImapProfiles(emailAddress, password)) {
             String serverMessage = checkIncomingMailServerConnection(profile, InternetMailProtocol.IMAP);
@@ -267,7 +351,7 @@ public class EmailAccountService {
     }
 
     // Alias: ОпределитьНастройкиSMTP
-    private static InternetMailProfile determineSmtpSettings(String emailAddress, String password) {
+    private InternetMailProfile determineSmtpSettings(String emailAddress, String password) {
         // TODO: Сделать многопоточность, так как долго длится проверка по перебору
         for (InternetMailProfile profile : getSmtpProfiles(emailAddress, password)) {
             String serverMessage = checkOutgoingMailServerConnection(profile, emailAddress);
@@ -288,26 +372,26 @@ public class EmailAccountService {
     }
 
     // Alias: ОшибкаАутентификации
-    private static boolean isAuthenticationError(String serverMessage) {
+    private boolean isAuthenticationError(String serverMessage) {
         return serverMessage.toLowerCase().indexOf("auth") > 0 ||
                 serverMessage.toLowerCase().indexOf("password") > 0 ||
                 serverMessage.toLowerCase().indexOf("credentials") > 0;
     }
 
     // Alias: ПодключениеВыполнено
-    private static boolean isConnectionEstablished(String serverMessage) {
+    private boolean isConnectionEstablished(String serverMessage) {
         return serverMessage.isEmpty();
     }
 
     // Alias: УстановитьИмяПользователя
-    private static void setUsername(InternetMailProfile profile, String username) {
+    private void setUsername(InternetMailProfile profile, String username) {
         if (!profile.getUsername().isEmpty()) profile.setUsername(username);
         if (!profile.getImapUsername().isEmpty()) profile.setImapUsername(username);
         if (!profile.getSmtpUsername().isEmpty()) profile.setSmtpUsername(username);
     }
 
     // Alias: ПроверитьПодключениеКСерверуВходящейПочты
-    private static String checkIncomingMailServerConnection(InternetMailProfile profile, InternetMailProtocol protocol) {
+    private String checkIncomingMailServerConnection(InternetMailProfile profile, InternetMailProtocol protocol) {
         InternetMail mail = new InternetMail();
         String errorMessage = "";
 
@@ -341,7 +425,7 @@ public class EmailAccountService {
     }
 
     // Alias: ПроверитьПодключениеКСерверуИсходящейПочты
-    private static String checkOutgoingMailServerConnection(InternetMailProfile profile, String emailAddress) {
+    private String checkOutgoingMailServerConnection(InternetMailProfile profile, String emailAddress) {
         String subject = "Тестовое сообщение Platform";
         String body = "Это сообщение отправлено подсистемой электронной почты Platform";
         String fromName = "Platform";
@@ -377,7 +461,7 @@ public class EmailAccountService {
     }
 
     // Alias: ВариантыИмениПользователя
-    private static List<String> getUsernameVariants(String emailAddress) {
+    private List<String> getUsernameVariants(String emailAddress) {
         int pos = emailAddress.indexOf("@");
         String username = emailAddress.substring(pos - 1);
 
@@ -385,7 +469,7 @@ public class EmailAccountService {
     }
 
     // Alias: ПрофилиIMAP
-    private static List<InternetMailProfile> getImapProfiles(String emailAddress, String password) {
+    private List<InternetMailProfile> getImapProfiles(String emailAddress, String password) {
         List<InternetMailProfile> result = new ArrayList<>();
         EmailProfile initialProfile = EmailProfile.getDefault(emailAddress, password);
 
@@ -402,7 +486,7 @@ public class EmailAccountService {
     }
 
     // Alias: ПрофилиSMTP
-    private static List<InternetMailProfile> getSmtpProfiles(String emailAddress, String password) {
+    private List<InternetMailProfile> getSmtpProfiles(String emailAddress, String password) {
         List<InternetMailProfile> result = new ArrayList<>();
         EmailProfile initialProfile = EmailProfile.getDefault(emailAddress, password);
 
@@ -418,7 +502,7 @@ public class EmailAccountService {
     }
 
     // Alias: ИнтернетПочтовыйПрофиль
-    private static InternetMailProfile getInternetMailProfile(EmailProfile profile, InternetMailProtocol protocol) {
+    private InternetMailProfile getInternetMailProfile(EmailProfile profile, InternetMailProtocol protocol) {
         boolean forReceiving = protocol != InternetMailProtocol.SMTP;
 
         InternetMailProfile mailProfile = new InternetMailProfile();
@@ -452,7 +536,7 @@ public class EmailAccountService {
     }
 
     // Alias: ВариантыНастройкиПодключенияКСерверуIMAP
-    public static List<EmailConnectionSettingsIMAP> getImapConnectionSettings(String emailAddress) {
+    public List<EmailConnectionSettingsIMAP> getImapConnectionSettings(String emailAddress) {
         int pos = emailAddress.indexOf("@");
         String serverAddress = emailAddress.substring(pos + 1);
 
@@ -465,7 +549,7 @@ public class EmailAccountService {
     }
 
     // Alias: ВариантыНастройкиПодключенияКСерверуSMTP
-    public static List<EmailConnectionSettingsSMTP> getSmtpConnectionSettings(String emailAddress) {
+    public List<EmailConnectionSettingsSMTP> getSmtpConnectionSettings(String emailAddress) {
         int pos = emailAddress.indexOf("@");
         String serverAddress = emailAddress.substring(pos + 1);
 
@@ -476,4 +560,6 @@ public class EmailAccountService {
 
         return EmailConnectionSettingsSMTP.getOtherSettings(serverAddress);
     }
+
+
 }

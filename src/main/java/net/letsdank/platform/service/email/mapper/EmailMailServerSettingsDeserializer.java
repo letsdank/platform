@@ -10,12 +10,11 @@ import net.letsdank.platform.service.email.server.*;
 import net.letsdank.platform.utils.mail.InternetMailProtocol;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class EmailMailServerSettingsDeserializer extends StdDeserializer<EmailMailServerSettings> {
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+
     public EmailMailServerSettingsDeserializer() {
         this(null);
     }
@@ -62,7 +61,6 @@ public class EmailMailServerSettingsDeserializer extends StdDeserializer<EmailMa
         }
 
         JsonNode oauthNode = node.get("oauth");
-        ObjectMapper mapper = new ObjectMapper();
         if (oauthNode != null) {
             EmailServerOAuthSettings oauthSettings = new EmailServerOAuthSettings();
             oauthSettings.setAuthorizationURI(getString(oauthNode, "authorizationUri"));
@@ -70,9 +68,8 @@ public class EmailMailServerSettingsDeserializer extends StdDeserializer<EmailMa
             oauthSettings.setMailScope(getStringList(oauthNode, "mailScope"));
             oauthSettings.setUsePKCE(getBoolean(node, "usePkce"));
             oauthSettings.setUseClientSecret(getBoolean(oauthNode, "useClientSecret"));
-            oauthSettings.setAuthorizationParameters(
-                    mapper.convertValue(oauthNode.get("authorizationParameters"), Map.class));
-            oauthSettings.setTokenExchangeParameters(getString(oauthNode, "tokenExchangeParameters"));
+            oauthSettings.setAuthorizationParameters(getProperties(oauthNode, "authorizationParameters"));
+            oauthSettings.setTokenExchangeParameters(getProperties(oauthNode, "tokenExchangeParameters"));
             oauthSettings.setRedirectURIDescription(getInternationalString(oauthNode, "redirectUriDescription"));
             oauthSettings.setRedirectURICaption(getInternationalString(oauthNode, "redirectUriCaption"));
             oauthSettings.setDefaultRedirectURI(getString(oauthNode, "defaultRedirectUri"));
@@ -95,6 +92,11 @@ public class EmailMailServerSettingsDeserializer extends StdDeserializer<EmailMa
         }
 
         return result;
+    }
+
+    private Map<String, String> getProperties(JsonNode node, String key) {
+        if (node.get(key).isTextual()) return null;
+        return MAPPER.convertValue(node.get(key), Map.class);
     }
 
     private boolean getBoolean(JsonNode node, String key) {
