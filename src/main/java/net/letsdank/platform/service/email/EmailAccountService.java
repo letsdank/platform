@@ -1,6 +1,7 @@
 package net.letsdank.platform.service.email;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.letsdank.platform.module.email.IEmailMessageService;
 import net.letsdank.platform.service.email.server.EmailMailServerSettings;
 import net.letsdank.platform.service.email.server.EmailServerAddress;
 import net.letsdank.platform.service.email.server.EmailServerAddressEncryption;
@@ -32,7 +33,7 @@ public class EmailAccountService {
     public static List<String> determineMailServersForDomain(String domain) {
         List<String> result = new ArrayList<>();
 
-        List<String> dnsServers = EmailService.getDnsServers();
+        List<String> dnsServers = IEmailMessageService.getDnsServers();
         dnsServers.add(0, ""); // Add default DNS server.
 
         for (String dnsServer : dnsServers) {
@@ -80,7 +81,7 @@ public class EmailAccountService {
     // Alias: ОпределитьНастройкиУчетнойЗаписи
     public static EmailSettingsResult determineEmailSettings(String email, String password,
                                                              boolean forSending, boolean forReceiving) {
-        email = EmailService.convertToPunycode(email);
+        email = IEmailMessageService.convertToPunycode(email);
         EmailConnectionSettings foundSettings = getEmailSettingsByEmail(email, password);
 
         return pickEmailSettings(email, password, forSending, forReceiving, foundSettings.getProfile());

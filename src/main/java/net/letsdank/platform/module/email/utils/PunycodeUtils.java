@@ -1,4 +1,4 @@
-package net.letsdank.platform.service.email.utils;
+package net.letsdank.platform.module.email.utils;
 
 import net.letsdank.platform.utils.url.URLInfo;
 import net.letsdank.platform.utils.url.URLUtils;
