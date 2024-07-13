@@ -10,9 +10,16 @@ import net.letsdank.platform.service.email.server.*;
 import net.letsdank.platform.utils.mail.InternetMailProtocol;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class EmailMailServerSettingsDeserializer extends StdDeserializer<EmailMailServerSettings> {
+    public EmailMailServerSettingsDeserializer() {
+        this(null);
+    }
+
     public EmailMailServerSettingsDeserializer(Class<?> vc) {
         super(vc);
     }
@@ -41,15 +48,15 @@ public class EmailMailServerSettingsDeserializer extends StdDeserializer<EmailMa
         EmailServerSettings server = new EmailServerSettings();
         server.setWebSite(getString(node, "webSite"));
 
-        for (JsonNode jsonService : node.findValues("services")) {
+        for (JsonNode jsonService : node.get("services")) {
             EmailServerAddress address = new EmailServerAddress();
-            address.setProtocol(getEnum(node, InternetMailProtocol.class, "protocol"));
+            address.setProtocol(getEnum(jsonService, InternetMailProtocol.class, "protocol"));
             address.setHost(getString(jsonService, "host"));
             address.setPort(getInt(jsonService, "port"));
-            address.setEncryption(getEnum(node, EmailServerAddressEncryption.class, "encryption"));
+            address.setEncryption(getEnum(jsonService, EmailServerAddressEncryption.class, "encryption"));
             address.setLoginFormat(getString(jsonService, "loginFormat"));
             address.setSmtpAuthentication(getString(jsonService, "smtpAuthentication"));
-            address.setMustBeEnabled(getBoolean(node, "mustBeEnabled"));
+            address.setMustBeEnabled(getBoolean(jsonService, "mustBeEnabled"));
 
             server.getServices().add(address);
         }
@@ -60,7 +67,7 @@ public class EmailMailServerSettingsDeserializer extends StdDeserializer<EmailMa
             EmailServerOAuthSettings oauthSettings = new EmailServerOAuthSettings();
             oauthSettings.setAuthorizationURI(getString(oauthNode, "authorizationUri"));
             oauthSettings.setTokenExchangeURI(getString(oauthNode, "tokenExchangeUri"));
-            oauthSettings.setMailScope(oauthNode.findValuesAsText("mailScope"));
+            oauthSettings.setMailScope(getStringList(oauthNode, "mailScope"));
             oauthSettings.setUsePKCE(getBoolean(node, "usePkce"));
             oauthSettings.setUseClientSecret(getBoolean(oauthNode, "useClientSecret"));
             oauthSettings.setAuthorizationParameters(
@@ -104,5 +111,14 @@ public class EmailMailServerSettingsDeserializer extends StdDeserializer<EmailMa
 
     private <E extends Enum<E>> E getEnum(JsonNode node, Class<E> enumClass, String key) {
         return node.has(key) ? Enum.valueOf(enumClass, node.get(key).asText()) : null;
+    }
+
+    private List<String> getStringList(JsonNode node, String key) {
+        List<String> result = new ArrayList<>();
+        for (JsonNode jsonNode : node.get(key)) {
+            result.add(jsonNode.asText());
+        }
+
+        return result;
     }
 }
