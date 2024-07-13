@@ -22,7 +22,7 @@ public class EmailMailServerSettings {
     }
 
     public boolean isServer(String key) {
-        return servers.get(key) instanceof EmailServer;
+        return servers.get(key) instanceof EmailServerSettings;
     }
 
     public String getAlias(String key) {
@@ -32,14 +32,14 @@ public class EmailMailServerSettings {
         return null;
     }
 
-    public EmailServer getServer(String key) {
+    public EmailServerSettings getServer(String key) {
         if (isServer(key)) {
-            return (EmailServer) servers.get(key);
+            return (EmailServerSettings) servers.get(key);
         }
         return null;
     }
 
-    public void addServer(String key, EmailServer server) {
+    public void addServer(String key, EmailServerSettings server) {
         servers.put(key, server);
     }
 
