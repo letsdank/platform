@@ -245,6 +245,7 @@ public class EmailAccountService {
 
     // Alias: ОпределитьНастройкиIMAP
     private static InternetMailProfile determineImapSettings(String emailAddress, String password) {
+        // TODO: Сделать многопоточность, так как долго длится проверка по перебору
         for (InternetMailProfile profile : getImapProfiles(emailAddress, password)) {
             String serverMessage = checkIncomingMailServerConnection(profile, InternetMailProtocol.IMAP);
 
@@ -266,6 +267,7 @@ public class EmailAccountService {
 
     // Alias: ОпределитьНастройкиSMTP
     private static InternetMailProfile determineSmtpSettings(String emailAddress, String password) {
+        // TODO: Сделать многопоточность, так как долго длится проверка по перебору
         for (InternetMailProfile profile : getSmtpProfiles(emailAddress, password)) {
             String serverMessage = checkOutgoingMailServerConnection(profile, emailAddress);
 

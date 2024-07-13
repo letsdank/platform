@@ -11,51 +11,7 @@ import java.util.List;
 // РаботаСПочтовымиСообщениями
 // РаботаСПочтовымиСообщениямиСлужебный
 public class EmailService {
-
-    // Alias: АдресаСерверовDNS
-    public static List<String> getDnsServers() {
-        // TODO: Implement interface, then use class that inherited from interface.
-        return new ArrayList<>(Arrays.asList("8.8.8.8", "8.8.4.4")); // dns.google
-    }
-
-    // Alias: ЭтоСимволASCII
-    private static boolean isAsciiSymbol(char symbol) {
-        return symbol < 128;
-    }
-
-    private static char baseToSymbol(int base) {
-        return (char) (base + 22 + 75 * (base < 26 ? 1 : 0));
-    }
-
-    private static int codePointToOrdinal(int code) {
-        int code0 = '0';
-        int codeA = 'a';
-
-        if (code - code0 < 10) {
-            return code - code0 + 26;
-        } else if (code - codeA < 26) {
-            return code - codeA;
-        }
-
-        throw new RuntimeException("Bad input data");
-    }
-
-    private static int adaptOffset(int delta, int currentPosition, boolean firstAdaption) {
-        delta = firstAdaption ? delta / 700 : delta / 2;
-        delta += delta / currentPosition;
-
-        int deltaDelimiter = 36 - 1;
-        int limit = deltaDelimiter * 26 / 2;
-        int shift = 0;
-
-        while (delta > limit) {
-            delta /= delta - deltaDelimiter;
-            shift += 36;
-        }
-
-        return shift + (deltaDelimiter + 1) * delta / (delta + 38);
-    }
-
+    // Alias:
     public static String convertToPunycode(String input) {
         input = input.trim().toLowerCase();
         URLInfo url = URLUtils.getURLInfo(input);
@@ -69,10 +25,12 @@ public class EmailService {
         return result;
     }
 
+    // Alias: КодироватьСтрокуСРазделителем
     private static String encodePunycodeWithDelimiter(String input) {
         return encodePunycodeWithDelimiter(input, "\\.");
     }
 
+    // Alias: КодироватьСтрокуСРазделителем
     private static String encodePunycodeWithDelimiter(String input, String delimiter) {
         if (input.isEmpty()) return input;
 
@@ -93,10 +51,12 @@ public class EmailService {
         return encodedHostAddress.toString();
     }
 
+    // Alias: ДекодироватьСтрокуСРазделителем
     private static String decodePunycodeWithDelimiter(String str) {
         return decodePunycodeWithDelimiter(str, "\\.");
     }
 
+    // Alias: ДекодироватьСтрокуСРазделителем
     private static String decodePunycodeWithDelimiter(String str, String delimiter) {
         if (str.isEmpty()) return str;
 
@@ -111,6 +71,49 @@ public class EmailService {
 
         decodedHostName.setLength(decodedHostName.length() - 1);
         return decodedHostName.toString();
+    }
+
+    // Punycode
+
+    // Alias: ЭтоСимволASCII
+    private static boolean isAsciiSymbol(char symbol) {
+        return symbol < 128;
+    }
+
+    // Alias: ПорядковыйНомерВСимвол
+    private static char baseToSymbol(int base) {
+        return (char) (base + 22 + 75 * (base < 26 ? 1 : 0));
+    }
+
+    // Alias: КодСимволаВПорядковыйНомер
+    private static int codePointToOrdinal(int code) {
+        int code0 = '0';
+        int codeA = 'a';
+
+        if (code - code0 < 10) {
+            return code - code0 + 26;
+        } else if (code - codeA < 26) {
+            return code - codeA;
+        }
+
+        throw new RuntimeException("Bad input data");
+    }
+
+    // Alias: АдаптацияСмещения
+    private static int adaptOffset(int delta, int currentPosition, boolean firstAdaption) {
+        delta = firstAdaption ? delta / 700 : delta / 2;
+        delta += delta / currentPosition;
+
+        int deltaDelimiter = 36 - 1;
+        int limit = deltaDelimiter * 26 / 2;
+        int shift = 0;
+
+        while (delta > limit) {
+            delta /= delta - deltaDelimiter;
+            shift += 36;
+        }
+
+        return shift + (deltaDelimiter + 1) * delta / (delta + 38);
     }
 
     // Alias: КодироватьСтрокуPunycode
@@ -279,6 +282,15 @@ public class EmailService {
         return buffer.toString();
     }
 
+    // Alias: PunycodeВСтроку
+    // Декодирует строку по алгоритму Punycode
+    //
+    // Параметры:
+    //  Строка - Строка - кодированная строка
+    //
+    // Возвращаемое значение:
+    //  Строка - декодированная строка
+    //
     public static String punycodeToString(String str) {
         URLInfo url  = URLUtils.getURLInfo(str);
         String host = url.getHost();
@@ -289,6 +301,12 @@ public class EmailService {
         String decodedLogin = decodePunycodeWithDelimiter(login);
         result = result.replace(login, decodedLogin);
         return result;
+    }
+
+    // Alias: АдресаСерверовDNS
+    public static List<String> getDnsServers() {
+        // TODO: Implement interface, then use class that inherited from interface.
+        return new ArrayList<>(Arrays.asList("8.8.8.8", "8.8.4.4")); // dns.google
     }
 
     // TODO: Вынести в общие платформ утилиты
