@@ -29,4 +29,22 @@ public class EmailSettingsResult {
     private Boolean settingsCheckPerformed;
 
     private String protocol;
+
+    @Override
+    public String toString() {
+        return "EmailSettingsResult{" +
+                "usernameForReceiving='" + usernameForReceiving + '\'' +
+                ", usernameForSending='" + usernameForSending + '\'' +
+                ", incomingMailServer='" + incomingMailServer + '\'' +
+                ", incomingMailServerPort=" + incomingMailServerPort +
+                ", outgoingMailServer='" + outgoingMailServer + '\'' +
+                ", outgoingMailServerPort=" + outgoingMailServerPort +
+                ", useSecureConnectionForIncomingMail=" + useSecureConnectionForIncomingMail +
+                ", useSecureConnectionForOutgoingMail=" + useSecureConnectionForOutgoingMail +
+                ", forReceiving=" + forReceiving +
+                ", forSending=" + forSending +
+                ", settingsCheckPerformed=" + settingsCheckPerformed +
+                ", protocol='" + protocol + '\'' +
+                '}';
+    }
 }
