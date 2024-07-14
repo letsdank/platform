@@ -2,7 +2,9 @@ package net.letsdank.platform.service.email;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import net.letsdank.platform.module.email.IEmailMessageService;
+import net.letsdank.platform.module.email.EmailMessageImpl;
+import net.letsdank.platform.module.net.InternetConnectionDiagnosticResult;
+import net.letsdank.platform.module.net.InternetFileDownloader;
 import net.letsdank.platform.service.auth.ServiceAuthenticationSettingsObject;
 import net.letsdank.platform.service.auth.ServiceAuthenticationSettingsService;
 import net.letsdank.platform.service.email.server.*;
@@ -40,7 +42,7 @@ public class EmailAccountService {
     public List<String> determineMailServersForDomain(String domain) {
         List<String> result = new ArrayList<>();
 
-        List<String> dnsServers = IEmailMessageService.getDnsServers();
+        List<String> dnsServers = EmailMessageImpl.getDnsServers();
         dnsServers.add(0, ""); // Add default DNS server.
 
         for (String dnsServer : dnsServers) {
@@ -88,7 +90,7 @@ public class EmailAccountService {
     // Alias: ОпределитьНастройкиУчетнойЗаписи
     public EmailSettingsResult determineEmailSettings(String email, String password,
                                                              boolean forSending, boolean forReceiving) {
-        email = IEmailMessageService.convertToPunycode(email);
+        email = EmailMessageImpl.convertToPunycode(email);
         EmailConnectionSettings foundSettings = getEmailSettingsByEmail(email, password);
 
         return pickEmailSettings(email, password, forSending, forReceiving, foundSettings.getProfile());
@@ -561,5 +563,134 @@ public class EmailAccountService {
         return EmailConnectionSettingsSMTP.getOtherSettings(serverAddress);
     }
 
+    // Alias: ПроверитьНастройкиПрофилей
+    public EmailCheckerResult checkEmailProfile(InternetMailProfile outgoingProfile,
+                                                InternetMailProfile incomingProfile,
+                                                String emailAddress) {
+        EmailCheckerResult result = new EmailCheckerResult();
 
+        boolean authError = false;
+        boolean needToCheckOutgoingProfile = false;
+        boolean needToCheckIncomingProfile = false;
+
+        if (outgoingProfile != null) {
+            String error = checkOutgoingMailServerConnection(outgoingProfile, emailAddress);
+            if (!error.isEmpty()) {
+                result.addErrorMessage(error);
+                result.addTechnicalDetails(error);
+
+                authError = isAuthenticationError(error);
+                if (authError) {
+                    result.addErrorMessage("Failed to send test message: authentication failed.");
+                } else {
+                    result.addErrorMessage("Failed to send test message.");
+                    needToCheckOutgoingProfile = true;
+
+                    InternetConnectionDiagnosticResult diagnosticResult = InternetFileDownloader.diagnoseConnection(
+                            outgoingProfile.getSmtpServerAddress());
+                    result.addTechnicalDetails(diagnosticResult.getDiagnosticLog());
+                }
+            } else {
+                result.addExecutedCheck("- Outgoing profile check passed.");
+            }
+        }
+
+        if (incomingProfile != null) {
+            InternetMailProtocol protocol = incomingProfile.getSmtpServerAddress() != null ?
+                    InternetMailProtocol.IMAP : InternetMailProtocol.POP3;
+
+            String error = checkIncomingMailServerConnection(incomingProfile, protocol);
+            if (!error.isEmpty()) {
+                result.addErrorMessage(error);
+                result.addTechnicalDetails(error);
+
+                authError = isAuthenticationError(error);
+                if (authError) {
+                    result.addErrorMessage("Failed to connect to incoming mail server: authentication failed.");
+                } else {
+                    result.addErrorMessage("Failed to connect to incoming mail server.");
+                    needToCheckIncomingProfile = true;
+
+                    String serverAddress = protocol == InternetMailProtocol.IMAP ?
+                            incomingProfile.getImapServerAddress() : incomingProfile.getPop3ServerAddress();
+                    InternetConnectionDiagnosticResult diagnosticResult = InternetFileDownloader.diagnoseConnection(serverAddress);
+                    result.addTechnicalDetails(diagnosticResult.getDiagnosticLog());
+                }
+            } else {
+                result.addExecutedCheck("- Incoming profile check passed.");
+            }
+        }
+
+        result.addTechnicalDetails(StringUtils.substituteParameters("Email address: %1", emailAddress));
+        result.addTechnicalDetails(getProfileDescription(outgoingProfile, incomingProfile));
+        result.addTechnicalDetails(getSystemInformation());
+
+        String errorConnection = "";
+        if (!result.getErrorMessages().isEmpty()) {
+            String domain = emailAddress.substring(emailAddress.indexOf("@") + 1);
+            String message = String.join("\n", result.getErrorMessages().toArray(new String[0]));
+            String technicalDetails = String.join("\n\n", result.getTechnicalDetails().toArray(new String[0]));
+
+            List<String> recommendationList = new ArrayList<>();
+            if (authError)
+                recommendationList.add("Check the correctness of login and password, as well as the chosen authentication method.");
+            if (needToCheckOutgoingProfile)
+                recommendationList.add("Check the settings for connecting to the outgoing mail server.");
+            if (needToCheckIncomingProfile)
+                recommendationList.add("Check the settings for connecting to the incoming mail server.");
+            if (needToCheckOutgoingProfile || needToCheckIncomingProfile)
+                recommendationList.add("Contact the local network administrator.");
+
+            String recommendations = String.join("\n", recommendationList.toArray(new String[0]));
+            errorConnection = String.format("%s\n|\n|%s\n|\nContact the administrator of the \"%s\" mail server.\n|\n============================\n|\nInformation for technical support:\n|\n%s",
+                    message, recommendations, domain, technicalDetails);
+        }
+
+        if (!errorConnection.isEmpty()) {
+            LOGGER.warn(errorConnection); // TODO: Запись в журнал регистрации
+        }
+
+        return result;
+    }
+
+    // Alias: ОписаниеНастроек
+    private String getProfileDescription(InternetMailProfile outgoingProfile, InternetMailProfile incomingProfile) {
+        StringBuilder description = new StringBuilder();
+        if (outgoingProfile != null) {
+            description.append("Outgoing profile: ")
+                    .append(outgoingProfile.getSmtpServerAddress()).append(":")
+                    .append(outgoingProfile.getSmtpPort()).append(", username: ").append(outgoingProfile.getSmtpUsername());
+
+            if (outgoingProfile.isUseSSLForSmtp()) {
+                description.append(" (SSL)");
+            }
+        }
+
+        if (incomingProfile != null) {
+            description.append("\nIncoming profile: ")
+                    .append(incomingProfile.getImapServerAddress()).append(":")
+                    .append(incomingProfile.getImapPort()).append(", username: ").append(incomingProfile.getImapUsername());
+
+            if (incomingProfile.isUseSSLForImap()) {
+                description.append(" (SSL)");
+            }
+        }
+
+        return description.toString();
+    }
+
+    // Alias: ИнформацияОПрограмме
+    private String getSystemInformation() {
+        return "Operating system: " +
+                System.getProperty("os.name") +
+                " (" + System.getProperty("os.version") + ")" +
+                "Platform: " +
+                System.getProperty("java.vendor") +
+                " (" + System.getProperty("java.version") + ")" +
+                "Configuration: " +
+                System.getProperty("java.runtime.name") +
+                " (" + System.getProperty("java.runtime.version") + ")";
+
+        // TODO: Добавить поддержку расширений и выводить их сюда
+    }
 }

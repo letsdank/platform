@@ -9,7 +9,7 @@ import java.util.List;
 // Alias:
 // РаботаСПочтовымиСообщениями
 // РаботаСПочтовымиСообщениямиСлужебный
-public class IEmailMessageService {
+public class EmailMessageImpl {
 
     public static String convertToPunycode(String input) {
         return PunycodeUtils.convertToPunycode(input);
