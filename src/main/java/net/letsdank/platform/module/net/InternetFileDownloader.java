@@ -22,6 +22,10 @@ public class InternetFileDownloader {
         return null;
     }
 
+    private static String getDiagnosticLocation() {
+        return "Platform:Web"; // TODO
+    }
+
     private static boolean isDividedEnabled() {
         return true; // TODO: Implement into PlatformUtils (or ОбщегоНазначения)
     }

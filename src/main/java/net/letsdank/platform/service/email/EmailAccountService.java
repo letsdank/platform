@@ -140,6 +140,10 @@ public class EmailAccountService {
             }
         }
 
+        if (foundSettings == null) {
+            foundSettings = new EmailServerSettings();
+        }
+
         InternetMailProfile profile = null;
         if (foundSettings != null) {
             profile = formProfile(foundSettings, email, password);
@@ -301,6 +305,7 @@ public class EmailAccountService {
 
     // Alias: СформироватьПрофиль
     private InternetMailProfile formProfile(EmailServerSettings settings, String emailAddress, String password) {
+        if (settings.getServices().isEmpty()) return null;
         URLInfo info = URLUtils.getURLInfo(emailAddress);
 
         InternetMailProfile profile = new InternetMailProfile();
@@ -387,9 +392,9 @@ public class EmailAccountService {
 
     // Alias: УстановитьИмяПользователя
     private void setUsername(InternetMailProfile profile, String username) {
-        if (!profile.getUsername().isEmpty()) profile.setUsername(username);
-        if (!profile.getImapUsername().isEmpty()) profile.setImapUsername(username);
-        if (!profile.getSmtpUsername().isEmpty()) profile.setSmtpUsername(username);
+        if (profile.getUsername() != null && !profile.getUsername().isEmpty()) profile.setUsername(username);
+        if (profile.getImapUsername() != null && !profile.getImapUsername().isEmpty()) profile.setImapUsername(username);
+        if (profile.getSmtpUsername() != null && !profile.getSmtpUsername().isEmpty()) profile.setSmtpUsername(username);
     }
 
     // Alias: ПроверитьПодключениеКСерверуВходящейПочты
