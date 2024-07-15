@@ -1,0 +1,263 @@
+<div class="modal modal-lg fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="modalErrors"></div>
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <form th:object="${item}" class="modal-form" method="post" th:action="${'/entity/email-account/' + item.id}">
+                <div class="modal-body">
+                    <div class="wizard-page" data-wizard-id="accountSetup">
+                        <h5 class="mb-3">Введите настройки почты</h5>
+                        <div class="d-flex align-items-start gap-3 mb-3">
+                            <img src="/img/warning-32.png" alt="Warning" class="img-fluid">
+                            <div class="d-flex flex-column">
+                                <span>Произошла ошибка. Попробуйте позднее.</span>
+                                <a href="#" class="" target="_blank">Нужна помощь?</a>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column mb-3">
+                            <div class="row mb-3 mx-1">
+                                <label class="col-sm-3 col-form-label" for="address">Адрес почты:</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="address" th:field="*{address}">
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text bg-transparent border-0">
+                                        <input type="radio" id="passwordRadio" aria-label="Ввести пароль" checked>
+                                        <label for="passwordRadio" class="mx-1">Ввести пароль:</label>
+                                        <label for="password" class="mx-1 visually-hidden">Ввести пароль</label>
+                                    </div>
+                                </div>
+                                <input type="password" class="form-control col-sm-3" id="password">
+
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary show-password" type="button">Показать</button>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text bg-transparent border-0">
+                                        <input type="radio" id="authServiceRadio" aria-label="Авторизоваться на почтовом сервисе">
+                                        <label for="authServiceRadio" class="mx-1">Авторизоваться на почтовом сервисе</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column mb-3">
+                            <h4>Почта будет использоваться</h4>
+                            <div class="d-flex flex-row">
+                                <div class="d-flex form-check gap-1">
+                                    <input type="checkbox" class="form-check-input" id="useForSend" th:field="*{useForSend}" aria-label="Для отправки писем">
+                                    <label for="useForSend" class="mx-1 form-check-label">Для отправки писем</label>
+                                </div>
+                                <div class="d-flex form-check gap-1">
+                                    <input type="checkbox" class="form-check-input" id="useForReceive" th:field="*{useForReceive}" aria-label="Для получения писем">
+                                    <label for="useForReceive" class="mx-1 form-check-label">Для получения писем</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-row mb-3 gap-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="accountTypeShared" checked>
+                                <label class="form-check-label" for="accountTypeShared">
+                                    Всеми пользователями (общая почта)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="accountTypePersonal">
+                                <label class="form-check-label" for="accountTypePersonal">
+                                    Только мной
+                                </label>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column mb-3">
+                            <div class="row mb-3 mx-1">
+                                <label class="col-sm-3 col-form-label" for="senderName">Имя отправителя</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="senderName" th:field="*{address}">
+                                    <div class="form-text">Например, Ваше имя или название организации.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wizard-page" data-wizard-id="mailServerSetup">
+                        <label class="d-flex flex-row mb-3">
+                            <span class="col-sm-3 col-form-label">Тип учетной записи:</span>
+                            <select class="form-select" id="protocol" aria-label="Default select example">
+                                <option>TODO</option>
+                            </select>
+                        </label>
+                        <div class="d-flex flex-row gap-3 align-items-center">
+                            <label class="col-sm-3 col-form-label" for="serverIncoming">
+                                Сервер IMAP:
+                                <input type="text" class="form-control" id="serverIncoming" th:field="*{serverIncoming}">
+                            </label>
+                            <label class="col-sm-3 col-form-label" for="portIncoming">
+                                Порт:
+                                <input type="text" class="form-control" id="portIncoming" th:field="*{portIncoming}">
+                            </label>
+                            <label class="col-sm-3 col-form-label">
+                                <div class="mb-2">Шифрование:</div>
+                                <div class="d-flex flex-row gap-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="encryptionIncomingStartTls" checked>
+                                        <label class="form-check-label" for="encryptionIncomingStartTls">
+                                            STARTTLS
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="encryptionIncomingSsl">
+                                        <label class="form-check-label" for="encryptionIncomingSsl">
+                                            SSL
+                                        </label>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="d-flex flex-row gap-3 mb-3 align-items-center">
+                            <label class="col-sm-3 col-form-label" for="serverOutgoing">
+                                Сервер SMTP:
+                                <input type="text" class="form-control" id="serverOutgoing" th:field="*{serverOutgoing}">
+                            </label>
+                            <label class="col-sm-3 col-form-label" for="portOutgoing">
+                                Порт:
+                                <input type="text" class="form-control" id="portOutgoing" th:field="*{portOutgoing}">
+                            </label>
+                            <label class="col-sm-3 col-form-label">
+                                <div class="mb-2">Шифрование:</div>
+                                <div class="d-flex flex-row gap-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="encryptionOutgoingStartTls" checked>
+                                        <label class="form-check-label" for="encryptionOutgoingStartTls">
+                                            STARTTLS
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="encryptionOutgoingSsl">
+                                        <label class="form-check-label" for="encryptionOutgoingSsl">
+                                            SSL
+                                        </label>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="saveMessageCopies" th:field="*{saveMessageCopies}">
+                                    <label class="form-check-label" for="saveMessageCopies">
+                                        Оставлять копии писем на сервере
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input mt-2" id="deleteMessageFromServer">
+                                <label class="form-check-label d-flex align-items-baseline gap-2" for="deleteMessageFromServer">
+                                    Удалять письма с сервера через:
+                                    <label class="d-flex flex-row gap-2 align-items-center">
+                                        <input type="number" id="messageTtl" class="form-control col-sm-2" th:field="*{messageTtl}">
+                                        <span>дней</span>
+                                    </label>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wizard-page" data-wizard-id="appAuthSetup">
+                        <p class="mb-6">Для авторизации средствами почтового сервиса необходимо
+                        зарегистрировать это приложение в почтовом сервисе.</p>
+
+                        <p class="mb-3">Из настроек регистрации приложения заполните следующие поля:</p>
+
+                        <div class="row mb-3 mx-1">
+                            <label class="col-sm-5 col-form-label" for="authRedirectUri">Адрес перенаправления (redirect_uri):</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="authRedirectUri">
+                            </div>
+                        </div>
+                        <div class="row mb-3 mx-1">
+                            <label class="col-sm-5 col-form-label" for="authClientId">Идентификатор приложения (client_id):</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="authClientId">
+                            </div>
+                        </div>
+                        <div class="row mb-3 mx-1">
+                            <label class="col-sm-5 col-form-label" for="authClientSecret">Пароль приложения (client_secret):</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="authClientSecret">
+                            </div>
+                        </div>
+                        <p>У некоторых сервисов новое зарегистрированное приложение становится
+                        доступным не сразу. Рекомендуется после регистрации подождать несколько
+                        минут, прежде чем продолжить настройку.</p>
+                    </div>
+                    <div class="wizard-page" data-wizard-id="authorization">
+                        <p class="mb-3">Авторизуйтесь на странице почтового сервиса и введите
+                        полученный код в поле ниже:</p>
+
+                        <div class="row mb-3 mx-1">
+                            <label class="col-sm-5 col-form-label" for="authConfirmationCode">Код подтверждения:</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="authConfirmationCode">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wizard-page" data-wizard-id="accountSetupCheck">
+                        <div class="mb-2 d-flex flex-row gap-3">
+                            <img class="img-fluid" src="/img/long-operation-48.gif" alt="Длительная операция">
+                            <span>Выполняется проверка настроек почты.<br>
+                            Это может занять несколько минут.</span>
+                        </div>
+                    </div>
+                    <div class="wizard-page" data-wizard-id="errorDetails">
+                        <div class="d-flex align-items-start gap-3 mb-3">
+                            <img src="/img/warning-32.png" alt="Warning" class="img-fluid">
+                            <div class="d-flex flex-column w-100">
+                                <span class="overflow-y-scroll" style="height: 500px; max-height: 500px;">Произошла ошибка. Попробуйте позднее.</span>
+                                <a href="#" class="" target="_blank">Нужна помощь?</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wizard-page" data-wizard-id="accountSetupSuccess">
+                        <div class="mb-2 d-flex flex-row gap-3 align-items-start">
+                            <img class="img-fluid" src="/img/success-32.png" alt="Успешно">
+                            <span>Настройка параметров почты<br>
+                            vasyapupkin@example.com завершена.</span>
+                        </div>
+                    </div>
+                    <div class="wizard-page" data-wizard-id="checkErrorsFound">
+                        <div class="d-flex align-items-start gap-3 mb-3">
+                            <img src="/img/warning-32.png" alt="Warning" class="img-fluid">
+                            <div class="d-flex flex-column">
+                                <span>Произошла ошибка. Попробуйте позднее.</span>
+                            </div>
+                        </div>
+
+                        <h4>Возможные причины</h4>
+                        <p>Декорация возможные причины</p>
+
+                        <h4>Способы устранения</h4>
+                        <p>Декорация способы устранения</p>
+
+                        <a href="#" class="mt-auto" target="_blank">Рекомендации по решению типовых проблем</a>
+                    </div>
+                </div>
+                <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-secondary" id="wizardBack">&lt; Назад</button>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-secondary">Перейти к настройкам</button>
+                        <button type="button" class="btn btn-primary" id="wizardNext">Далее &gt;</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

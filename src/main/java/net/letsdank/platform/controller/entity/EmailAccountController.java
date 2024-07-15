@@ -24,4 +24,10 @@ public class EmailAccountController {
         model.addAttribute("items", list);
         return "app/common/entity/email-account/index";
     }
+
+    @GetMapping("/add")
+    public String addModal(Model model) {
+        model.addAttribute("item", new EmailAccount());
+        return "app/common/entity/email-account/add-helper";
+    }
 }

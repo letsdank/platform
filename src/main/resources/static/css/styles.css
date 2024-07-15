@@ -56,3 +56,12 @@
     max-height: 270px;
     overflow-y: auto;
 }
+
+.wizard-page {
+    display: none;
+}
+
+.wizard-page.is-active {
+    display: flex;
+    flex-direction: column;
+}
