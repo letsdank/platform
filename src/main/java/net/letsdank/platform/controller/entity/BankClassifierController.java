@@ -48,12 +48,12 @@ public class BankClassifierController {
                 .build();
     }
 
-    @GetMapping("/create-item")
+    @GetMapping("/add-item")
     public ResponseEntity<PlatformResult> createItemModal() {
         return ResponseEntity.badRequest().body(service.createItem());
     }
 
-    @GetMapping("/create-group")
+    @GetMapping("/add-group")
     public ResponseEntity<PlatformResult> createGroupModal() {
         return ResponseEntity.badRequest().body(service.createGroup());
     }
