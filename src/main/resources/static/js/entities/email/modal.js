@@ -34,7 +34,8 @@ document.addEventListener('shown.bs.modal', (e) => {
     wizardBackButton.disabled = true;
 
     // TODO: Снести
-    nextPageHandler = () => {setupCurrentPage();}
+    prevPageHandler = () => {back();};
+    nextPageHandler = () => {next();}
 
     setupMethod = "auto"; // also can be "manually", but with safe mode TODO
     authMethod = "password";
@@ -43,6 +44,47 @@ document.addEventListener('shown.bs.modal', (e) => {
     setTimeout(() => setupCurrentPageOnLoad(), 100);
     registerEvents();
 });
+
+const next = () => {
+    goToNextPage();
+}
+
+const back = () => {
+    let prevPage = null;
+
+    switch (getCurrentPage().dataset.wizardId) {
+        case "mailServerSetup":
+        case "accountSetupCheck":
+        case "errorDetails":
+            prevPage = "accountSetup";
+            break;
+        case "checkErrorsFound":
+            prevPage = "appAuthSetup";
+            checkSkipped = false;
+            break;
+        default: break;
+    }
+
+    switchPageById(prevPage !== null ? prevPage : "accountSetup");
+    setupCurrentPage();
+}
+
+const goToNextPage = () => {
+    let nextPage = null;
+
+    switch (getCurrentPage().dataset.wizardId) {
+        case "accountSetup":
+        case "errorDetails":
+            validateFieldsOnAccountSetup();
+            if (!settingsFilled) {
+
+            }
+    }
+}
+
+const validateFieldsOnAccountSetup = () => {
+
+}
 
 const setupCurrentPage = () => {
     const currentPage = getCurrentPage();
@@ -147,7 +189,6 @@ const setupCurrentPage = () => {
             gotoSettings.textContent = "Настроить вручную";
 
             break;
-
     }
 }
 
@@ -212,7 +253,7 @@ const registerEvents = () => {
 
     modal.querySelector("#protocol").addEventListener("change", (e) => {
         setElementsVisibility();
-        modal.querySelector("#serverIncomingName").textContent = "Сервер " + e.target.value;
+        modal.querySelector("#serverIncomingName").textContent = `Сервер ${e.target.value}:`;
     });
 
     const useSslForIncoming = modal.querySelector("#useSslForReceive");
@@ -221,6 +262,24 @@ const registerEvents = () => {
     modal.querySelector("#encryptionIncomingSsl").addEventListener("change", () => {useSslForIncoming.value = "true"})
     modal.querySelector("#encryptionOutgoingStartTls").addEventListener("change", () => {useSslForOutgoing.value = "false"})
     modal.querySelector("#encryptionOutgoingSsl").addEventListener("change", () => {useSslForOutgoing.value = "true"})
+
+    modal.querySelector("#accountSetupErrorText").addEventListener("click", () => {
+        switchPageById("errorDetails");
+        setupCurrentPage();
+    });
+
+    modal.querySelector("#errorDetailsErrorText").addEventListener("click", () => {
+        switchPageById("checkErrorsFound");
+        setupCurrentPage();
+    });
+
+    modal.querySelector("#passwordRadio").addEventListener("change", () => {
+        modal.querySelector("#password").disabled = false;
+    });
+
+    modal.querySelector("#authServiceRadio").addEventListener("change", () => {
+        modal.querySelector("#password").disabled = true;
+    });
 }
 
 //
@@ -229,8 +288,8 @@ const registerEvents = () => {
 
 // TODO: Boolean, по нему будем определять, хочет ли пользователь сам менять текст кнопок
 let manuallyEditWizardButtons = true;
-let prevPageHandler = () => {};
-let nextPageHandler = () => {};
+let prevPageHandler = null;
+let nextPageHandler = null;
 
 const switchPage = (pageIndex) => {
     wizardPages.forEach((item) => {
@@ -247,8 +306,11 @@ const switchPageById = (pageId) => {
 
 const nextPage = () => {
     switchPage(wizardPageIndex + 1);
-    nextPageHandler();
-    updateWizardButtons();
+    if (nextPageHandler) {
+        nextPageHandler();
+    } else {
+        updateWizardButtons();
+    }
 }
 
 const getCurrentPage = () => {
@@ -276,8 +338,11 @@ const updateWizardButtons = () => {
 
 const prevPage = () => {
     switchPage(wizardPageIndex - 1);
-    prevPageHandler();
-    updateWizardButtons();
+    if (prevPageHandler) {
+        prevPageHandler();
+    } else {
+        updateWizardButtons();
+    }
 }
 
 const getBackButton = () => {

@@ -13,7 +13,7 @@
                         <div class="d-flex align-items-start gap-3 mb-3" id="accountSetupError">
                             <img src="/img/warning-32.png" alt="Warning" class="img-fluid">
                             <div class="d-flex flex-column">
-                                <span>Произошла ошибка. Попробуйте позднее.</span>
+                                <span id="accountSetupErrorText">Произошла ошибка. Попробуйте позднее.</span>
                                 <a href="#" class="" target="_blank">Нужна помощь?</a>
                             </div>
                         </div>
@@ -27,24 +27,23 @@
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <div class="input-group-text bg-transparent border-0">
-                                        <input type="radio" id="passwordRadio" aria-label="Ввести пароль" checked>
+                                        <input type="radio" id="passwordRadio" aria-label="Ввести пароль" name="authType" checked>
                                         <label for="passwordRadio" class="mx-1">Ввести пароль:</label>
                                         <label for="password" class="mx-1 visually-hidden">Ввести пароль</label>
                                     </div>
                                 </div>
                                 <input type="password" class="form-control col-sm-3" id="password">
 
-                                <input type="hidden" id="passwordOutgoing" name="passwordOutgoing">
-                                <input type="hidden" id="passwordIncoming" name="passwordIncoming">
-
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary show-password" type="button">Показать</button>
                                 </div>
+                                <input type="hidden" id="passwordOutgoing" name="passwordOutgoing">
+                                <input type="hidden" id="passwordIncoming" name="passwordIncoming">
                             </div>
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <div class="input-group-text bg-transparent border-0">
-                                        <input type="radio" id="authServiceRadio" aria-label="Авторизоваться на почтовом сервисе">
+                                        <input type="radio" id="authServiceRadio" name="authType" aria-label="Авторизоваться на почтовом сервисе">
                                         <label for="authServiceRadio" class="mx-1">Авторизоваться на почтовом сервисе</label>
                                     </div>
                                 </div>
@@ -228,7 +227,7 @@
                         <div class="d-flex align-items-start gap-3 mb-3">
                             <img src="/img/warning-32.png" alt="Warning" class="img-fluid">
                             <div class="d-flex flex-column w-100">
-                                <span class="overflow-y-scroll" style="height: 500px; max-height: 500px;">Произошла ошибка. Попробуйте позднее.</span>
+                                <span class="overflow-y-scroll" style="height: 500px; max-height: 500px;" id="errorDetailsErrorText">Произошла ошибка. Попробуйте позднее.</span>
                                 <a href="#" class="" target="_blank">Нужна помощь?</a>
                             </div>
                         </div>
