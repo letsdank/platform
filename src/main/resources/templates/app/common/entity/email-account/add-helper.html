@@ -10,7 +10,7 @@
                 <div class="modal-body">
                     <div class="wizard-page" data-wizard-id="accountSetup">
                         <h5 class="mb-3">Введите настройки почты</h5>
-                        <div class="d-flex align-items-start gap-3 mb-3">
+                        <div class="d-flex align-items-start gap-3 mb-3" id="accountSetupError">
                             <img src="/img/warning-32.png" alt="Warning" class="img-fluid">
                             <div class="d-flex flex-column">
                                 <span>Произошла ошибка. Попробуйте позднее.</span>
@@ -33,6 +33,9 @@
                                     </div>
                                 </div>
                                 <input type="password" class="form-control col-sm-3" id="password">
+
+                                <input type="hidden" id="passwordOutgoing" name="passwordOutgoing">
+                                <input type="hidden" id="passwordIncoming" name="passwordIncoming">
 
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary show-password" type="button">Показать</button>
@@ -60,7 +63,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="d-flex flex-row mb-3 gap-2">
+                        <div class="d-flex flex-row mb-3 gap-2" id="accountSetupAccess">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="flexRadioDefault" id="accountTypeShared" checked>
                                 <label class="form-check-label" for="accountTypeShared">
@@ -87,13 +90,15 @@
                     <div class="wizard-page" data-wizard-id="mailServerSetup">
                         <label class="d-flex flex-row mb-3">
                             <span class="col-sm-3 col-form-label">Тип учетной записи:</span>
-                            <select class="form-select" id="protocol" aria-label="Default select example">
-                                <option>TODO</option>
+                            <select class="form-select" id="protocol" aria-label="Тип учетной записи">
+                                <option disabled selected hidden></option>
+                                <option value="POP">POP</option>
+                                <option value="IMAP">IMAP</option>
                             </select>
                         </label>
                         <div class="d-flex flex-row gap-3 align-items-center">
                             <label class="col-sm-3 col-form-label" for="serverIncoming">
-                                Сервер IMAP:
+                                <span id="serverIncomingName">Сервер IMAP:</span>
                                 <input type="text" class="form-control" id="serverIncoming" th:field="*{serverIncoming}">
                             </label>
                             <label class="col-sm-3 col-form-label" for="portIncoming">
@@ -102,19 +107,21 @@
                             </label>
                             <label class="col-sm-3 col-form-label">
                                 <div class="mb-2">Шифрование:</div>
+                                <input type="hidden" th:field="*{useSslForReceive}" id="useSslForReceive">
                                 <div class="d-flex flex-row gap-2">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="encryptionIncomingStartTls" checked>
+                                        <input class="form-check-input" type="radio" name="encryptionIncoming" id="encryptionIncomingStartTls" checked>
                                         <label class="form-check-label" for="encryptionIncomingStartTls">
                                             STARTTLS
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="encryptionIncomingSsl">
+                                        <input class="form-check-input" type="radio" name="encryptionIncoming" id="encryptionIncomingSsl">
                                         <label class="form-check-label" for="encryptionIncomingSsl">
                                             SSL
                                         </label>
                                     </div>
+
                                 </div>
                             </label>
                         </div>
@@ -129,15 +136,16 @@
                             </label>
                             <label class="col-sm-3 col-form-label">
                                 <div class="mb-2">Шифрование:</div>
+                                <input type="hidden" th:field="*{useSslForSend}" id="useSslForSend">
                                 <div class="d-flex flex-row gap-2">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="encryptionOutgoingStartTls" checked>
+                                        <input class="form-check-input" type="radio" name="encryptionOutgoing" id="encryptionOutgoingStartTls" checked>
                                         <label class="form-check-label" for="encryptionOutgoingStartTls">
                                             STARTTLS
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="encryptionOutgoingSsl">
+                                        <input class="form-check-input" type="radio" name="encryptionOutgoing" id="encryptionOutgoingSsl">
                                         <label class="form-check-label" for="encryptionOutgoingSsl">
                                             SSL
                                         </label>
@@ -145,26 +153,28 @@
                                 </div>
                             </label>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col-sm-6">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="saveMessageCopies" th:field="*{saveMessageCopies}">
-                                    <label class="form-check-label" for="saveMessageCopies">
-                                        Оставлять копии писем на сервере
-                                    </label>
+                        <div id="saveMessageCopiesContainer">
+                            <div class="row mb-3">
+                                <div class="col-sm-6">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="saveMessageCopies" th:field="*{saveMessageCopies}">
+                                        <label class="form-check-label" for="saveMessageCopies">
+                                            Оставлять копии писем на сервере
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="mb-3">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input mt-2" id="deleteMessageFromServer">
-                                <label class="form-check-label d-flex align-items-baseline gap-2" for="deleteMessageFromServer">
-                                    Удалять письма с сервера через:
-                                    <label class="d-flex flex-row gap-2 align-items-center">
-                                        <input type="number" id="messageTtl" class="form-control col-sm-2" th:field="*{messageTtl}">
-                                        <span>дней</span>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input mt-2" id="deleteMessageFromServer">
+                                    <label class="form-check-label d-flex align-items-baseline gap-2" for="deleteMessageFromServer">
+                                        Удалять письма с сервера через:
+                                        <label class="d-flex flex-row gap-2 align-items-center">
+                                            <input type="number" id="messageTtl" class="form-control col-sm-2" th:field="*{messageTtl}">
+                                            <span>дней</span>
+                                        </label>
                                     </label>
-                                </label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -226,7 +236,7 @@
                     <div class="wizard-page" data-wizard-id="accountSetupSuccess">
                         <div class="mb-2 d-flex flex-row gap-3 align-items-start">
                             <img class="img-fluid" src="/img/success-32.png" alt="Успешно">
-                            <span>Настройка параметров почты<br>
+                            <span id="accountSetupSuccessMessage">Настройка параметров почты<br>
                             vasyapupkin@example.com завершена.</span>
                         </div>
                     </div>
@@ -247,14 +257,14 @@
                         <a href="#" class="mt-auto" target="_blank">Рекомендации по решению типовых проблем</a>
                     </div>
                 </div>
-                <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center">
+                <div class="modal-footer d-flex flex-row justify-content-between align-items-center">
                     <div class="form-group">
                         <button type="button" class="btn btn-secondary" id="wizardBack">&lt; Назад</button>
                     </div>
-                    <div class="form-group">
-                        <button type="button" class="btn btn-secondary">Перейти к настройкам</button>
+                    <div class="form-group d-flex gap-2 flex-row">
+                        <button type="button" class="btn btn-outline-secondary" id="gotoSettings">Перейти к настройкам</button>
                         <button type="button" class="btn btn-primary" id="wizardNext">Далее &gt;</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                        <button type="button" class="btn btn-secondary btn-danger" data-dismiss="modal" id="cancelButton">Отмена</button>
                     </div>
                 </div>
             </form>
