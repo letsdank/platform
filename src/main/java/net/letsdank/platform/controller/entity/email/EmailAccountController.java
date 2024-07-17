@@ -1,4 +1,4 @@
-package net.letsdank.platform.controller.entity;
+package net.letsdank.platform.controller.entity.email;
 
 
 import lombok.AllArgsConstructor;

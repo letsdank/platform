@@ -12,6 +12,8 @@ let checkFailedWithError = false;
 let checkSkipped = false;
 let settingsFilled = false;
 let needConfirmationToClose = false;
+let mailServerAuthSettings = null;
+let authSettings = null;
 
 document.addEventListener('shown.bs.modal', (e) => {
     modal = e.target;
@@ -60,19 +62,103 @@ const goToNextPage = () => {
     switch (wizard.getCurrentPage().dataset.wizardId) {
         case "accountSetup":
         case "errorDetails":
-            validateFieldsOnAccountSetup();
-            if (!settingsFilled) {
+            const isError = !validateFieldsOnAccountSetup();
+            if (!isError && !settingsFilled) {
                 fillEmailAccountSettings();
             }
+
+            if (!isError && authMethod === "oauth") {
+                checkFailedWithError = false;
+                nextPage = "appAuthSetup";
+
+                getMailServerAuthSettings().then((settings) => {
+                    mailServerAuthSettings = settings;
+                    authSettings = mailServerAuthSettings;
+
+                    if (authSettings !== null) {
+                        if (authSettings.authorizationUri !== null) {
+                            setRegistrationAppDescription();
+                        }
+                    }
+                });
+            }
     }
+
+    wizard.switchPageById(nextPage);
+}
+
+const setRegistrationAppDescription = () => {
+    authSettings = mailServerAuthSettings;
+    const authRedirectUri = modal.querySelector("#authRedirectUri");
+
+    if (authSettings === null) return;
+    authRedirectUri.value = authSettings.redirectUriWebClient; // По умолчанию это веб-клиент
+
+    if (authRedirectUri.value === null) {
+        authRedirectUri.value = authSettings.defaultRedirectUri;
+    }
+
+    if (authSettings.redirectUriDescription === null &&
+        authSettings.clientIdDescription === null &&
+        authSettings.clientSecretDescription === null) {
+        return;
+    }
+
+    modal.querySelector("#redirectUriDescription").innerHTML = authSettings.redirectUriDescription;
+    modal.querySelector("#clientIdDescription").innerHTML = authSettings.clientIdDescription;
+    modal.querySelector("#clientSecretDescription").innerHTML = authSettings.clientSecretDescription;
+    modal.querySelector("#additionalDescription").innerHTML = authSettings.additionalDescription;
+
+    modal.querySelector("label[for='authClientSecret']").parentElement
+        .style.display = authSettings.useClientSecret ? 'flex' : 'none';
+
+    modal.querySelector("label[for='authRedirectUri']").textContent = authSettings.redirectUriCaption;
+    modal.querySelector("label[for='authClientId']").textContent = authSettings.clientIdCaption;
+    modal.querySelector("label[for='authClientSecret']").textContent = authSettings.clientSecretCaption;
+
+    modal.querySelector("label[for='authRedirectUri']").parentElement
+        .style.display = authSettings.clientSecretCaption !== null ? 'flex' : 'none';
 }
 
 const validateFieldsOnAccountSetup = () => {
+    const address = modal.querySelector("#address");
+    if (address.value === "") {
+        showErrors([
+            {
+                "fieldName": "address",
+                "message": "Введите адрес электронной почты",
+            }
+        ]);
+        return false;
+    }
+    if (!isValidEmail(address.value, true)) {
+        showErrors([
+            {
+                "fieldName": "address",
+                "message": "Адрес электронной почты введен неверно",
+            }
+        ]);
+        return false;
+    }
 
+    return true;
 }
 
 const fillEmailAccountSettings = () => {
-    fillForm(EmailAccountModule.getDefaultSettings(modal.querySelector("#address").value, modal.querySelector("#password").value));
+    const data = EmailAccountModule.getDefaultSettings(modal.querySelector("#address").value, modal.querySelector("#password").value);
+    fillForm(data);
+    const accountName = modal.querySelector("#accountName");
+    if (accountName.value === "") {
+        accountName.value = modal.querySelector("#address").value;
+    }
+
+    settingsFilled = true;
+
+    if (data.useSslForIncoming) modal.querySelector("#encryptionIncomingSsl").checked = true;
+    else modal.querySelector("#encryptionIncomingStartTls").checked = true;
+
+    if (data.useSslForSend) modal.querySelector("#encryptionOutgoingSsl").checked = true;
+    else modal.querySelector("#encryptionOutgoingStartTls").checked = true;
 }
 
 const setupCurrentPage = () => {
@@ -268,6 +354,29 @@ const registerEvents = () => {
     modal.querySelector("#authServiceRadio").addEventListener("change", () => {
         modal.querySelector("#password").disabled = true;
     });
+
+    modal.querySelector("#authServiceRadio").addEventListener("change", () => {authMethod = "oauth"})
+    modal.querySelector("#passwordRadio").addEventListener("change", () => {authMethod = "password"})
+}
+
+//
+// SERVER
+//
+
+const getMailServerSettings = async () => {
+    const response = await fetch("/entity/email-account/helper/mail-server-settings?" + new URLSearchParams({
+        emailAddress: modal.querySelector("#address").value,
+        passwordOutgoing: modal.querySelector("#passwordOutgoing").value,
+    }), {
+        headers: {
+            'Accept': 'application/json',
+    }});
+    return response.json();
+}
+
+const getMailServerAuthSettings = async () => {
+    const data = await getMailServerSettings();
+    return data.authorizationSettings;
 }
 
 // Прочие утилы (залить в общий класс) TODO
@@ -295,6 +404,91 @@ const fillForm = (data) => {
             }
         }
     });
+}
+
+// ОбщегоНазначения
+const showErrors = (errors) => {
+    if (!errors || errors.length === 0) return;
+
+    const modalErrors = document.getElementById("modalErrors");
+    modalErrors.innerHTML = "";
+
+    errors.forEach((error) => {
+        modalErrors.innerHTML += `
+                    <div class="alert alert-warning alert-dismissible fade show m-2" role="alert">
+                        ${error.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+                    </div>`;
+
+        if (error.fieldName !== null) {
+            const formInput = document.querySelector(`input[name="${error.fieldName}"]`);
+            if (formInput !== null) formInput.classList.add("is-invalid");
+        }
+    });
+}
+
+// ОбщегоНазначения
+const isValidEmail = (email, allowLocalAddresses = false) => {
+    const letters = "abcdefghijklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+    const digits = "0123456789";
+    const specialChars = ".@_:-+";
+
+    // Check for exactly one '@' symbol
+    if (email.split('@').length !== 2) return false;
+    // Check for no more than one ':' symbol
+    if (email.split(':').length > 2) return false;
+    // Check for no consecutive dots
+    if (email.indexOf('..') > -1) return false;
+
+    // Convert email to lowercase
+    email = email.toLowerCase();
+
+    // Check for only allowed characters
+    if (!containsOnlyAllowedChars(email, letters + digits + specialChars)) return false;
+
+    // Split email into local part and domain
+    const atIndex = email.indexOf('@');
+    const localPart = email.substring(0, atIndex);
+    const domain = email.substring(atIndex + 1);
+
+    // Check for non-empty local part and domain, and length limits
+    if (localPart === '' || domain === '' || localPart.length > 64 || domain.length > 255) return false;
+    // Check for no special characters at start or end of domain
+    if (hasSpecialCharsAtStartOrEnd(domain, specialChars)) return false;
+    // Check for at least one dot in domain, unless allowing local addresses
+    if (!allowLocalAddresses && domain.indexOf('.') === -1) return false;
+    // Check for no underscore, colon, or plus in domain
+    if (domain.indexOf('_') > -1 || domain.indexOf(':') > -1 || domain.indexOf('+') > -1) return false;
+
+    // Extract top-level domain (TLD) from domain
+    let tld = domain
+    let dotIndex = tld.indexOf('.');
+    while (dotIndex > 0) {
+        tld = tld.substring(dotIndex + 1);
+        dotIndex = tld.indexOf('.');
+    }
+
+    // Check TLD length and characters
+    return allowLocalAddresses || (tld.length >= 2 && containsOnlyAllowedChars(tld, letters));
+}
+
+// ОбщегоНазначения
+const hasSpecialCharsAtStartOrEnd = (str, specialChars) => {
+    for (let i = 0; i < specialChars.length; i++) {
+        const char = specialChars[i];
+        if (str.startsWith(char) || str.endsWith(char)) return true;
+    }
+    return false;
+}
+
+// ОбщегоНазначения
+const containsOnlyAllowedChars = (str, allowedChars) => {
+    const allowedCharsArray = Array.from(allowedChars);
+    for (let i = 0; i < str.length; i++) {
+        const char = str[i];
+        if (!allowedCharsArray.includes(char)) return false;
+    }
+    return true;
 }
 
 //
@@ -333,7 +527,7 @@ class Wizard {
     }
 
     switchPageById(pageId) {
-        const pageIndex = this.wizardPages.findIndex((item) => item.id === pageId);
+        const pageIndex = Object.keys(this.wizardPages).findIndex((key) => this.wizardPages[key].dataset.wizardId === pageId);
         this.switchPage(pageIndex);
     }
 
@@ -349,7 +543,6 @@ class Wizard {
     nextPage() {
         if (this.nextPageHandler) {
             this.nextPageHandler();
-            this.switchPage(this.wizardPageIndex + 1);
         } else {
             this.switchPage(this.wizardPageIndex + 1);
             this.updateWizardButtons();
