@@ -1,7 +1,5 @@
 let modal = null;
-// TODO: Тоже Wizard часть
-let wizardPages = [];
-let wizardPageIndex = 0;
+let wizard = null;
 
 // GET parameters
 let reconfig = false;
@@ -22,21 +20,8 @@ document.addEventListener('shown.bs.modal', (e) => {
     modalTitle.textContent = "Настройка почты";
 
     initializeCommonControls(modal);
-    wizardPages = modal.querySelectorAll(".wizard-page");
-    wizardPageIndex = 0;
 
-    // TODO: Перенести в Wizard часть
-    const wizardBackButton = modal.querySelector("#wizardBack");
-    const wizardNextButton = modal.querySelector("#wizardNext");
-    modal.querySelector(".wizard-page").classList.add("is-active");
-    wizardBackButton.addEventListener("click", () => prevPage());
-    wizardNextButton.addEventListener("click", () => nextPage());
-    wizardBackButton.disabled = true;
-
-    // TODO: Снести
-    prevPageHandler = () => {back();};
-    nextPageHandler = () => {next();}
-
+    wizard = new Wizard(modal, () => {back();}, () => {next()}, true);
     setupMethod = "auto"; // also can be "manually", but with safe mode TODO
     authMethod = "password";
 
@@ -52,7 +37,7 @@ const next = () => {
 const back = () => {
     let prevPage = null;
 
-    switch (getCurrentPage().dataset.wizardId) {
+    switch (wizard.getCurrentPage().dataset.wizardId) {
         case "mailServerSetup":
         case "accountSetupCheck":
         case "errorDetails":
@@ -65,19 +50,19 @@ const back = () => {
         default: break;
     }
 
-    switchPageById(prevPage !== null ? prevPage : "accountSetup");
+    wizard.switchPageById(prevPage !== null ? prevPage : "accountSetup");
     setupCurrentPage();
 }
 
 const goToNextPage = () => {
     let nextPage = null;
 
-    switch (getCurrentPage().dataset.wizardId) {
+    switch (wizard.getCurrentPage().dataset.wizardId) {
         case "accountSetup":
         case "errorDetails":
             validateFieldsOnAccountSetup();
             if (!settingsFilled) {
-
+                fillEmailAccountSettings();
             }
     }
 }
@@ -86,10 +71,14 @@ const validateFieldsOnAccountSetup = () => {
 
 }
 
+const fillEmailAccountSettings = () => {
+    fillForm(EmailAccountModule.getDefaultSettings(modal.querySelector("#address").value, modal.querySelector("#password").value));
+}
+
 const setupCurrentPage = () => {
-    const currentPage = getCurrentPage();
-    const backButton = getBackButton();
-    const nextButton = getNextButton();
+    const currentPage = wizard.getCurrentPage();
+    const backButton = wizard.getBackButton();
+    const nextButton = wizard.getNextButton();
     const cancelButton = modal.querySelector("#cancelButton");
     const gotoSettings = modal.querySelector("#gotoSettings");
 
@@ -226,7 +215,6 @@ const initializeCommonControls = (modal) => {
     });
 }
 
-
 const registerEvents = () => {
     modal.querySelector("#password").addEventListener("keyup", (e) => {
         // TODO: Может это в контроллер вставим?
@@ -264,12 +252,12 @@ const registerEvents = () => {
     modal.querySelector("#encryptionOutgoingSsl").addEventListener("change", () => {useSslForOutgoing.value = "true"})
 
     modal.querySelector("#accountSetupErrorText").addEventListener("click", () => {
-        switchPageById("errorDetails");
+        wizard.switchPageById("errorDetails");
         setupCurrentPage();
     });
 
     modal.querySelector("#errorDetailsErrorText").addEventListener("click", () => {
-        switchPageById("checkErrorsFound");
+        wizard.switchPageById("checkErrorsFound");
         setupCurrentPage();
     });
 
@@ -282,73 +270,147 @@ const registerEvents = () => {
     });
 }
 
+// Прочие утилы (залить в общий класс) TODO
+const fillForm = (data) => {
+    // Получаем все инпуты и селекты на странице
+    const inputs = modal.querySelectorAll('input, select');
+
+    // Проходимся по каждому элементу формы
+    inputs.forEach((input) => {
+        // Получаем ключ элемента (например, name или id)
+        const key = input.name || input.id;
+
+        // Если ключ существует в данных, заполняем элемент
+        if (data[key]) {
+            if (input.type === 'checkbox') {
+                input.checked = data[key];
+            } else if (input.type === 'radio') {
+                if (input.value === data[key]) {
+                    input.checked = true;
+                }
+            } else if (input.tagName === 'SELECT') {
+                input.value = data[key];
+            } else {
+                input.value = data[key];
+            }
+        }
+    });
+}
+
 //
 // Wizard (TODO: Перенести)
 //
 
-// TODO: Boolean, по нему будем определять, хочет ли пользователь сам менять текст кнопок
-let manuallyEditWizardButtons = true;
-let prevPageHandler = null;
-let nextPageHandler = null;
+class Wizard {
+    // TODO: Boolean, по нему будем определять, хочет ли пользователь сам менять текст кнопок
+    constructor(modal, prevPageHandler, nextPageHandler, manualEditButtons = false) {
+        this.modal = modal;
+        this.manuallyEditWizardButtons = manualEditButtons;
+        this.prevPageHandler = prevPageHandler;
+        this.nextPageHandler = nextPageHandler;
+        this.wizardPageIndex = 0;
+        this.wizardPages = [];
 
-const switchPage = (pageIndex) => {
-    wizardPages.forEach((item) => {
-        item.classList.remove("is-active");
-    });
-    wizardPages[pageIndex].classList.add("is-active");
-    wizardPageIndex = pageIndex;
-}
+        this.init();
+    }
 
-const switchPageById = (pageId) => {
-    const pageIndex = wizardPages.findIndex((item) => item.id === pageId);
-    switchPage(pageIndex);
-}
+    init() {
+        this.wizardPages = this.modal.querySelectorAll(".wizard-page");
+        const wizardBackButton = this.modal.querySelector("#wizardBack");
+        const wizardNextButton = this.modal.querySelector("#wizardNext");
+        this.modal.querySelector(".wizard-page").classList.add("is-active");
+        wizardBackButton.addEventListener("click", () => this.prevPage());
+        wizardNextButton.addEventListener("click", () => this.nextPage());
+        wizardBackButton.disabled = true;
+    }
 
-const nextPage = () => {
-    switchPage(wizardPageIndex + 1);
-    if (nextPageHandler) {
-        nextPageHandler();
-    } else {
-        updateWizardButtons();
+    switchPage(pageIndex) {
+        this.wizardPages.forEach((item) => {
+            item.classList.remove("is-active");
+        });
+        this.wizardPages[pageIndex].classList.add("is-active");
+        this.wizardPageIndex = pageIndex;
+    }
+
+    switchPageById(pageId) {
+        const pageIndex = this.wizardPages.findIndex((item) => item.id === pageId);
+        this.switchPage(pageIndex);
+    }
+
+    prevPage() {
+        this.switchPage(this.wizardPageIndex - 1);
+        if (this.prevPageHandler) {
+            this.prevPageHandler();
+        } else {
+            this.updateWizardButtons();
+        }
+    }
+
+    nextPage() {
+        if (this.nextPageHandler) {
+            this.nextPageHandler();
+            this.switchPage(this.wizardPageIndex + 1);
+        } else {
+            this.switchPage(this.wizardPageIndex + 1);
+            this.updateWizardButtons();
+        }
+    }
+
+    getCurrentPage() {
+        return this.wizardPages[this.wizardPageIndex];
+    }
+
+    updateWizardButtons() {
+        if (this.manuallyEditWizardButtons) return;
+
+        const wizardBackButton = this.modal.querySelector("#wizardBack");
+        const wizardNextButton = this.modal.querySelector("#wizardNext");
+
+        if (this.wizardPageIndex === this.wizardPages.length - 1) {
+            wizardNextButton.textContent = "Завершить";
+            wizardNextButton.classList.remove("btn-primary");
+            wizardNextButton.classList.add("btn-success");
+        } else {
+            wizardNextButton.textContent = "Далее >";
+            wizardNextButton.classList.remove("btn-success");
+            wizardNextButton.classList.add("btn-primary");
+        }
+
+        wizardBackButton.disabled = this.wizardPageIndex === 0;
+    }
+
+    getBackButton() {
+        return modal.querySelector("#wizardBack");
+    }
+
+    getNextButton() {
+        return modal.querySelector("#wizardNext");
     }
 }
 
-const getCurrentPage = () => {
-    return wizardPages[wizardPageIndex];
-}
+class EmailAccountModule {
+    static getDefaultSettings(emailAddress, password) {
+        const position = emailAddress.indexOf("@");
+        const serverName = emailAddress.substring(position + 1);
 
-const updateWizardButtons = () => {
-    if (manuallyEditWizardButtons) return;
+        return {
+            usernameIncoming: emailAddress,
+            usernameOutgoing: emailAddress,
+            passwordIncoming: password,
+            passwordOutgoing: password,
+            protocol: "IMAP",
+            serverIncoming: `imap.${serverName}`,
+            portIncoming: 993,
+            useSslForIncoming: true,
 
-    const wizardBackButton = document.getElementById("wizardBack");
-    const wizardNextButton = document.getElementById("wizardNext");
+            serverOutgoing: `smtp.${serverName}`,
+            portOutgoing: 465,
+            useSslForSend: true,
+            needAuthenticationBeforeSend: false,
 
-    if (wizardPageIndex === wizardPages.length - 1) {
-        wizardNextButton.textContent = "Завершить";
-        wizardNextButton.classList.remove("btn-primary");
-        wizardNextButton.classList.add("btn-success");
-    } else {
-        wizardNextButton.textContent = "Далее >";
-        wizardNextButton.classList.remove("btn-success");
-        wizardNextButton.classList.add("btn-primary");
+            timeout: 30,
+            saveMessageCopies: true,
+            message_ttl: 0,
+        };
     }
-
-    wizardBackButton.disabled = wizardPageIndex === 0;
-}
-
-const prevPage = () => {
-    switchPage(wizardPageIndex - 1);
-    if (prevPageHandler) {
-        prevPageHandler();
-    } else {
-        updateWizardButtons();
-    }
-}
-
-const getBackButton = () => {
-    return document.getElementById("wizardBack");
-}
-
-const getNextButton = () => {
-    return document.getElementById("wizardNext");
 }
