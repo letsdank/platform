@@ -31,6 +31,7 @@ public class ServiceAuthenticationSettingsObject {
     private String redirectUriCaption;                  // Alias: ПсевдонимАдресаПеренаправления
     private String clientIdCaption;                     // Alias: ПсевдонимИдентификатораПриложения
     private String clientSecretCaption;                 // Alias: ПсевдонимПароляПриложения
+    private String defaultRedirectUri;                  // Alias: АдресРегистрацииПоУмолчанию
 
     public void fillData(ServiceAuthenticationSettings settings) {
         setId(settings.getId());

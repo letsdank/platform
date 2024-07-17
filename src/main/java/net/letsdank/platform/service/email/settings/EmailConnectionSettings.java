@@ -3,6 +3,7 @@ package net.letsdank.platform.service.email.settings;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import net.letsdank.platform.service.auth.ServiceAuthenticationSettingsObject;
 import net.letsdank.platform.utils.mail.InternetMailProfile;
 
 @AllArgsConstructor
@@ -11,5 +12,5 @@ import net.letsdank.platform.utils.mail.InternetMailProfile;
 public class EmailConnectionSettings {
     private InternetMailProfile profile;
     private String mailServer;
-    private Object authorizationSettings; // TODO: Implement authorization settings
+    private ServiceAuthenticationSettingsObject authorizationSettings; // TODO: Implement authorization settings
 }

@@ -149,7 +149,7 @@ public class EmailAccountService {
             profile = formProfile(foundSettings, email, password);
         }
 
-        Object authorizationSettings = getAuthorizationSettingsForServer
+        ServiceAuthenticationSettingsObject authorizationSettings = getAuthorizationSettingsForServer
                 (foundSettings, mailServerName, mailDomain);
 
         return new EmailConnectionSettings(profile, mailServerName, authorizationSettings);

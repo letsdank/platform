@@ -88,7 +88,7 @@ public class EmailMailServerSettingsDeserializer extends StdDeserializer<EmailMa
     private InternationalString getInternationalString(JsonNode node, String key) {
         InternationalString result = new InternationalString();
         for (Map.Entry<String, JsonNode> entry : node.get(key).properties()) {
-            result.addValue(entry.getKey(), entry.getValue().toString());
+            result.addValue(entry.getKey(), entry.getValue().textValue());
         }
 
         return result;
@@ -108,7 +108,7 @@ public class EmailMailServerSettingsDeserializer extends StdDeserializer<EmailMa
     }
 
     private String getString(JsonNode node, String key) {
-        return node.has(key)? node.get(key).asText() : null;
+        return node.has(key) ? node.get(key).textValue() : null;
     }
 
     private <E extends Enum<E>> E getEnum(JsonNode node, Class<E> enumClass, String key) {
