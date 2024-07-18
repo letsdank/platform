@@ -33,10 +33,12 @@ document.addEventListener('shown.bs.modal', (e) => {
 });
 
 const next = () => {
+    showErrors([]);
     goToNextPage();
 }
 
 const back = () => {
+    showErrors([]);
     let prevPage = null;
 
     switch (wizard.getCurrentPage().dataset.wizardId) {
@@ -58,16 +60,19 @@ const back = () => {
 
 const goToNextPage = () => {
     let nextPage = null;
+    let isError = false;
 
     switch (wizard.getCurrentPage().dataset.wizardId) {
         case "accountSetup":
         case "errorDetails":
-            let isError = !validateFieldsOnAccountSetup();
-            if (!isError && !settingsFilled) {
+            isError = !validateFieldsOnAccountSetup();
+            if (isError) break;
+
+            if (!settingsFilled) {
                 fillEmailAccountSettings();
             }
 
-            if (!isError && authMethod === "oauth") {
+            if (authMethod === "oauth") {
                 checkFailedWithError = false;
                 nextPage = "appAuthSetup";
 
@@ -90,6 +95,8 @@ const goToNextPage = () => {
                         showErrors([{message: "Не найдены настройки авторизации почтового сервиса. Используйте авторизацию по паролю."}])
                         checkFailedWithError = true;
                         authMethod = "password";
+                        modal.querySelector("#passwordRadio").checked = true;
+                        modal.querySelector("#password").disabled = false;
                         nextPage = "accountSetup";
                     } else if (modal.querySelector("#authClientId").value) {
                         nextPage = "authorization";
@@ -101,7 +108,7 @@ const goToNextPage = () => {
             } else if (checkFailedWithError) {
                 nextPage = "accountSetupCheck";
                 wizard.switchPageById(nextPage);
-            } else if (!isError) {
+            } else {
                 if (setupMethod === "auto") {
                     nextPage = "accountSetupCheck";
                 } else {
@@ -479,10 +486,11 @@ const fillForm = (data) => {
 
 // ОбщегоНазначения
 const showErrors = (errors) => {
-    if (!errors || errors.length === 0) return;
+    if (!errors) return;
 
     const modalErrors = document.getElementById("modalErrors");
     modalErrors.innerHTML = "";
+    if (errors.length === 0) return;
 
     errors.forEach((error) => {
         modalErrors.innerHTML += `
