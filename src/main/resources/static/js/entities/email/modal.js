@@ -62,7 +62,7 @@ const goToNextPage = () => {
     switch (wizard.getCurrentPage().dataset.wizardId) {
         case "accountSetup":
         case "errorDetails":
-            const isError = !validateFieldsOnAccountSetup();
+            let isError = !validateFieldsOnAccountSetup();
             if (!isError && !settingsFilled) {
                 fillEmailAccountSettings();
             }
@@ -79,12 +79,59 @@ const goToNextPage = () => {
                         if (authSettings.authorizationUri !== null) {
                             setRegistrationAppDescription();
                         }
+
+                        modal.querySelector("#authClientId").value = authSettings.appIdentifier;
+                        modal.querySelector("#authClientSecret").value = authSettings.clientSecret;
                     }
+
+                    if (!modal.querySelector("#authRedirectUri").value ||
+                        authSettings && !authSettings.authorizationUri ||
+                        !codeAuthorizationAvailable()) {
+                        showErrors([{message: "Не найдены настройки авторизации почтового сервиса. Используйте авторизацию по паролю."}])
+                        checkFailedWithError = true;
+                        authMethod = "password";
+                        nextPage = "accountSetup";
+                    } else if (modal.querySelector("#authClientId").value) {
+                        nextPage = "authorization";
+                        setTimeout(() => authorizeToMailServer(), 100);
+                    }
+
+                    wizard.switchPageById(nextPage);
                 });
+            } else if (checkFailedWithError) {
+                nextPage = "accountSetupCheck";
+                wizard.switchPageById(nextPage);
+            } else if (!isError) {
+                if (setupMethod === "auto") {
+                    nextPage = "accountSetupCheck";
+                } else {
+                    if (modal.querySelector("#useForSend").checked || modal.querySelector("#useForReceive").checked) {
+                        nextPage = "mailServerSetup";
+                    } else {
+                        nextPage = "accountSetupCheck";
+                    }
+                }
+                wizard.switchPageById(nextPage);
+            }
+            break;
+        case "appAuthSetup":
+            isError = validateFieldsOnAppAuthSetup();
+            if (!isError) {
+                if (checkFailedWithError) {
+                    nextPage = "accountSetup";
+                } else {
+                    nextPage = "authorization";
+                    setTimeout(() => authorizeToMailServer(), 100);
+                }
+            }
+
+            wizard.switchPageById(nextPage);
+            break;
+        case "authorization":
+            if (!authSettings.registerDeviceUri) {
+
             }
     }
-
-    wizard.switchPageById(nextPage);
 }
 
 const setRegistrationAppDescription = () => {
@@ -141,6 +188,24 @@ const validateFieldsOnAccountSetup = () => {
         return false;
     }
 
+    return true;
+}
+
+const validateFieldsOnAppAuthSetup = () => {
+    return checkInput(modal.querySelector("#authRedirectUri")) || checkInput(modal.querySelector("#authClientId"));
+}
+
+const checkInput = (input) => {
+    if (input.value === "") {
+        const label = modal.querySelector("label[for='" + input.id + "'");
+        showErrors([
+            {
+                "fieldName": input.id,
+                "message": `Введите ${label.textContent}`,
+            }
+        ]);
+        return false;
+    }
     return true;
 }
 
@@ -272,10 +337,16 @@ const updateSettingsDaysToDelete = () => {
     modal.querySelector("#messageTtl").disabled = !modal.querySelector("#deleteMessageFromServer").checked;
 }
 
+const codeAuthorizationAvailable = () => {
+    authSettings = mailServerAuthSettings;
+    return authSettings && (authSettings.registerDeviceUri || authSettings.redirectUriWebClient)
+}
+
 const setElementsVisibility = () => {
     modal.querySelector("#saveMessageCopiesContainer").style.display =
         modal.querySelector("#protocol").value === "POP" ? "block" : "none";
 }
+
 
 const setupCurrentPageOnLoad = () => {
     // TODO: get parameter onlyAuth

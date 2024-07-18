@@ -54,7 +54,7 @@
       "redirectUriCaption": {
         "ru": "Все redirect_uri"
       },
-      "defaultRedirectUri": "https://localhost/oauth2",
+      "defaultRedirectUri": "http://localhost/oauth2",
       "clientIdDescription":{
         "ru": "4. Примите условия лицензионного соглашения и правил использования данных и нажмите на кнопку <b>Подключить сайт</b>.<br>5. На открывшейся странице <b>Редактирование приложения</b> в разделе <b>Дополнительные возможности</b> включите <b>Доступ к почтовому ящику по IMAP, POP и SMTP</b> и нажмите на кнопку <b>Сохранить изменения</b>.<br>6. В списке приложений нажмите на гиперссылку <b>Редактировать</b> напротив созданного приложения, скопируйте и вставьте в программу значения полей:"
       },
@@ -73,5 +73,220 @@
   "list.ru": "mail.ru",
   "inbox.ru": "mail.ru",
   "bk.ru": "mail.ru",
-  "mxs.mail.ru": "mail.ru"
+  "mxs.mail.ru": "mail.ru",
+  "yandex.ru": {
+    "services": [
+      {
+        "protocol": "SMTP",
+        "host": "smtp.yandex.ru",
+        "port": 465,
+        "encryption": "SSL"
+      },
+      {
+        "protocol": "SMTP",
+        "host": "smtp.yandex.ru",
+        "port": 587
+      },
+      {
+        "protocol": "IMAP",
+        "host": "imap.yandex.ru",
+        "port": 993,
+        "encryption": "SSL",
+        "mustBeEnabled": true
+      },
+      {
+        "protocol": "POP3",
+        "host": "pop.yandex.ru",
+        "port": 995,
+        "encryption": "SSL",
+        "mustBeEnabled": true
+      }
+    ],
+    "oauth": {
+      "authorizationUri": "https://oauth.yandex.ru/authorize",
+      "tokenExchangeUri": "https://oauth.yandex.ru/token",
+      "mailScope": [],
+      "usePKCE": true,
+      "useClientSecret": true,
+      "authorizationParameters": {
+        "force_confirm": true
+      },
+      "tokenExchangeParameters": "",
+      "redirectUriDescription": {
+        "ru": "1. <a target=\"_blank\" href=\"https://oauth.yandex.ru/client/new/\">Создайте новое приложение</a> в разделе <b>Мои приложения</b> на сервисе Яндекса.<br>2. В поле <b>Название вашего сервиса</b> введите название приложения или организации, например, \"Бухгалтерия ООО Ромашка\".<br>3. В разделе <b>Веб-сервисы</b>, поле <b>Redirect URI #1</b> скопируйте из поля ниже:"
+      },
+      "redirectUriCaption": {
+        "ru": "Redirect URI #1"
+      },
+      "defaultRedirectUri": "http://localhost/oauth2",
+      "webClientRedirectUri": "https://oauth.yandex.ru/verification_code",
+      "clientIdDescription": {
+        "ru": "4. В разделе <b>Доступ к данным</b> добавьте следующие виды доступа (в поле <b>Название доступа</b> введите по очереди следующие строки):<br> - mail:smtp (Отправка писем через Яндекс.Почту по протоколу SMTP),<br> - mail:imap_ro (Доступ на чтение писем в почтовом ящике),<br> - mail:imap_full (Чтение и удаление писем в почтовом ящике).<br>5. Нажмите на кнопку <b>Создать приложение</b> внизу страницы.<br>6. Скопируйте <b>ClientID</b> и <b>Client secret</b> в приложение в соответствующие поля ниже:"
+      },
+      "clientIdCaption": {
+        "ru": "ClientID"
+      },
+      "clientSecretDescription": {},
+      "clientSecretCaption": {
+        "ru": "Client secret"
+      }
+    }
+  },
+  "ya.ru": "yandex.ru",
+  "mx.yandex.net": "yandex.ru",
+  "mx.yandex.ru": "yandex.ru",
+  "gmail.com": {
+    "website": "https://support.google.com/mail/answer/7126229",
+    "services": [
+      {
+        "protocol": "SMTP",
+        "host": "smtp.gmail.com",
+        "port": 465,
+        "encryption": "SSL"
+      },
+      {
+        "protocol": "SMTP",
+        "host": "smtp.gmail.com",
+        "port": 587
+      },
+      {
+        "protocol": "IMAP",
+        "host": "imap.gmail.com",
+        "port": 993,
+        "encryption": "SSL",
+        "mustBeEnabled": true
+      },
+      {
+        "protocol": "POP3",
+        "host": "pop.gmail.com",
+        "port": 995,
+        "encryption": "SSL",
+        "mustBeEnabled": true
+      }
+    ],
+    "oauth": {
+      "authorizationUri": "https://accounts.google.com/o/oauth2/auth",
+      "deviceAuthorizationUri": "https://accounts.google.com/o/oauth2/device/code",
+      "tokenExchangeUri": "https://oauth2.googleapis.com/token",
+      "mailScope": [
+        "https://mail.google.com/"
+      ],
+      "usePKCE": true,
+      "useClientSecret": true,
+      "authorizationParameters": {
+        "access_type": "offline",
+        "prompt": "select_account"
+      },
+      "tokenExchangeParameters": "",
+      "redirectUriDescription": {},
+      "redirectUriCaption": {},
+      "defaultRedirectUri": "http://localhost/oauth2",
+      "clientIDDescription": {
+        "ru": "1. Активируйте платежный аккаунт в <a target=\"_blank\" href=\"https://console.cloud.google.com/billing\">Google Cloud</a>.<br>2. На странице <a href=\"https://console.cloud.google.com/apis/credentials\">Credentials</a> в выпадающем подменю сверху выберите проект или создайте новый по кнопке <b>Create project</b>.<br>3. Нажмите на кнопку <b>Create credentials</b>, выберите <b>OAuth client ID</b>.<br>3. В поле <b>Application</b> type выберите <b>Desktop App</b> и нажмите на кнопку <b>Create</b>.<br>4. Из открывшейся формы скопируйте и вставьте значения полей в приложение:"
+      },
+      "clientIdCaption": {
+        "en": "Client ID"
+      },
+      "clientSecretDescription": {},
+      "clientSecretCaption": {
+        "en": "Client secret"
+      }
+    }
+  },
+  "google.com": "gmail.com",
+  "googlemail.com": "gmail.com",
+  "office365.com": {
+    "website": "https://support.office.com/ru-ru/article/Настройка-pop-imap-и-smtp-для-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040",
+    "services": [
+      {
+        "protocol": "SMTP",
+        "host": "smtp-mail.outlook.com",
+        "port": 587
+      },
+      {
+        "protocol": "IMAP",
+        "host": "outlook.office365.com",
+        "port": 993,
+        "encryption": "SSL"
+      },
+      {
+        "protocol": "POP3",
+        "host": "outlook.office365.com",
+        "port": 995,
+        "encryption": "SSL",
+        "mustBeEnabled": true
+      }
+    ],
+    "oauth": {
+      "authorizationUri": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+      "deviceAuthorizationUri": "https://login.microsoftonline.com/common/oauth2/v2.0/devicecode",
+      "mailScope": [
+        "openid",
+        "offline_access",
+        "https://outlook.office.com/IMAP.AccessAsUser.All",
+        "https://outlook.office.com/POP.AccessAsUser.All",
+        "https://outlook.office.com/SMTP.Send"
+      ],
+      "usePKCE": true,
+      "useClientSecret": true,
+      "authorizationParameters": {
+        "prompt": "login",
+        "response_type": "query"
+      },
+      "tokenExchangeParameters": "",
+      "redirectUriDescription": {
+        "ru": "1. Перейдите в раздел <a target=\"_blank\" href=\"https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade\">Все службы - Регистрация приложений</a> и нажмите на кнопку Новая регистрация.<br>2. В поле <b>Имя</b> введите название приложения или организации, например \"Бухгалтерия ООО Ромашка\".<br>3. Переключатель <b>Поддерживаемые типы учетных записей</b> установите в положение <b>Учетные записи в любом каталоге организации (любой каталог Azure AD — мультитенантный) и персональные учетные записи Майкрософт (например, Skype, Xbox)</b>.<br>4. Выберите <b>URI перенаправления</b>: платформа - <b>Общедоступный/собственный клиент (мобильный или классический)</b>, адрес перенаправления (URI) скопируйте из поля ниже:"
+      },
+      "redirectUriCaption": {
+        "ru": "URI (перенаправления)"
+      },
+      "defaultRedirectUri": "http://localhost/oauth2",
+      "webClientRedirectUri": "http://localhost/oauth2",
+      "clientIDDescription": {
+        "ru": "5. Нажмите на кнопку <b>Зарегистрировать</b> (внизу страницы).<br>6. В резделе <b>Обзор - Основное</b> найдите <b>Идентификатор приложения</b> и скопируйте и вставьте сюда:"
+      },
+      "clientIdCaption": {
+        "ru": "Идентификатор приложения"
+      },
+      "clientSecretDescription": {
+        "ru": ""
+      },
+      "clientSecretCaption": {
+        "ru": "Значение (секрета)"
+      }
+    }
+  },
+  "outlook.com": "office365.com",
+  "hotmail.com": "office365.com",
+  "live.com": "office365.com",
+  "outlook-com.olc.protection.outlook.com": "office365.com",
+  "mx1.hosting.reg.ru": {
+    "website": "https://www.reg.ru/support/pochta_general/pochta-reg-ru/nastroyka-pochty-reg-ru/obschie-nastroyki-dlya-vseh-pochtovyh-klientov",
+    "services": [
+      {
+        "protocol": "SMTP",
+        "host": "mail.hosting.reg.ru",
+        "port": 465,
+        "encryption": "SSL"
+      },
+      {
+        "protocol": "SMTP",
+        "host": "mail.hosting.reg.ru",
+        "port": 587
+      },
+      {
+        "protocol": "IMAP",
+        "host": "mail.hosting.reg.ru",
+        "port": 993,
+        "encryption": "SSL"
+      },
+      {
+        "protocol": "POP3",
+        "host": "mail.hosting.reg.ru",
+        "port": 995,
+        "encryption": "SSL"
+      }
+    ]
+  },
+  "mx2.hosting.reg.ru": "mx1.hosting.reg.ru"
 }
