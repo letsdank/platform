@@ -87,6 +87,7 @@ public class EmailMailServerSettingsDeserializer extends StdDeserializer<EmailMa
 
     private InternationalString getInternationalString(JsonNode node, String key) {
         InternationalString result = new InternationalString();
+        if (!node.has(key)) return result;
         for (Map.Entry<String, JsonNode> entry : node.get(key).properties()) {
             result.addValue(entry.getKey(), entry.getValue().textValue());
         }
