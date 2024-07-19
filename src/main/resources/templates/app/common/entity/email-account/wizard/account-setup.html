@@ -1,0 +1,80 @@
+<th:block th:fragment="page">
+  <div class="wizard-page" data-wizard-id="accountSetup">
+    <h5 class="mb-3">Введите настройки почты</h5>
+    <div class="d-flex align-items-start gap-3 mb-3" id="accountSetupError">
+      <img src="/img/warning-32.png" alt="Warning" class="img-fluid">
+      <div class="d-flex flex-column">
+        <span id="accountSetupErrorText">Произошла ошибка. Попробуйте позднее.</span>
+        <a href="#" class="" target="_blank">Нужна помощь?</a>
+      </div>
+    </div>
+    <div class="d-flex flex-column mb-3">
+      <div class="row mb-3 mx-1">
+        <label class="col-sm-3 col-form-label" for="address">Адрес почты:</label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control" id="address" th:field="*{address}">
+        </div>
+      </div>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <div class="input-group-text bg-transparent border-0">
+            <input type="radio" id="passwordRadio" aria-label="Ввести пароль" name="authType" checked>
+            <label for="passwordRadio" class="mx-1">Ввести пароль:</label>
+            <label for="password" class="mx-1 visually-hidden">Ввести пароль</label>
+          </div>
+        </div>
+        <input type="password" class="form-control col-sm-3" id="password">
+
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary show-password" type="button">Показать</button>
+        </div>
+        <input type="hidden" id="passwordOutgoing" name="passwordOutgoing">
+        <input type="hidden" id="passwordIncoming" name="passwordIncoming">
+      </div>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <div class="input-group-text bg-transparent border-0">
+            <input type="radio" id="authServiceRadio" name="authType" aria-label="Авторизоваться на почтовом сервисе">
+            <label for="authServiceRadio" class="mx-1">Авторизоваться на почтовом сервисе</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex flex-column mb-3">
+      <h4>Почта будет использоваться</h4>
+      <div class="d-flex flex-row">
+        <div class="d-flex form-check gap-1">
+          <input type="checkbox" class="form-check-input" id="useForSend" th:field="*{useForSend}" aria-label="Для отправки писем">
+          <label for="useForSend" class="mx-1 form-check-label">Для отправки писем</label>
+        </div>
+        <div class="d-flex form-check gap-1">
+          <input type="checkbox" class="form-check-input" id="useForReceive" th:field="*{useForReceive}" aria-label="Для получения писем">
+          <label for="useForReceive" class="mx-1 form-check-label">Для получения писем</label>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex flex-row mb-3 gap-2" id="accountSetupAccess">
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="accountTypeShared" checked>
+        <label class="form-check-label" for="accountTypeShared">
+          Всеми пользователями (общая почта)
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="flexRadioDefault" id="accountTypePersonal">
+        <label class="form-check-label" for="accountTypePersonal">
+          Только мной
+        </label>
+      </div>
+    </div>
+    <div class="d-flex flex-column mb-3">
+      <div class="row mb-3 mx-1">
+        <label class="col-sm-3 col-form-label" for="senderName">Имя отправителя</label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control" id="senderName">
+          <div class="form-text">Например, Ваше имя или название организации.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</th:block>
