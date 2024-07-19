@@ -1,0 +1,32 @@
+<th:block th:fragment="page">
+<div class="wizard-page" data-wizard-id="appAuthSetup">
+    <p class="mb-6">Для авторизации средствами почтового сервиса необходимо
+        зарегистрировать это приложение в почтовом сервисе.</p>
+
+    <p class="mb-3" id="redirectUriDescription">Из настроек регистрации приложения заполните следующие поля:</p>
+
+    <div class="row mb-3 mx-1">
+        <label class="col-sm-5 col-form-label" for="authRedirectUri">Адрес перенаправления (redirect_uri):</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" id="authRedirectUri">
+        </div>
+    </div>
+    <p class="mb-3" id="clientIdDescription"></p>
+    <div class="row mb-3 mx-1">
+        <label class="col-sm-5 col-form-label" for="authClientId">Идентификатор приложения (client_id):</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" id="authClientId">
+        </div>
+    </div>
+    <p class="mb-3" id="clientSecretDescription"></p>
+    <div class="row mb-3 mx-1">
+        <label class="col-sm-5 col-form-label" for="authClientSecret">Пароль приложения (client_secret):</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" id="authClientSecret">
+        </div>
+    </div>
+    <p id="additionalDescription">У некоторых сервисов новое зарегистрированное приложение становится
+        доступным не сразу. Рекомендуется после регистрации подождать несколько
+        минут, прежде чем продолжить настройку.</p>
+</div>
+</th:block>

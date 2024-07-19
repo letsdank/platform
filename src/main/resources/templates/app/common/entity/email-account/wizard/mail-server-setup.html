@@ -1,0 +1,93 @@
+<th:block th:fragment="page">
+<div class="wizard-page" data-wizard-id="mailServerSetup">
+    <label class="d-flex flex-row mb-3">
+        <span class="col-sm-3 col-form-label">Тип учетной записи:</span>
+        <select class="form-select" id="protocol" aria-label="Тип учетной записи">
+            <option disabled selected hidden></option>
+            <option value="POP">POP</option>
+            <option value="IMAP">IMAP</option>
+        </select>
+    </label>
+    <div class="d-flex flex-row gap-3 align-items-center">
+        <label class="col-sm-3 col-form-label" for="serverIncoming">
+            <span id="serverIncomingName">Сервер IMAP:</span>
+            <input type="text" class="form-control" id="serverIncoming" th:field="*{serverIncoming}">
+        </label>
+        <label class="col-sm-3 col-form-label" for="portIncoming">
+            Порт:
+            <input type="text" class="form-control" id="portIncoming" th:field="*{portIncoming}">
+        </label>
+        <label class="col-sm-3 col-form-label">
+            <div class="mb-2">Шифрование:</div>
+            <input type="hidden" th:field="*{useSslForReceive}" id="useSslForReceive">
+            <div class="d-flex flex-row gap-2">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="encryptionIncoming" id="encryptionIncomingStartTls" checked>
+                    <label class="form-check-label" for="encryptionIncomingStartTls">
+                        STARTTLS
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="encryptionIncoming" id="encryptionIncomingSsl">
+                    <label class="form-check-label" for="encryptionIncomingSsl">
+                        SSL
+                    </label>
+                </div>
+
+            </div>
+        </label>
+    </div>
+    <div class="d-flex flex-row gap-3 mb-3 align-items-center">
+        <label class="col-sm-3 col-form-label" for="serverOutgoing">
+            Сервер SMTP:
+            <input type="text" class="form-control" id="serverOutgoing" th:field="*{serverOutgoing}">
+        </label>
+        <label class="col-sm-3 col-form-label" for="portOutgoing">
+            Порт:
+            <input type="text" class="form-control" id="portOutgoing" th:field="*{portOutgoing}">
+        </label>
+        <label class="col-sm-3 col-form-label">
+            <div class="mb-2">Шифрование:</div>
+            <input type="hidden" th:field="*{useSslForSend}" id="useSslForSend">
+            <div class="d-flex flex-row gap-2">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="encryptionOutgoing" id="encryptionOutgoingStartTls" checked>
+                    <label class="form-check-label" for="encryptionOutgoingStartTls">
+                        STARTTLS
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="encryptionOutgoing" id="encryptionOutgoingSsl">
+                    <label class="form-check-label" for="encryptionOutgoingSsl">
+                        SSL
+                    </label>
+                </div>
+            </div>
+        </label>
+    </div>
+    <div id="saveMessageCopiesContainer">
+        <div class="row mb-3">
+            <div class="col-sm-6">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="saveMessageCopies" th:field="*{saveMessageCopies}">
+                    <label class="form-check-label" for="saveMessageCopies">
+                        Оставлять копии писем на сервере
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input mt-2" id="deleteMessageFromServer">
+                <label class="form-check-label d-flex align-items-baseline gap-2" for="deleteMessageFromServer">
+                    Удалять письма с сервера через:
+                    <label class="d-flex flex-row gap-2 align-items-center">
+                        <input type="number" id="messageTtl" class="form-control col-sm-2" th:field="*{messageTtl}">
+                        <span>дней</span>
+                    </label>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+</th:block>
