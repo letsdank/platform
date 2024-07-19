@@ -15,6 +15,9 @@ let needConfirmationToClose = false;
 let mailServerAuthSettings = null;
 let authSettings = null;
 
+let oauthSettings = null;
+let taskId = null;
+
 let elementMap = {};
 const els = (id) => elementMap[id];
 
@@ -74,7 +77,8 @@ const back = () => {
     setupCurrentPage();
 }
 
-const goToNextPage = () => {
+const goToNextPage = (action = null) => {
+    let currentPage = wizard.getCurrentPage().dataset.wizardId;
     let nextPage = null;
     let isError = false;
 
@@ -152,8 +156,83 @@ const goToNextPage = () => {
             break;
         case "authorization":
             if (!authSettings.registerDeviceUri) {
-
+                if (!obtainOAuthKey(oauthSettings.confirmCode, authSettings.grantKeyUri, "Platform:SMB")) {
+                    checkFailedWithError = true;
+                }
             }
+
+            if (onlyAuth) {
+                needConfirmationToClose = false;
+                if (checkFailedWithError) {
+                    closeModal(false);
+                } else {
+                    writeAuthSettings();
+                    closeModal(true);
+                }
+                return;
+            }
+
+            if (checkFailedWithError) {
+                nextPage = "checkErrorsFound";
+            } else {
+                if (setupMethod === "auto") {
+                    nextPage = "accountSetupCheck";
+                } else {
+                    if (els("useForSend").checked || els("useForReceive").checked) {
+                        nextPage = "mailServerSetup";
+                    } else {
+                        nextPage = "accountSetupCheck";
+                    }
+                }
+            }
+
+            wizard.switchPageById(nextPage);
+            break;
+        case "mailServerSetup":
+            nextPage = "accountSetupCheck";
+            wizard.switchPageById(nextPage);
+            break;
+        case "accountSetupCheck":
+            if (action === null) {
+                if (checkFailedWithError) {
+                    nextPage = "accountSetup";
+                } else if (checkSkipped && setupMethod === "auto") {
+                    setupMethod = "manually";
+                    nextPage = "mailServerSetup";
+                } else {
+                    nextPage = "accountSetupSuccess";
+                }
+                checkSkipped = false;
+            } else {
+                cancelTask(taskId);
+                taskId = "";
+                checkSkipped = true;
+                setupCurrentPage();
+                return;
+            }
+
+            wizard.switchPageById(nextPage);
+            break;
+        default:
+            break;
+    }
+
+    if (isError) {
+        return;
+    }
+
+    if (nextPage === null) {
+        closeModal(true);
+    } else {
+        setupCurrentPage();
+    }
+
+    if (nextPage === "accountSetupCheck") {
+        if (setupMethod === "auto") {
+            setTimeout(() => {setupConnectionSettingsAutomatically()}, 100);
+        } else {
+            setTimeout(() => {runSettingsValidation()}, 100);
+        }
     }
 }
 
@@ -370,7 +449,6 @@ const setElementsVisibility = () => {
         els("protocol").value === "POP" ? "block" : "none";
 }
 
-
 const setupCurrentPageOnLoad = () => {
     // TODO: get parameter onlyAuth
     // if (onlyAuth) { ... }
@@ -453,6 +531,14 @@ const registerEvents = () => {
     els("passwordRadio").addEventListener("change", () => {authMethod = "password"})
 }
 
+const setupConnectionSettingsAutomatically = () => {
+    // TODO
+}
+
+const runSettingsValidation = () => {
+    // TODO
+}
+
 //
 // SERVER
 //
@@ -471,6 +557,15 @@ const getMailServerSettings = async () => {
 const getMailServerAuthSettings = async () => {
     const data = await getMailServerSettings();
     return data.authorizationSettings;
+}
+
+const obtainOAuthKey = (confirmCode, grantKeyUri, appCaption = "") => {
+    // TODO
+    return false;
+}
+
+const writeAuthSettings = () => {
+
 }
 
 // Прочие утилы (залить в общий класс) TODO
