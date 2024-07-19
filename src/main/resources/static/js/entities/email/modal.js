@@ -15,9 +15,25 @@ let needConfirmationToClose = false;
 let mailServerAuthSettings = null;
 let authSettings = null;
 
+let elementMap = {};
+const els = (id) => elementMap[id];
+
 document.addEventListener('shown.bs.modal', (e) => {
     modal = e.target;
-    modal.querySelector("#gotoSettings").style.display = "none";
+    elementMap = ((parent) => {
+        const elementMap = {};
+        const elements = parent.querySelectorAll('*');
+
+        elements.forEach((element) => {
+            if (element.id) {
+                elementMap[element.id] = element;
+            }
+        });
+
+        return elementMap;
+    })(modal);
+    
+    els("gotoSettings").style.display = "none";
     const modalTitle = modal.querySelector('.modal-title');
     modalTitle.textContent = "Настройка почты";
 
@@ -27,7 +43,7 @@ document.addEventListener('shown.bs.modal', (e) => {
     setupMethod = "auto"; // also can be "manually", but with safe mode TODO
     authMethod = "password";
 
-    modal.querySelector("#accountSetupAccess").classList.add("d-none");
+    els("accountSetupAccess").classList.add("d-none");
     setTimeout(() => setupCurrentPageOnLoad(), 100);
     registerEvents();
 });
@@ -85,20 +101,20 @@ const goToNextPage = () => {
                             setRegistrationAppDescription();
                         }
 
-                        modal.querySelector("#authClientId").value = authSettings.appIdentifier;
-                        modal.querySelector("#authClientSecret").value = authSettings.clientSecret;
+                        els("authClientId").value = authSettings.appIdentifier;
+                        els("authClientSecret").value = authSettings.clientSecret;
                     }
 
-                    if (!modal.querySelector("#authRedirectUri").value ||
+                    if (!els("authRedirectUri").value ||
                         authSettings && !authSettings.authorizationUri ||
                         !codeAuthorizationAvailable()) {
                         showErrors([{message: "Не найдены настройки авторизации почтового сервиса. Используйте авторизацию по паролю."}])
                         checkFailedWithError = true;
                         authMethod = "password";
-                        modal.querySelector("#passwordRadio").checked = true;
-                        modal.querySelector("#password").disabled = false;
+                        els("passwordRadio").checked = true;
+                        els("password").disabled = false;
                         nextPage = "accountSetup";
-                    } else if (modal.querySelector("#authClientId").value) {
+                    } else if (els("authClientId").value) {
                         nextPage = "authorization";
                         setTimeout(() => authorizeToMailServer(), 100);
                     }
@@ -112,7 +128,7 @@ const goToNextPage = () => {
                 if (setupMethod === "auto") {
                     nextPage = "accountSetupCheck";
                 } else {
-                    if (modal.querySelector("#useForSend").checked || modal.querySelector("#useForReceive").checked) {
+                    if (els("useForSend").checked || els("useForReceive").checked) {
                         nextPage = "mailServerSetup";
                     } else {
                         nextPage = "accountSetupCheck";
@@ -143,7 +159,7 @@ const goToNextPage = () => {
 
 const setRegistrationAppDescription = () => {
     authSettings = mailServerAuthSettings;
-    const authRedirectUri = modal.querySelector("#authRedirectUri");
+    const authRedirectUri = els("authRedirectUri");
 
     if (authSettings === null) return;
     authRedirectUri.value = authSettings.redirectUriWebClient; // По умолчанию это веб-клиент
@@ -158,10 +174,10 @@ const setRegistrationAppDescription = () => {
         return;
     }
 
-    modal.querySelector("#redirectUriDescription").innerHTML = authSettings.redirectUriDescription;
-    modal.querySelector("#clientIdDescription").innerHTML = authSettings.clientIdDescription;
-    modal.querySelector("#clientSecretDescription").innerHTML = authSettings.clientSecretDescription;
-    modal.querySelector("#additionalDescription").innerHTML = authSettings.additionalDescription;
+    els("redirectUriDescription").innerHTML = authSettings.redirectUriDescription;
+    els("clientIdDescription").innerHTML = authSettings.clientIdDescription;
+    els("clientSecretDescription").innerHTML = authSettings.clientSecretDescription;
+    els("additionalDescription").innerHTML = authSettings.additionalDescription;
 
     modal.querySelector("label[for='authClientSecret']").parentElement
         .style.display = authSettings.useClientSecret ? 'flex' : 'none';
@@ -175,7 +191,7 @@ const setRegistrationAppDescription = () => {
 }
 
 const validateFieldsOnAccountSetup = () => {
-    const address = modal.querySelector("#address");
+    const address = els("address");
     if (address.value === "") {
         showErrors([
             {
@@ -199,7 +215,7 @@ const validateFieldsOnAccountSetup = () => {
 }
 
 const validateFieldsOnAppAuthSetup = () => {
-    return checkInput(modal.querySelector("#authRedirectUri")) || checkInput(modal.querySelector("#authClientId"));
+    return checkInput(els("authRedirectUri")) || checkInput(els("authClientId"));
 }
 
 const checkInput = (input) => {
@@ -217,28 +233,28 @@ const checkInput = (input) => {
 }
 
 const fillEmailAccountSettings = () => {
-    const data = EmailAccountModule.getDefaultSettings(modal.querySelector("#address").value, modal.querySelector("#password").value);
+    const data = EmailAccountModule.getDefaultSettings(els("address").value, els("password").value);
     fillForm(data);
-    const accountName = modal.querySelector("#accountName");
+    const accountName = els("accountName");
     if (accountName.value === "") {
-        accountName.value = modal.querySelector("#address").value;
+        accountName.value = els("address").value;
     }
 
     settingsFilled = true;
 
-    if (data.useSslForIncoming) modal.querySelector("#encryptionIncomingSsl").checked = true;
-    else modal.querySelector("#encryptionIncomingStartTls").checked = true;
+    if (data.useSslForIncoming) els("encryptionIncomingSsl").checked = true;
+    else els("encryptionIncomingStartTls").checked = true;
 
-    if (data.useSslForSend) modal.querySelector("#encryptionOutgoingSsl").checked = true;
-    else modal.querySelector("#encryptionOutgoingStartTls").checked = true;
+    if (data.useSslForSend) els("encryptionOutgoingSsl").checked = true;
+    else els("encryptionOutgoingStartTls").checked = true;
 }
 
 const setupCurrentPage = () => {
     const currentPage = wizard.getCurrentPage();
     const backButton = wizard.getBackButton();
     const nextButton = wizard.getNextButton();
-    const cancelButton = modal.querySelector("#cancelButton");
-    const gotoSettings = modal.querySelector("#gotoSettings");
+    const cancelButton = els("cancelButton");
+    const gotoSettings = els("gotoSettings");
 
     switch (currentPage.dataset.wizardId) {
         case "accountSetup":
@@ -254,12 +270,12 @@ const setupCurrentPage = () => {
             gotoSettings.textContent = "Настроить вручную";
 
             if (!checkFailedWithError) {
-                modal.querySelector("#accountSetupError").classList.add("d-none");
+                els("accountSetupError").classList.add("d-none");
             }
 
             gotoSettings.style.display = checkFailedWithError ? "block" : "none";
 
-            modal.querySelector("#password").disabled = authMethod !== "password";
+            els("password").disabled = authMethod !== "password";
 
             break;
         case "mailServerSetup":
@@ -322,8 +338,8 @@ const setupCurrentPage = () => {
             gotoSettings.style.display = "none";
             gotoSettings.textContent = contextMode ? "Настроить вручную" : "Перейти к настройкам";
 
-            const email = modal.querySelector("#address").value;
-            modal.querySelector("#accountSetupSuccessMessage").innerHTML =
+            const email = els("address").value;
+            els("accountSetupSuccessMessage").innerHTML =
                 `Настройка почты ${email}<br>успешно завершена.`;
 
             break;
@@ -340,8 +356,8 @@ const setupCurrentPage = () => {
 }
 
 const updateSettingsDaysToDelete = () => {
-    modal.querySelector("#deleteMessageFromServer").disabled = !modal.querySelector("#saveMessageCopies").checked;
-    modal.querySelector("#messageTtl").disabled = !modal.querySelector("#deleteMessageFromServer").checked;
+    els("deleteMessageFromServer").disabled = !els("saveMessageCopies").checked;
+    els("messageTtl").disabled = !els("deleteMessageFromServer").checked;
 }
 
 const codeAuthorizationAvailable = () => {
@@ -350,8 +366,8 @@ const codeAuthorizationAvailable = () => {
 }
 
 const setElementsVisibility = () => {
-    modal.querySelector("#saveMessageCopiesContainer").style.display =
-        modal.querySelector("#protocol").value === "POP" ? "block" : "none";
+    els("saveMessageCopiesContainer").style.display =
+        els("protocol").value === "POP" ? "block" : "none";
 }
 
 
@@ -380,61 +396,61 @@ const initializeCommonControls = (modal) => {
 }
 
 const registerEvents = () => {
-    modal.querySelector("#password").addEventListener("keyup", (e) => {
+    els("password").addEventListener("keyup", (e) => {
         // TODO: Может это в контроллер вставим?
-        modal.querySelector("#passwordOutgoing").value = e.target.value;
-        modal.querySelector("#passwordIncoming").value = e.target.value;
+        els("passwordOutgoing").value = e.target.value;
+        els("passwordIncoming").value = e.target.value;
     });
 
-    modal.querySelector("#saveMessageCopies").addEventListener("change", () => {
+    els("saveMessageCopies").addEventListener("change", () => {
         updateSettingsDaysToDelete();
     });
 
-    modal.querySelector("#deleteMessageFromServer").addEventListener("change", () => {
+    els("deleteMessageFromServer").addEventListener("change", () => {
         updateSettingsDaysToDelete();
     });
 
-    modal.querySelector("#address").addEventListener("keyup", () => {
+    els("address").addEventListener("keyup", () => {
         settingsFilled = false;
         needConfirmationToClose = true;
     });
 
-    modal.querySelector("#senderName").addEventListener("keyup", () => {
+    els("senderName").addEventListener("keyup", () => {
         needConfirmationToClose = true;
     });
 
-    modal.querySelector("#protocol").addEventListener("change", (e) => {
+    els("protocol").addEventListener("change", (e) => {
         setElementsVisibility();
-        modal.querySelector("#serverIncomingName").textContent = `Сервер ${e.target.value}:`;
+        els("serverIncomingName").textContent = `Сервер ${e.target.value}:`;
     });
 
-    const useSslForIncoming = modal.querySelector("#useSslForReceive");
-    const useSslForOutgoing = modal.querySelector("#useSslForSend");
-    modal.querySelector("#encryptionIncomingStartTls").addEventListener("change", () => {useSslForIncoming.value = "false"})
-    modal.querySelector("#encryptionIncomingSsl").addEventListener("change", () => {useSslForIncoming.value = "true"})
-    modal.querySelector("#encryptionOutgoingStartTls").addEventListener("change", () => {useSslForOutgoing.value = "false"})
-    modal.querySelector("#encryptionOutgoingSsl").addEventListener("change", () => {useSslForOutgoing.value = "true"})
+    const useSslForIncoming = els("useSslForReceive");
+    const useSslForOutgoing = els("useSslForSend");
+    els("encryptionIncomingStartTls").addEventListener("change", () => {useSslForIncoming.value = "false"})
+    els("encryptionIncomingSsl").addEventListener("change", () => {useSslForIncoming.value = "true"})
+    els("encryptionOutgoingStartTls").addEventListener("change", () => {useSslForOutgoing.value = "false"})
+    els("encryptionOutgoingSsl").addEventListener("change", () => {useSslForOutgoing.value = "true"})
 
-    modal.querySelector("#accountSetupErrorText").addEventListener("click", () => {
+    els("accountSetupErrorText").addEventListener("click", () => {
         wizard.switchPageById("errorDetails");
         setupCurrentPage();
     });
 
-    modal.querySelector("#errorDetailsErrorText").addEventListener("click", () => {
+    els("errorDetailsErrorText").addEventListener("click", () => {
         wizard.switchPageById("checkErrorsFound");
         setupCurrentPage();
     });
 
-    modal.querySelector("#passwordRadio").addEventListener("change", () => {
-        modal.querySelector("#password").disabled = false;
+    els("passwordRadio").addEventListener("change", () => {
+        els("password").disabled = false;
     });
 
-    modal.querySelector("#authServiceRadio").addEventListener("change", () => {
-        modal.querySelector("#password").disabled = true;
+    els("authServiceRadio").addEventListener("change", () => {
+        els("password").disabled = true;
     });
 
-    modal.querySelector("#authServiceRadio").addEventListener("change", () => {authMethod = "oauth"})
-    modal.querySelector("#passwordRadio").addEventListener("change", () => {authMethod = "password"})
+    els("authServiceRadio").addEventListener("change", () => {authMethod = "oauth"})
+    els("passwordRadio").addEventListener("change", () => {authMethod = "password"})
 }
 
 //
@@ -589,8 +605,8 @@ class Wizard {
 
     init() {
         this.wizardPages = this.modal.querySelectorAll(".wizard-page");
-        const wizardBackButton = this.modal.querySelector("#wizardBack");
-        const wizardNextButton = this.modal.querySelector("#wizardNext");
+        const wizardBackButton = els("wizardBack");
+        const wizardNextButton = els("wizardNext");
         this.modal.querySelector(".wizard-page").classList.add("is-active");
         wizardBackButton.addEventListener("click", () => this.prevPage());
         wizardNextButton.addEventListener("click", () => this.nextPage());
@@ -635,8 +651,8 @@ class Wizard {
     updateWizardButtons() {
         if (this.manuallyEditWizardButtons) return;
 
-        const wizardBackButton = this.modal.querySelector("#wizardBack");
-        const wizardNextButton = this.modal.querySelector("#wizardNext");
+        const wizardBackButton = els("wizardBack");
+        const wizardNextButton = els("wizardNext");
 
         if (this.wizardPageIndex === this.wizardPages.length - 1) {
             wizardNextButton.textContent = "Завершить";
@@ -652,11 +668,11 @@ class Wizard {
     }
 
     getBackButton() {
-        return modal.querySelector("#wizardBack");
+        return els("wizardBack");
     }
 
     getNextButton() {
-        return modal.querySelector("#wizardNext");
+        return els("wizardNext");
     }
 }
 
