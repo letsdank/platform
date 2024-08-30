@@ -5,16 +5,20 @@ import net.letsdank.platform.utils.url.URLUtils;
 
 // Класс для работы с Punycode
 public class PunycodeUtils {
-    // Alias:
     public static String convertToPunycode(String input) {
+        return convertToPunycode(input, "\\.");
+    }
+
+    // Alias:
+    public static String convertToPunycode(String input, String delimiter) {
         input = input.trim().toLowerCase();
         URLInfo url = URLUtils.getURLInfo(input);
         String host = url.getHost();
-        String encoded = encodePunycodeWithDelimiter(host);
+        String encoded = encodePunycodeWithDelimiter(host, delimiter);
         String result = input.replace(host, encoded);
 
         String login = url.getLogin();
-        String encodedLogin = encodePunycodeWithDelimiter(login);
+        String encodedLogin = encodePunycodeWithDelimiter(login, delimiter);
         result = result.replace(login, encodedLogin);
         return result;
     }
@@ -276,6 +280,10 @@ public class PunycodeUtils {
         return buffer.toString();
     }
 
+    public static String punycodeToString(String str) {
+        return punycodeToString(str, "\\.");
+    }
+
     // Alias: PunycodeВСтроку
     // Декодирует строку по алгоритму Punycode
     //
@@ -285,14 +293,14 @@ public class PunycodeUtils {
     // Возвращаемое значение:
     //  Строка - декодированная строка
     //
-    public static String punycodeToString(String str) {
+    public static String punycodeToString(String str, String delimiter) {
         URLInfo url  = URLUtils.getURLInfo(str);
         String host = url.getHost();
-        String decodedHost = decodePunycodeWithDelimiter(host);
+        String decodedHost = decodePunycodeWithDelimiter(host, delimiter);
         String result = str.replace(host, decodedHost);
 
         String login = url.getLogin();
-        String decodedLogin = decodePunycodeWithDelimiter(login);
+        String decodedLogin = decodePunycodeWithDelimiter(login, delimiter);
         result = result.replace(login, decodedLogin);
         return result;
     }

@@ -75,5 +75,5 @@ FROM vt_banks_without_parents
 ORDER BY is_region DESC,
          code;
 
-DROP TABLE IF EXISTS vt_bank_without_parents;
+DROP TABLE IF EXISTS vt_banks_without_parents;
 DROP TABLE IF EXISTS vt_bank_classifier;
