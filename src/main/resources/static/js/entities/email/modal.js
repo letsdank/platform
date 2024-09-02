@@ -638,11 +638,11 @@ const isValidEmail = (email, allowLocalAddresses = false) => {
 
     // Split email into local part and domain
     const atIndex = email.indexOf('@');
-    const localPart = email.substring(0, atIndex);
+    const localName = email.substring(0, atIndex);
     const domain = email.substring(atIndex + 1);
 
     // Check for non-empty local part and domain, and length limits
-    if (localPart === '' || domain === '' || localPart.length > 64 || domain.length > 255) return false;
+    if (localName === '' || domain === '' || localName.length > 64 || domain.length > 255) return false;
     // Check for no special characters at start or end of domain
     if (hasSpecialCharsAtStartOrEnd(domain, specialChars)) return false;
     // Check for at least one dot in domain, unless allowing local addresses
