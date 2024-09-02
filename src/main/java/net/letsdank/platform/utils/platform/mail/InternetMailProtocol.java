@@ -1,4 +1,4 @@
-package net.letsdank.platform.utils.mail;
+package net.letsdank.platform.utils.platform.mail;
 
 public enum InternetMailProtocol {
     IMAP,

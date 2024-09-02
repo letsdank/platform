@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import net.letsdank.platform.service.email.server.*;
-import net.letsdank.platform.utils.mail.InternetMailProtocol;
+import net.letsdank.platform.utils.platform.mail.InternetMailProtocol;
 
 import java.io.IOException;
 import java.util.*;

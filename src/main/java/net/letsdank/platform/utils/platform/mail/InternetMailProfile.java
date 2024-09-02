@@ -1,4 +1,4 @@
-package net.letsdank.platform.utils.mail;
+package net.letsdank.platform.utils.platform.mail;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

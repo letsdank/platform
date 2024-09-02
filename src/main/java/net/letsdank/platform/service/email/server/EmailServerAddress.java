@@ -3,7 +3,7 @@ package net.letsdank.platform.service.email.server;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.letsdank.platform.utils.mail.InternetMailProtocol;
+import net.letsdank.platform.utils.platform.mail.InternetMailProtocol;
 
 @NoArgsConstructor
 @Getter
