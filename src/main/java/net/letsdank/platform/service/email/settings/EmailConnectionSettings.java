@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import net.letsdank.platform.service.auth.ServiceAuthenticationSettingsObject;
-import net.letsdank.platform.utils.mail.InternetMailProfile;
+import net.letsdank.platform.utils.platform.mail.InternetMailProfile;
 
 @AllArgsConstructor
 @Getter

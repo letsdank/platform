@@ -1,4 +1,4 @@
-package net.letsdank.platform.utils.mail;
+package net.letsdank.platform.utils.platform.mail;
 
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
