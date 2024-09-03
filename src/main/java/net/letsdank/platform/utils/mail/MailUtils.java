@@ -1,7 +1,7 @@
 package net.letsdank.platform.utils.mail;
 
 import net.letsdank.platform.module.email.model.EmailMessageAddress;
-import net.letsdank.platform.utils.platform.mail.PUtils;
+import net.letsdank.platform.utils.platform.PUtils;
 import net.letsdank.platform.utils.string.StringUtils;
 
 import java.util.ArrayList;

@@ -1,7 +1,6 @@
 package net.letsdank.platform.service.common;
 
 import net.letsdank.platform.entity.common.WorldCountry;
-import net.letsdank.platform.model.common.ErrorMessage;
 import net.letsdank.platform.model.common.PlatformResult;
 import net.letsdank.platform.repository.common.WorldCountryRepository;
 import org.junit.jupiter.api.Test;
