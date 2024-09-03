@@ -1,4 +1,4 @@
-package net.letsdank.platform.utils.platform.mail;
+package net.letsdank.platform.utils.platform;
 
 /**
  * The class of platform utility functions.
