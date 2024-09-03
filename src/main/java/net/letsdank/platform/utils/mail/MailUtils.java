@@ -1,7 +1,7 @@
 package net.letsdank.platform.utils.mail;
 
-import net.letsdank.platform.module.email.model.EmailMessage;
 import net.letsdank.platform.module.email.model.EmailMessageAddress;
+import net.letsdank.platform.utils.platform.mail.PUtils;
 import net.letsdank.platform.utils.string.StringUtils;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class MailUtils {
                     continue;
                 }
 
-                List<String> stringParts = new ArrayList<>(Arrays.stream(trimRight(part).split(" ")).toList());
+                List<String> stringParts = new ArrayList<>(Arrays.stream(PUtils.trimRight(part).split(" ")).toList());
                 address = stringParts.get(stringParts.size() - 1);
                 name = "";
                 error = "";
@@ -187,19 +187,5 @@ public class MailUtils {
             }
         }
         return true;
-    }
-
-    // TODO: Into PUtils
-    public static String trimRight(String text) {
-        if (text == null) {
-            return null;
-        }
-
-        int i = text.length();
-        while (i > 0 && Character.isWhitespace(text.charAt(i - 1))) {
-            i--;
-        }
-
-        return text.substring(0, i);
     }
 }

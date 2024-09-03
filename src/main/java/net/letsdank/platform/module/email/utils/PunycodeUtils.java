@@ -1,5 +1,6 @@
 package net.letsdank.platform.module.email.utils;
 
+import net.letsdank.platform.utils.platform.mail.PUtils;
 import net.letsdank.platform.utils.url.URLInfo;
 import net.letsdank.platform.utils.url.URLUtils;
 
@@ -205,7 +206,7 @@ public class PunycodeUtils {
         if (!encoded.startsWith("xn--")) {
             return encoded;
         } else {
-            if (countOccurrences(encoded, "-")== 3) {
+            if (PUtils.countOccurrences(encoded, "-")== 3) {
                 encoded = encoded.replace("xn--", "");
             } else {
                 encoded = encoded.replace("xn-", "");
@@ -284,15 +285,14 @@ public class PunycodeUtils {
         return punycodeToString(str, "\\.");
     }
 
+    /**
+     * Decodes string value by Punycode algorithm.
+     *
+     * @param str String value that need to be decoded.
+     * @param delimiter Delimiter, by default it's <code>"\\."</code>
+     * @return Decoded by Punycode algorithm value.
+     */
     // Alias: PunycodeВСтроку
-    // Декодирует строку по алгоритму Punycode
-    //
-    // Параметры:
-    //  Строка - Строка - кодированная строка
-    //
-    // Возвращаемое значение:
-    //  Строка - декодированная строка
-    //
     public static String punycodeToString(String str, String delimiter) {
         URLInfo url  = URLUtils.getURLInfo(str);
         String host = url.getHost();
@@ -303,16 +303,5 @@ public class PunycodeUtils {
         String decodedLogin = decodePunycodeWithDelimiter(login, delimiter);
         result = result.replace(login, decodedLogin);
         return result;
-    }
-
-    // TODO: Вынести в общие платформ утилиты
-    private static int countOccurrences(String s, String substr) {
-        int count = 0;
-        int pos = 0;
-        while ((pos = s.indexOf(substr, pos)) != -1) {
-            count++;
-            pos++;
-        }
-        return count;
     }
 }

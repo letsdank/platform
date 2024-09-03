@@ -25,7 +25,7 @@ public class SafeStorageCrypto {
             return encrypt(plainText, generateSecretKey());
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidAlgorithmParameterException |
                 InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-            throw new RuntimeException(e); // TODO: Дописать сообщение об ошибке
+            throw new RuntimeException("Cannot encrypt data for safe storage", e);
         }
     }
 
@@ -35,7 +35,7 @@ public class SafeStorageCrypto {
             return decrypt(encryptedText, generateSecretKey());
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidAlgorithmParameterException |
                 InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-            throw new RuntimeException(e); // TODO: Дописать сообщение об ошибке
+            throw new RuntimeException("Cannot decrypt data from safe storage", e);
         }
     }
 
