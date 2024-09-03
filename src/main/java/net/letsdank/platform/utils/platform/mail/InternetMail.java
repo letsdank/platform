@@ -32,8 +32,24 @@ public class InternetMail {
             MimeMessage mimeMessage = new MimeMessage(session);
             mimeMessage.setFrom(new InternetAddress(message.getFrom().getFirst(), message.getFrom().getSecond()));
 
-            for (Map.Entry<String, String> to : message.getTo().entrySet()) {
-                mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(to.getKey(), to.getValue()));
+            if (message.getTo() != null)
+                message.getTo().entrySet().forEach(entry -> addRecipient(mimeMessage, Message.RecipientType.TO, entry));
+
+            if (message.getCc()!= null)
+                message.getCc().entrySet().forEach(entry -> addRecipient(mimeMessage, Message.RecipientType.CC, entry));
+
+            if (message.getBcc()!= null)
+                message.getBcc().entrySet().forEach(entry -> addRecipient(mimeMessage, Message.RecipientType.BCC, entry));
+
+            if (message.getReplyTo() != null) {
+                InternetAddress[] addresses = new InternetAddress[message.getReplyTo().size()];
+                int i = 0;
+                for (Map.Entry<String, String> entry : message.getReplyTo().entrySet()) {
+                    addresses[i] = new InternetAddress(entry.getKey(), entry.getValue());
+                    i++;
+                }
+
+                mimeMessage.setReplyTo(addresses);
             }
 
             mimeMessage.setSubject(message.getSubject());
@@ -53,6 +69,14 @@ public class InternetMail {
         }
     }
 
+    private void addRecipient(MimeMessage mimeMessage, Message.RecipientType recipientType, Map.Entry<String, String> entry) {
+        try {
+            mimeMessage.addRecipient(recipientType, new InternetAddress(entry.getKey(), entry.getValue()));
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void disconnect() {
         // No need to disconnect, as the session is closed automatically
         // TODO: Need to remove this method?
@@ -62,16 +86,20 @@ public class InternetMail {
         Properties properties = new Properties();
         properties.put("mail.smtp.host", profile.getSmtpServerAddress());
         properties.put("mail.smtp.port", profile.getSmtpPort());
-        properties.put("mail.smtp.auth", "true");
+
+        Authenticator authenticator = null;
+        if (profile.getSmtpUsername() != null) {
+            properties.put("mail.smtp.auth", "true");
+            authenticator = new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(profile.getSmtpUsername(), profile.getSmtpPassword());
+                }
+            };
+        }
+
         properties.put("mail.smtp.ssl.enable", profile.isUseSSLForSmtp());
         properties.put("mail.smtp.timeout", profile.getTimeout());
-
-        Authenticator authenticator = new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(profile.getSmtpUsername(), profile.getSmtpPassword());
-            }
-        };
 
         session = Session.getInstance(properties, authenticator);
     }

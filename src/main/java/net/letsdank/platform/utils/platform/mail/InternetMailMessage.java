@@ -37,23 +37,27 @@ public class InternetMailMessage {
     }
 
     public void addTo(String address, String name) {
-        this.to.put(address, name);
+        addToList(to, address, name);
     }
 
     public void addCc(String address, String name) {
-        this.cc.put(address, name);
+        addToList(cc, address, name);
     }
 
     public void addBcc(String address, String name) {
-        this.bcc.put(address, name);
+        addToList(bcc, address, name);
     }
 
     public void addReplyTo(String address, String name) {
-        this.replyTo.put(address, name);
+        addToList(replyTo, address, name);
+    }
+
+    private void addToList(Map<String, String> map, String address, String name) {
+        map.put(address, name == null ? address : name);
     }
 
     public void setFrom(String address, String name) {
-        this.from = Pair.of(address, name);
+        this.from = Pair.of(address, name == null ? address : name);
     }
 
     // TODO: Convert to InternetMailBodyType and use the Jakarta MailBody types
