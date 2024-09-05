@@ -1,6 +1,11 @@
 package net.letsdank.platform.module.salary.hr.pr;
 
-import net.letsdank.platform.module.salary.hr.pr.impl.SalaryHRPRGetData;
+import net.letsdank.platform.module.salary.hr.pr.context.CreateTTRegistryNameBuildContext;
+import net.letsdank.platform.module.salary.hr.pr.context.TTRegistryNameBuildContext;
+import net.letsdank.platform.module.salary.hr.pr.entity.RegistryQueriesDescriptionPacket;
+import net.letsdank.platform.module.salary.hr.pr.event.SalaryHRPROnTTRegistryNameQueryEvent;
+import net.letsdank.platform.utils.event.EventPublisherHolder;
+import net.letsdank.platform.utils.platform.sql.SQLQuery;
 
 import java.util.Map;
 
@@ -33,9 +38,8 @@ public class SalaryHRPeriodicRegisters {
     // Alias: ТаблицаВТИмяРегистра
     // TODO: ttManager - Should be TempTableManager
     public static Map<String, Object> getTTRegistryName(String registryName, Object ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
-        Object queryResult = SalaryHRPRGetData.runQueryToGetRegistryTransactions(registryName, ttManager, onlyDistrict, filter, buildContext, "");
-        // TODO: Implement
-        return Map.of();
+        SQLQuery queryResult = SalaryHRPRGetData.runQueryToGetRegistryTransactions(registryName, ttManager, onlyDistrict, filter, buildContext, "");
+        return queryResult.execute();
     }
 
     /**
@@ -64,9 +68,8 @@ public class SalaryHRPeriodicRegisters {
     // Alias: ТаблицаВТИмяРегистраСрезПоследних
     // TODO: ttManager - Should be TempTableManager
     public static Map<String, Object> getTTRegistryNameSliceLast(String registryName, Object ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
-        Object queryResult = SalaryHRPRGetData.runQueryToGetRegistrySlice(registryName, ttManager, onlyDistrict, filter, buildContext, true, "");
-        // TODO: Implement
-        return Map.of();
+        SQLQuery queryResult = SalaryHRPRGetData.runQueryToGetRegistrySlice(registryName, ttManager, onlyDistrict, filter, buildContext, true, "");
+        return queryResult.execute();
     }
 
     /**
@@ -137,9 +140,8 @@ public class SalaryHRPeriodicRegisters {
     // Alias: ТаблицаВТИмяРегистраПериоды
     // TODO: ttManager - Should be TempTableManager
     public static Map<String, Object> getTTRegistryPeriods(String registryName, Object ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
-        Object queryResult = SalaryHRPRGetData.runQueryToGetRegistryPeriods(registryName, ttManager, onlyDistrict, filter, buildContext, "");
-        // TODO: Implement
-        return Map.of();
+        SQLQuery queryResult = SalaryHRPRGetData.runQueryToGetRegistryPeriods(registryName, ttManager, onlyDistrict, filter, buildContext, "");
+        return queryResult.execute();
     }
 
     /**
@@ -268,12 +270,35 @@ public class SalaryHRPeriodicRegisters {
         SalaryHRPRGetData.runQueryToGetRegistrySlice(registryName, ttManager, onlyDistrict, filter, buildContext, true, resultTTName);
     }
 
-    public static Object getFilterForGetTempTableRegistryName(String filterTable) {
-        return getFilterForGetTempTableRegistryNameByTempTable(filterTable);
+    public static SQLQuery getQueryTTRegistryName(String registryName, boolean onlyDistrict, Object filter) {
+        return getQueryTTRegistryName(registryName, onlyDistrict, filter, null);
     }
 
-    public static Object getFilterForGetTempTableRegistryNameByTempTable(String filterTable) {
-        // TODO: implement
-        return null;
+    public static SQLQuery getQueryTTRegistryName(String registryName, boolean onlyDistrict, Object filter, TTRegistryNameBuildContext buildContext) {
+        return getQueryTTRegistryName(registryName, onlyDistrict, filter, buildContext, null);
+    }
+
+    public static SQLQuery getQueryTTRegistryName(String registryName, boolean onlyDistrict, Object filter, TTRegistryNameBuildContext buildContext, String resultTTName) {
+        if (resultTTName == null) {
+            resultTTName = "vt_" + registryName;
+        }
+
+        if (buildContext == null) {
+            buildContext = new CreateTTRegistryNameBuildContext();
+        }
+
+        SQLQuery query = null;
+        EventPublisherHolder.publishEvent(new SalaryHRPROnTTRegistryNameQueryEvent(new SalaryHRPeriodicRegisters(), query,
+                registryName, onlyDistrict,
+                filter, buildContext, resultTTName));
+
+        if (query != null) {
+            return query;
+        }
+
+        RegistryQueriesDescriptionPacket packet = new RegistryQueriesDescriptionPacket();
+        SalaryHRPRRegistryQuery.addQueryTTRegistryName(packet, registryName, onlyDistrict, filter, buildContext, resultTTName);
+
+        return SalaryHRPRSQLQuery.getQueryByDescriptionPacket(packet, buildContext.isUseLanguageQueryExtensionForReports());
     }
 }
