@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.Map;
 
 // Класс со строковым значением на разных языках
+// TODO: Переместить в другой package
 public class InternationalString {
     private final Map<String, String> map = new HashMap<>();
 

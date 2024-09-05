@@ -1,4 +1,4 @@
-package net.letsdank.platform.service.email.mapper;
+package net.letsdank.platform.service.email.server;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
