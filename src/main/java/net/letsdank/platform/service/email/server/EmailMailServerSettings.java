@@ -2,7 +2,6 @@ package net.letsdank.platform.service.email.server;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.NoArgsConstructor;
-import net.letsdank.platform.service.email.mapper.EmailMailServerSettingsDeserializer;
 
 import java.util.HashMap;
 import java.util.Map;
