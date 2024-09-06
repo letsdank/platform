@@ -3,7 +3,7 @@ package net.letsdank.platform.module.salary.hr.pr;
 import net.letsdank.platform.utils.platform.sql.SQLQuery;
 
 // Методы получения данных
-public class SalaryHRPRGetData {
+public class HRPR_GetData {
     // Alias: ВыполнитьЗапросПолученияДвиженийРегистра
     public static SQLQuery runQueryToGetRegistryTransactions(String registryName, Object ttManager, boolean onlyDistrict, Object filter) {
         return runQueryToGetRegistryTransactions(registryName, ttManager, onlyDistrict, filter, null);

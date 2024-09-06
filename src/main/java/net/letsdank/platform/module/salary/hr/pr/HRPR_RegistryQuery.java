@@ -5,16 +5,20 @@ import net.letsdank.platform.module.salary.hr.pr.context.TTRegistryNameBuildCont
 import net.letsdank.platform.module.salary.hr.pr.entity.RegistryQueriesDescriptionPacket;
 
 // Формирование запросов к регистрам
-public class SalaryHRPRRegistryQuery {
+public class HRPR_RegistryQuery {
+    // Alias: ДобавитьЗапросВТИмяРегистра
     static void addQueryTTRegistryName(RegistryQueriesDescriptionPacket packet, String registryName,
                                        boolean onlyDistrict, Object filter) {
         addQueryTTRegistryName(packet, registryName, onlyDistrict, filter, null);
     }
+
+    // Alias: ДобавитьЗапросВТИмяРегистра
     static void addQueryTTRegistryName(RegistryQueriesDescriptionPacket packet, String registryName,
                                        boolean onlyDistrict, Object filter, TTRegistryNameBuildContext buildContext) {
         addQueryTTRegistryName(packet, registryName, onlyDistrict, filter, buildContext, null);
     }
 
+    // Alias: ДобавитьЗапросВТИмяРегистра
     static void addQueryTTRegistryName(RegistryQueriesDescriptionPacket packet, String registryName,
                                        boolean onlyDistrict, Object filter,
                                        TTRegistryNameBuildContext buildContext, String resultTTName) {
@@ -22,9 +26,11 @@ public class SalaryHRPRRegistryQuery {
             ((CreateTTRegistryNameBuildContext) buildContext).setTtNameAtPeriodStart("");
         }
 
-        String ttNameAvailableRecords = SalaryHRPRUtils.getAdditionalTTNameAvailableRecords(registryName, buildContext);
-        if (SalaryHRPRUtils.isAvailableIntervalRegistry(registryName)) {
+        String ttNameAvailableRecords = HRPR_Utils.getAdditionalTTNameAvailableRecords(registryName, buildContext);
+        if (HRPR_Utils.isAvailableIntervalRegistry(registryName)) {
+            if (HRPR_QueryBuildOptions.useFirstRegistry(buildContext, registryName)) {
 
+            }
         }
 
         // TODO: implement
