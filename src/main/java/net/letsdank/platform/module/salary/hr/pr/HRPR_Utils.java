@@ -1,7 +1,7 @@
 package net.letsdank.platform.module.salary.hr.pr;
 
 // Вспомогательные методы
-public class SalaryHRPRUtils {
+public class HRPR_Utils {
     // TODO: Определиться с ООП
     // Alias: ИмяВспомогательнойВТДоступныеЗаписи
     public static String getAdditionalTTNameAvailableRecords(String registryName, Object buildContext) {

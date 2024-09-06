@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 // Работа с моделью запроса
-public class SalaryHRPRSQLQuery {
+public class HRPR_SQLQuery {
     // Alias: ЗапросПоОписаниюПакета
     public static SQLQuery getQueryByDescriptionPacket(RegistryQueriesDescriptionPacket packet, boolean showReportElements) {
         SQLQuery query = new SQLQuery();
@@ -23,7 +23,7 @@ public class SalaryHRPRSQLQuery {
         List<String> queriesPacket = new ArrayList<>();
 
         if (packet.getInitFiltersQueryDescription() != null) {
-            SalaryHRPRSQLGeneration.performQueryDescriptionToStrings(queriesPacket, packet.getInitFiltersQueryDescription(), showReportElements);
+            HRPR_SQLGeneration.performQueryDescriptionToStrings(queriesPacket, packet.getInitFiltersQueryDescription(), showReportElements);
             queriesPacket.add(delimiter);
         }
 
@@ -33,7 +33,7 @@ public class SalaryHRPRSQLQuery {
             if (queryDescription.isLeft()) {
                 queriesPacket.add(queryDescription.getLeft().getSql());
             } else {
-                SalaryHRPRSQLGeneration.performQueryDescriptionToStrings(queriesPacket, queryDescription.getRight(), showReportElements);
+                HRPR_SQLGeneration.performQueryDescriptionToStrings(queriesPacket, queryDescription.getRight(), showReportElements);
             }
 
             if (queryIndex != packet.getDataQueries().size()) {

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 // Генерация текста запроса по модели
-public class SalaryHRPRSQLGeneration {
+public class HRPR_SQLGeneration {
     // Alias: ОписаниеЗапросаВМассивСтрок
     static void performQueryDescriptionToStrings(List<String> strings, QueryDescription description) {
         performQueryDescriptionToStrings(strings, description, true);
