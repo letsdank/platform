@@ -1,8 +1,5 @@
 package net.letsdank.platform.utils.data;
 
-import lombok.Getter;
-
-@Getter
 public record Either<L, R>(L left, R right) {
     public boolean isLeft() {
         return left != null;
