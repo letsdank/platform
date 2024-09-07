@@ -31,9 +31,9 @@ public class HRPR_SQLQuery {
         for (Either<SQLQuery, QueryDescription> queryDescription : packet.getDataQueries()) {
             queryIndex++;
             if (queryDescription.isLeft()) {
-                queriesPacket.add(queryDescription.getLeft().getSql());
+                queriesPacket.add(queryDescription.left().getSql());
             } else {
-                HRPR_SQLGeneration.performQueryDescriptionToStrings(queriesPacket, queryDescription.getRight(), showReportElements);
+                HRPR_SQLGeneration.performQueryDescriptionToStrings(queriesPacket, queryDescription.right(), showReportElements);
             }
 
             if (queryIndex != packet.getDataQueries().size()) {
