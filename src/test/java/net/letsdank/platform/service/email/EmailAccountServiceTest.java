@@ -48,4 +48,29 @@ class EmailAccountServiceTest {
     void testDetermineMailServersForDomain() {
         MockitoAnnotations.openMocks(this);
     }
+
+    @Test
+    void determineEmailSettings() {
+        MockitoAnnotations.openMocks(this);
+
+        when(serviceAuthenticationSettingsService.getSettings(anyString(), anyString()))
+                .thenReturn(new ServiceAuthenticationSettingsObject());
+
+        // TODO: Здесь должны быть проверки переменных
+        EmailSettingsResult result = emailAccountService.determineEmailSettings("ichi2209@mail.ru", "145332402K", true, false);
+        System.out.println("Found settings:" + result.toString());
+        assertNotNull(result);
+
+        result = emailAccountService.determineEmailSettings("ichi2209@icloud.com", "D280190k", true, false);
+        System.out.println("Found settings:" + result.toString());
+        assertNotNull(result);
+//
+//        result = emailAccountService.determineEmailSettings("help@letsdank.ru", "D280190k", true, false);
+//        System.out.println("Found settings:" + result.toString());
+//        assertNotNull(result);
+
+        result = emailAccountService.determineEmailSettings("yndx-knadstel@yandex.ru", "D280190k", true, false);
+        System.out.println("Found settings:" + result.toString());
+        assertNotNull(result);
+    }
 }

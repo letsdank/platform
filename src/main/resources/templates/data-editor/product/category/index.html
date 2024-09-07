@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактор категорий номенклатуры</title>
+</head>
+<body>
+<th:block th:if="${category == null}">
+    <h1>Редактор категорий номенклатуры</h1>
+    <h3>Загрузить из классификатора</h3>
+    <form th:action="@{/data-editor/product/category/upload}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="submit" value="Загрузить">
+    </form>
+</th:block>
+<th:block th:if="${category != null}">
+    <h1 th:text="${'Категория ' + category.name + ' (#' + category.id + ')'}"></h1>
+    <a th:href="@{/data-editor/product/category/{id}(id=${category.parentId})}">&lt;&mdash; Назад</a>
+</th:block>
+
+<h3>Список категорий</h3>
+<ul>
+    <li th:each="category : ${categories}">
+        <a th:href="@{/data-editor/product/category/{id}(id=${category.id})}" th:text="${'#' + category.id + ' - ' + category.name}"></a>
+    </li>
+</ul>
+<form th:action="@{/data-editor/product/category}" method="post" style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px">
+    <h3>Создать категорию</h3>
+    <label>
+        <input type="text" name="id" placeholder="ID категории">
+    </label>
+    <label>
+        <input type="text" name="name" placeholder="Название категории">
+    </label>
+    <label>
+        <input type="text" name="uniqueName" placeholder="Уникальное имя категории">
+    </label>
+    <label>
+        <input type="text" name="parentId" placeholder="ID родительской категории">
+    </label>
+    <label>
+        <select name="type">
+            <option disabled selected>Тип</option>
+            <option value="nonguru">nonguru</option>
+            <option value="guru">guru</option>
+            <option value="gurulight">gurulight</option>
+        </select>
+    </label>
+
+    <label>
+        <input type="text" name="offersNum" placeholder="ID предложения">
+    </label>
+    <label>
+        <input type="text" name="modelsNum" placeholder="ID модели">
+    </label>
+    <label>
+        <input type="checkbox" name="visual" checked>
+        <span>Визуально</span>
+    </label>
+    <input type="submit" value="Добавить">
+</form>
+</body>
+</html>
