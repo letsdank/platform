@@ -6,6 +6,7 @@ import net.letsdank.platform.module.salary.hr.pr.entity.RegistryQueriesDescripti
 import net.letsdank.platform.module.salary.hr.pr.event.SalaryHRPROnTTRegistryNameQueryEvent;
 import net.letsdank.platform.utils.event.EventPublisherHolder;
 import net.letsdank.platform.utils.platform.sql.SQLQuery;
+import net.letsdank.platform.utils.platform.sql.TempTableManager;
 
 import java.util.Map;
 
@@ -21,8 +22,7 @@ public class SalaryHRPeriodicRegisters {
      * @return Map
      */
     // Alias: ТаблицаВТИмяРегистра
-    // TODO: ttManager - Should be TempTableManager
-    public static Map<String, Object> getTTRegistryName(String registryName, Object ttManager, boolean onlyDistrict, Object filter) {
+    public static Map<String, Object> getTTRegistryName(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter) {
         return getTTRegistryName(registryName, ttManager, onlyDistrict, filter, null);
     }
 
@@ -36,8 +36,7 @@ public class SalaryHRPeriodicRegisters {
      * @return Map
      */
     // Alias: ТаблицаВТИмяРегистра
-    // TODO: ttManager - Should be TempTableManager
-    public static Map<String, Object> getTTRegistryName(String registryName, Object ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
+    public static Map<String, Object> getTTRegistryName(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
         SQLQuery queryResult = HRPR_GetData.runQueryToGetRegistryTransactions(registryName, ttManager, onlyDistrict, filter, buildContext, "");
         return queryResult.execute();
     }
@@ -51,8 +50,7 @@ public class SalaryHRPeriodicRegisters {
      * @return Map
      */
     // Alias: ТаблицаВТИмяРегистраСрезПоследних
-    // TODO: ttManager - Should be TempTableManager
-    public static Map<String, Object> getTTRegistryNameSliceLast(String registryName, Object ttManager, boolean onlyDistrict, Object filter) {
+    public static Map<String, Object> getTTRegistryNameSliceLast(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter) {
         return getTTRegistryNameSliceLast(registryName, ttManager, onlyDistrict, filter, null);
     }
 
@@ -66,8 +64,7 @@ public class SalaryHRPeriodicRegisters {
      * @return Map
      */
     // Alias: ТаблицаВТИмяРегистраСрезПоследних
-    // TODO: ttManager - Should be TempTableManager
-    public static Map<String, Object> getTTRegistryNameSliceLast(String registryName, Object ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
+    public static Map<String, Object> getTTRegistryNameSliceLast(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
         SQLQuery queryResult = HRPR_GetData.runQueryToGetRegistrySlice(registryName, ttManager, onlyDistrict, filter, buildContext, true, "");
         return queryResult.execute();
     }
@@ -80,8 +77,7 @@ public class SalaryHRPeriodicRegisters {
      * @param filter TODO
      */
     // Alias: СоздатьВТИмяРегистра
-    // TODO: ttManager - Should be TempTableManager
-    public static void createTTRegistry(String registryName, Object ttManager, boolean onlyDistrict, Object filter) {
+    public static void createTTRegistry(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter) {
         createTTRegistry(registryName, ttManager, onlyDistrict, filter, null);
     }
 
@@ -94,8 +90,7 @@ public class SalaryHRPeriodicRegisters {
      * @param buildContext TODO
      */
     // Alias: СоздатьВТИмяРегистра
-    // TODO: ttManager - Should be TempTableManager
-    public static void createTTRegistry(String registryName, Object ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
+    public static void createTTRegistry(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
         createTTRegistry(registryName, ttManager, onlyDistrict, filter, buildContext, null);
     }
 
@@ -109,8 +104,7 @@ public class SalaryHRPeriodicRegisters {
      * @param resultTTName Name of resulting temporary table, if not set, it will be generated as <code>vt_&lt;registryName&gt;</code>.
      */
     // Alias: СоздатьВТИмяРегистра
-    // TODO: ttManager - Should be TempTableManager
-    public static void createTTRegistry(String registryName, Object ttManager, boolean onlyDistrict, Object filter, Object buildContext, String resultTTName) {
+    public static void createTTRegistry(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter, Object buildContext, String resultTTName) {
         HRPR_GetData.runQueryToGetRegistryTransactions(registryName, ttManager, onlyDistrict, filter, buildContext, resultTTName);
     }
 
@@ -123,8 +117,7 @@ public class SalaryHRPeriodicRegisters {
      * @return Map
      */
     // Alias: ТаблицаВТИмяРегистраПериоды
-    // TODO: ttManager - Should be TempTableManager
-    public static Map<String, Object> getTTRegistryPeriods(String registryName, Object ttManager, boolean onlyDistrict, Object filter) {
+    public static Map<String, Object> getTTRegistryPeriods(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter) {
         return getTTRegistryPeriods(registryName, ttManager, onlyDistrict, filter, null);
     }
 
@@ -138,8 +131,7 @@ public class SalaryHRPeriodicRegisters {
      * @return Map
      */
     // Alias: ТаблицаВТИмяРегистраПериоды
-    // TODO: ttManager - Should be TempTableManager
-    public static Map<String, Object> getTTRegistryPeriods(String registryName, Object ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
+    public static Map<String, Object> getTTRegistryPeriods(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
         SQLQuery queryResult = HRPR_GetData.runQueryToGetRegistryPeriods(registryName, ttManager, onlyDistrict, filter, buildContext, "");
         return queryResult.execute();
     }
@@ -152,8 +144,7 @@ public class SalaryHRPeriodicRegisters {
      * @param filter TODO
      */
     // Alias: СоздатьВТИмяРегистраПериоды
-    // TODO: ttManager - Should be TempTableManager
-    public static void createTTRegistryPeriods(String registryName, Object ttManager, boolean onlyDistrict, Object filter) {
+    public static void createTTRegistryPeriods(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter) {
         createTTRegistryPeriods(registryName, ttManager, onlyDistrict, filter, null);
     }
 
@@ -166,8 +157,7 @@ public class SalaryHRPeriodicRegisters {
      * @param buildContext TODO
      */
     // Alias: СоздатьВТИмяРегистраПериоды
-    // TODO: ttManager - Should be TempTableManager
-    public static void createTTRegistryPeriods(String registryName, Object ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
+    public static void createTTRegistryPeriods(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
         createTTRegistryPeriods(registryName, ttManager, onlyDistrict, filter, buildContext, null);
     }
 
@@ -181,8 +171,7 @@ public class SalaryHRPeriodicRegisters {
      * @param resultTTName Name of resulting temporary table, if not set, it will be generated as <code>vt_&lt;registryName&gt;_periods</code>.
      */
     // Alias: СоздатьВТИмяРегистраПериоды
-    // TODO: ttManager - Should be TempTableManager
-    public static void createTTRegistryPeriods(String registryName, Object ttManager, boolean onlyDistrict, Object filter, Object buildContext, String resultTTName) {
+    public static void createTTRegistryPeriods(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter, Object buildContext, String resultTTName) {
         HRPR_GetData.runQueryToGetRegistryPeriods(registryName, ttManager, onlyDistrict, filter, buildContext, resultTTName);
     }
 
@@ -194,8 +183,7 @@ public class SalaryHRPeriodicRegisters {
      * @param filter TODO
      */
     // Alias: СоздатьВТИмяРегистраСрезПервых
-    // TODO: ttManager - Should be TempTableManager
-    public static void createTTRegistrySliceFirst(String registryName, Object ttManager, boolean onlyDistrict, Object filter) {
+    public static void createTTRegistrySliceFirst(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter) {
         createTTRegistrySliceFirst(registryName, ttManager, onlyDistrict, filter, null);
     }
 
@@ -208,8 +196,7 @@ public class SalaryHRPeriodicRegisters {
      * @param buildContext TODO
      */
     // Alias: СоздатьВТИмяРегистраСрезПервых
-    // TODO: ttManager - Should be TempTableManager
-    public static void createTTRegistrySliceFirst(String registryName, Object ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
+    public static void createTTRegistrySliceFirst(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
         createTTRegistrySliceFirst(registryName, ttManager, onlyDistrict, filter, buildContext, null);
     }
 
@@ -223,8 +210,7 @@ public class SalaryHRPeriodicRegisters {
      * @param resultTTName Name of resulting temporary table, if not set, it will be generated as <code>vt_&lt;registryName&gt;_slice_first</code>.
      */
     // Alias: СоздатьВТИмяРегистраСрезПервых
-    // TODO: ttManager - Should be TempTableManager
-    public static void createTTRegistrySliceFirst(String registryName, Object ttManager, boolean onlyDistrict, Object filter, Object buildContext, String resultTTName) {
+    public static void createTTRegistrySliceFirst(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter, Object buildContext, String resultTTName) {
         HRPR_GetData.runQueryToGetRegistrySlice(registryName, ttManager, onlyDistrict, filter, buildContext, false, resultTTName);
     }
 
@@ -236,8 +222,7 @@ public class SalaryHRPeriodicRegisters {
      * @param filter TODO
      */
     // Alias: СоздатьВТИмяРегистраСрезПоследних
-    // TODO: ttManager - Should be TempTableManager
-    public static void createTTRegistrySliceLast(String registryName, Object ttManager, boolean onlyDistrict, Object filter) {
+    public static void createTTRegistrySliceLast(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter) {
         createTTRegistrySliceLast(registryName, ttManager, onlyDistrict, filter, null);
     }
 
@@ -250,8 +235,7 @@ public class SalaryHRPeriodicRegisters {
      * @param buildContext TODO
      */
     // Alias: СоздатьВТИмяРегистраСрезПоследних
-    // TODO: ttManager - Should be TempTableManager
-    public static void createTTRegistrySliceLast(String registryName, Object ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
+    public static void createTTRegistrySliceLast(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
         createTTRegistrySliceLast(registryName, ttManager, onlyDistrict, filter, buildContext, null);
     }
 
@@ -265,8 +249,7 @@ public class SalaryHRPeriodicRegisters {
      * @param resultTTName Name of resulting temporary table, if not set, it will be generated as <code>vt_&lt;registryName&gt;_slice_last</code>.
      */
     // Alias: СоздатьВТИмяРегистраСрезПоследних
-    // TODO: ttManager - Should be TempTableManager
-    public static void createTTRegistrySliceLast(String registryName, Object ttManager, boolean onlyDistrict, Object filter, Object buildContext, String resultTTName) {
+    public static void createTTRegistrySliceLast(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter, Object buildContext, String resultTTName) {
         HRPR_GetData.runQueryToGetRegistrySlice(registryName, ttManager, onlyDistrict, filter, buildContext, true, resultTTName);
     }
 
