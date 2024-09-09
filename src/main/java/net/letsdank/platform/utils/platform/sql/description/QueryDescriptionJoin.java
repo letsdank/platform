@@ -14,4 +14,5 @@ public class QueryDescriptionJoin {
     private int joinOrder;
     private String joinType;
     private final List<String> conditions = new ArrayList<>();
+    private String templateJoinCondition;
 }

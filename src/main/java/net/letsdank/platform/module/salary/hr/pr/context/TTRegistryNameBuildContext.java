@@ -11,6 +11,7 @@ import java.util.Map;
 @Getter
 @Setter
 public class TTRegistryNameBuildContext {
+    // TODO: JavaDoc
     private Object indexingBy;
     private List<Object> filters;
     private boolean formPeriodicityDay;
