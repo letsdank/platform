@@ -2,8 +2,8 @@ package net.letsdank.platform.module.salary.hr.pr;
 
 import net.letsdank.platform.module.salary.hr.base.entity.HRBD_RegistryDescription;
 import net.letsdank.platform.module.salary.hr.pr.entity.FilterUsageDescription;
-import net.letsdank.platform.utils.platform.sql.description.QueryDescriptionJoin;
-import net.letsdank.platform.utils.platform.sql.description.QueryDescriptionOperator;
+import net.letsdank.platform.module.salary.hr.pr.entity.HRPR_QueryDescriptionJoin;
+import net.letsdank.platform.module.salary.hr.pr.entity.HRPR_QueryDescriptionOperator;
 import net.letsdank.platform.utils.string.StringUtils;
 
 import java.util.List;
@@ -41,19 +41,19 @@ public class HRPR_QueryFilter {
 
     // Alias: ИнициализироватьИспользованиеФильтра
     public static void initializeFilterUsage(FilterUsageDescription filterUsageDescription, Object filter, HRBD_RegistryDescription registryDescription,
-                                             String periodFields, QueryDescriptionOperator queryOperator) {
+                                             String periodFields, HRPR_QueryDescriptionOperator queryOperator) {
         initializeFilterUsage(filterUsageDescription, filter, registryDescription, periodFields, queryOperator, "");
     }
 
     // Alias: ИнициализироватьИспользованиеФильтра
     public static void initializeFilterUsage(FilterUsageDescription filterUsageDescription, Object filter, HRBD_RegistryDescription registryDescription,
-                                             String periodFields, QueryDescriptionOperator queryOperator, String parameterNamePostfix) {
+                                             String periodFields, HRPR_QueryDescriptionOperator queryOperator, String parameterNamePostfix) {
         initializeFilterUsage(filterUsageDescription, filter, registryDescription, periodFields, queryOperator, parameterNamePostfix, false);
     }
 
     // Alias: ИнициализироватьИспользованиеФильтра
     public static void initializeFilterUsage(FilterUsageDescription filterUsageDescription, Object filter, HRBD_RegistryDescription registryDescription,
-                                             String periodFields, QueryDescriptionOperator queryOperator, String parameterNamePostfix, boolean allRecords) {
+                                             String periodFields, HRPR_QueryDescriptionOperator queryOperator, String parameterNamePostfix, boolean allRecords) {
         filterUsageDescription.setParameterNamePostfix(parameterNamePostfix);
         filterUsageDescription.setQueryOperator(queryOperator);
         filterUsageDescription.setAllRecords(allRecords);
@@ -63,7 +63,7 @@ public class HRPR_QueryFilter {
         }
 
         if (filterUsageDescription.getRegistryTableAlias() != null && !filterUsageDescription.getRegistryTableAlias().isEmpty()) {
-            QueryDescriptionJoin filterTableJoinDescription = getJoinDescriptionWithFilterTable(queryOperator,
+            HRPR_QueryDescriptionJoin filterTableJoinDescription = getJoinDescriptionWithFilterTable(queryOperator,
                     filterUsageDescription.getFilterTableAlias(), filterUsageDescription.getRegistryTableAlias());
 
             if (filterTableJoinDescription == null) {
@@ -102,8 +102,8 @@ public class HRPR_QueryFilter {
 
 
     // Alias: ОписаниеСоединенияСТаблицейФильтра
-    public static QueryDescriptionJoin getJoinDescriptionWithFilterTable(QueryDescriptionOperator queryOperator, String filterTableAlias, String registryTableAlias) {
-        List<QueryDescriptionJoin> joins = queryOperator.getJoins().stream()
+    public static HRPR_QueryDescriptionJoin getJoinDescriptionWithFilterTable(HRPR_QueryDescriptionOperator queryOperator, String filterTableAlias, String registryTableAlias) {
+        List<HRPR_QueryDescriptionJoin> joins = queryOperator.getJoins().stream()
                 .filter(join -> join.getLeadingTable().equals(filterTableAlias) && join.getJoiningTable().equals(registryTableAlias))
                 .toList();
 

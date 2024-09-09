@@ -6,27 +6,27 @@ import net.letsdank.platform.module.salary.hr.ir.BaseSalaryHRIntervalRegisters;
 import net.letsdank.platform.module.salary.hr.pr.context.CreateTTRegistryNameBuildContext;
 import net.letsdank.platform.module.salary.hr.pr.context.TTRegistryNameBuildContext;
 import net.letsdank.platform.module.salary.hr.pr.entity.FilterUsageDescription;
-import net.letsdank.platform.module.salary.hr.pr.entity.RegistryQueriesDescriptionPacket;
+import net.letsdank.platform.module.salary.hr.pr.entity.HRPR_RegistryQueriesDescriptionPacket;
 import net.letsdank.platform.utils.data.Either;
-import net.letsdank.platform.utils.platform.sql.description.QueryDescription;
-import net.letsdank.platform.utils.platform.sql.description.QueryDescriptionOperator;
+import net.letsdank.platform.module.salary.hr.pr.entity.HRPR_QueryDescription;
+import net.letsdank.platform.module.salary.hr.pr.entity.HRPR_QueryDescriptionOperator;
 
 // Формирование запросов к регистрам
 public class HRPR_RegistryQuery {
     // Alias: ДобавитьЗапросВТИмяРегистра
-    static void addQueryTTRegistryName(RegistryQueriesDescriptionPacket packet, String registryName,
+    static void addQueryTTRegistryName(HRPR_RegistryQueriesDescriptionPacket packet, String registryName,
                                        boolean onlyDistrict, Object filter) {
         addQueryTTRegistryName(packet, registryName, onlyDistrict, filter, null);
     }
 
     // Alias: ДобавитьЗапросВТИмяРегистра
-    static void addQueryTTRegistryName(RegistryQueriesDescriptionPacket packet, String registryName,
+    static void addQueryTTRegistryName(HRPR_RegistryQueriesDescriptionPacket packet, String registryName,
                                        boolean onlyDistrict, Object filter, TTRegistryNameBuildContext buildContext) {
         addQueryTTRegistryName(packet, registryName, onlyDistrict, filter, buildContext, null);
     }
 
     // Alias: ДобавитьЗапросВТИмяРегистра
-    static void addQueryTTRegistryName(RegistryQueriesDescriptionPacket packet, String registryName,
+    static void addQueryTTRegistryName(HRPR_RegistryQueriesDescriptionPacket packet, String registryName,
                                        boolean onlyDistrict, Object filter,
                                        TTRegistryNameBuildContext buildContext, String resultTTName) {
         if (buildContext instanceof CreateTTRegistryNameBuildContext) {
@@ -53,13 +53,13 @@ public class HRPR_RegistryQuery {
     }
 
     // Alias: ДобавитьЗапросВТДоступныеЗаписиИмяРегистра
-    static void addQueryTTAvailableRecordsByRegistryName(RegistryQueriesDescriptionPacket packet, String registryName,
+    static void addQueryTTAvailableRecordsByRegistryName(HRPR_RegistryQueriesDescriptionPacket packet, String registryName,
                                                          boolean onlyDistrict, Object filter, String ttNameAvailableRecords) {
         addQueryTTAvailableRecordsByRegistryName(packet, registryName, onlyDistrict, filter, ttNameAvailableRecords, null);
     }
 
     // Alias: ДобавитьЗапросВТДоступныеЗаписиИмяРегистра
-    static void addQueryTTAvailableRecordsByRegistryName(RegistryQueriesDescriptionPacket packet, String registryName,
+    static void addQueryTTAvailableRecordsByRegistryName(HRPR_RegistryQueriesDescriptionPacket packet, String registryName,
                                                          boolean onlyDistrict, Object filter, String ttNameAvailableRecords,
                                                          TTRegistryNameBuildContext buildContext) {
         String parameterNamePostfix = ttNameAvailableRecords;
@@ -108,13 +108,13 @@ public class HRPR_RegistryQuery {
                         : ")"
                 );
 
-        QueryDescription queryDescription = getQueryDescriptionByText(querySelectRegistryRecords);
+        HRPR_QueryDescription queryDescription = getQueryDescriptionByText(querySelectRegistryRecords);
         packet.getDataQueries().add(Either.right(queryDescription));
 
         queryDescription.setDistinct(onlyDistrict);
         queryDescription.setTableToPlace(ttNameAvailableRecords);
 
-        QueryDescriptionOperator queryOperator = queryDescription.getOperators().get(0);
+        HRPR_QueryDescriptionOperator queryOperator = queryDescription.getOperators().get(0);
 
         FilterUsageDescription filterUsageDescription = HRPR_QueryFilter.getFilterUsageDescription();
         HRPR_QueryFilter.initializeFilterUsage(filterUsageDescription, filter, registryDescription, "date_from, date_to",

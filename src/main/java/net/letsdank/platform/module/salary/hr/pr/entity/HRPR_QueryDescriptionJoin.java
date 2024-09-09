@@ -1,4 +1,4 @@
-package net.letsdank.platform.utils.platform.sql.description;
+package net.letsdank.platform.module.salary.hr.pr.entity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class QueryDescriptionJoin {
+public class HRPR_QueryDescriptionJoin {
     private String joiningTable;
     private String leadingTable;
     private int joinOrder;

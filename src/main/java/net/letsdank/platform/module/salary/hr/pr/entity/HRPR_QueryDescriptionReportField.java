@@ -1,11 +1,11 @@
-package net.letsdank.platform.utils.platform.sql.description;
+package net.letsdank.platform.module.salary.hr.pr.entity;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class QueryDescriptionReportField {
+public class HRPR_QueryDescriptionReportField {
     private String field;
     private String reportAlias;
 }
