@@ -10,9 +10,10 @@ import java.util.List;
 @Getter
 @Setter
 public class HRPR_QueryDescription {
-    private final List<HRPR_QueryDescriptionOperator> operators = new ArrayList<>(); // TODO: Is it QueryDescriptionOp or QueryDescription?
+    private boolean distinct = false;
+    private String tableToPlace = "";
+    private List<String> columns = new ArrayList<>(); // TODO: Is it String?
     private final List<String> order = new ArrayList<>();
+    private final List<HRPR_QueryDescriptionOperator> operators = new ArrayList<>();
     private final List<String> indexFields = new ArrayList<>();
-    private String tableToPlace;
-    private boolean distinct;
 }

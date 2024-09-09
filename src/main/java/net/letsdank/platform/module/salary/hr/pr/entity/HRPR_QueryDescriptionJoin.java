@@ -9,10 +9,11 @@ import java.util.List;
 @Getter
 @Setter
 public class HRPR_QueryDescriptionJoin {
-    private String joiningTable;
     private String leadingTable;
+    private String joiningTable;
     private int joinOrder;
-    private String joinType;
     private final List<String> conditions = new ArrayList<>();
+    private String joinType;
+
     private String templateJoinCondition;
 }

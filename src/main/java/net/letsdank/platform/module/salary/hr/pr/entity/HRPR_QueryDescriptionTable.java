@@ -9,5 +9,6 @@ public class HRPR_QueryDescriptionTable {
     private String name;
     private String alias;
     private String type;
+
     private HRPR_QueryDescription queryDescription;
 }
