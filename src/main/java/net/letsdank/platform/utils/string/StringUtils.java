@@ -1,8 +1,141 @@
 package net.letsdank.platform.utils.string;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 // Alias:
 // СтроковыеФункцииКлиентСервер
 public class StringUtils {
+    /**
+     * Splits a string into multiple strings by a specified delimiter. The delimiter can have
+     * any length. In cases, where the delimiter is a single character, and the
+     * <code>trimLines</code> parameter is not used, it is recommended to use the
+     * <code>String.split("")</code>.
+     *
+     * @param value The string to be split, containing delimiters.
+     * @return a list of strings.
+     *
+     * @see #splitStringToSubstringArray(String, String, Boolean, boolean)
+     */
+    // Alias: РазложитьСтрокуВМассивПодстрок
+    public static List<String> splitStringToSubstringArray(String value) {
+        return splitStringToSubstringArray(value, ",");
+    }
+
+    /**
+     * Splits a string into multiple strings by a specified delimiter. The delimiter can have
+     * any length. In cases, where the delimiter is a single character, and the
+     * <code>trimLines</code> parameter is not used, it is recommended to use the
+     * <code>String.split("")</code>.
+     *
+     * @param value The string to be split, containing delimiters.
+     * @param delimiter The delimiter string, minimum 1 character.
+     * @return a list of strings.
+     *
+     * @see #splitStringToSubstringArray(String, String, Boolean, boolean)
+     */
+    // Alias: РазложитьСтрокуВМассивПодстрок
+    public static List<String> splitStringToSubstringArray(String value, String delimiter) {
+        return splitStringToSubstringArray(value, delimiter, null);
+    }
+
+    /**
+     * Splits a string into multiple strings by a specified delimiter. The delimiter can have
+     * any length. In cases, where the delimiter is a single character, and the
+     * <code>trimLines</code> parameter is not used, it is recommended to use the
+     * <code>String.split("")</code>.
+     *
+     * @param value The string to be split, containing delimiters.
+     * @param delimiter The delimiter string, minimum 1 character.
+     * @param skipEmptyLines If this parameter is not specified, the function works in compatibility
+     *                       mode with its previous version:
+     *                       <ul>
+     *                       <li>for <code>" "</code> delimiter, empty strings are not included in the result,
+     *                       for other delimiters, empty strings are included;</li>
+     *                       <li>if the <code>value</code> string does not contain significant characters
+     *                       or is empty, the result will be an array containing one empty string for
+     *                       <code>" "</code> delimiter, and an empty array for other delimiters.</li>
+     *                       </ul>
+     * @return a list of strings.
+     *
+     * @see #splitStringToSubstringArray(String, String, Boolean, boolean)
+     */
+    // Alias: РазложитьСтрокуВМассивПодстрок
+    public static List<String> splitStringToSubstringArray(String value, String delimiter, Boolean skipEmptyLines) {
+        return splitStringToSubstringArray(value, delimiter, skipEmptyLines, false);
+    }
+
+    /**
+     * Splits a string into multiple strings by a specified delimiter. The delimiter can have
+     * any length. In cases, where the delimiter is a single character, and the
+     * <code>trimLines</code> parameter is not used, it is recommended to use the
+     * <code>String.split("")</code>.
+     *
+     * @param value The string to be split, containing delimiters.
+     * @param delimiter The delimiter string, minimum 1 character.
+     * @param skipEmptyLines If this parameter is not specified, the function works in compatibility
+     *                       mode with its previous version:
+     *                       <ul>
+     *                       <li>for <code>" "</code> delimiter, empty strings are not included in the result,
+     *                       for other delimiters, empty strings are included;</li>
+     *                       <li>if the <code>value</code> string does not contain significant characters
+     *                       or is empty, the result will be an array containing one empty string for
+     *                       <code>" "</code> delimiter, and an empty array for other delimiters.</li>
+     *                       </ul>
+     * @param trimLines Flag indicating whether to trim non-printable symbols at the edges of each
+     *                  found substring.
+     * @return a list of strings.
+     * <p>
+     * Example:
+     * <pre>
+     *     StringUtils.splitStringToSubstringArray(",one,,two,", ",") = ["", "one", "", "two", ""];<br>
+     *     StringUtils.splitStringToSubstringArray(",one,,two,", ",", true) = ["one", "two"];<br>
+     *     StringUtils.splitStringToSubstringArray(" one   two  ", " ") = ["one", "two"];<br>
+     *     StringUtils.splitStringToSubstringArray("") = [];<br>
+     *     StringUtils.splitStringToSubstringArray("", ",", false) = [""];<br>
+     *     StringUtils.splitStringToSubstringArray("", " ") = [""];
+     * </pre>
+     */
+    // Alias: РазложитьСтрокуВМассивПодстрок
+    public static List<String> splitStringToSubstringArray(String value, String delimiter, Boolean skipEmptyLines, boolean trimLines) {
+        if (delimiter.length() == 1 && skipEmptyLines == null && trimLines) {
+            String[] result = value.split(delimiter);
+            return Stream.of(result).map(String::trim).collect(Collectors.toList());
+        }
+
+        List<String> result = new ArrayList<>();
+
+        // For backward compatibility.
+        if (skipEmptyLines == null) {
+            skipEmptyLines = delimiter.equals(" ");
+            if (value.isEmpty()) {
+                if (delimiter.equals(" ")) {
+                    result.add("");
+                }
+                return result;
+            }
+        }
+
+        int position = value.indexOf(delimiter);
+        while (position > 0) {
+            String substring = value.substring(0, position - 1);
+            if (!skipEmptyLines || !substring.isEmpty()) {
+                result.add(trimLines ? substring.trim() : substring);
+            }
+
+            value = value.substring(position + delimiter.length());
+            position = value.indexOf(delimiter);
+        }
+
+        if (!skipEmptyLines || !value.isEmpty()) {
+            result.add(trimLines ? value.trim() : value);
+        }
+
+        return result;
+    }
+    
     /**
      * Substitutes parameters into a string. This function has no limits of number
      * of parameters.
