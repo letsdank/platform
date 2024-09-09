@@ -44,6 +44,8 @@ public class MailUtils {
 
                 if (address.contains("@") || address.contains("<") || address.contains(">")) {
                     address = String.join("", address.split(Pattern.quote("<>")));
+                    address = address.replaceAll("<", "").replaceAll(">", "");
+
                     if (emailAddressIsValid(address)) {
                         stringParts.remove(stringParts.size() - 1);
                     } else {
@@ -86,7 +88,7 @@ public class MailUtils {
                 errors.add(address.error());
             }
 
-            result.add(new EmailMessageAddress(address.name(), address.address()));
+            result.add(new EmailMessageAddress(address.address(), address.name()));
         }
 
         if (throwException && !errors.isEmpty()) {
@@ -160,7 +162,7 @@ public class MailUtils {
         int dotIndex = domain.indexOf(".");
         while (dotIndex > 0) {
             tld = domain.substring(dotIndex + 1);
-            dotIndex = domain.indexOf(".");
+            dotIndex = tld.indexOf(".");
         }
 
         // Check TLD length and characters
