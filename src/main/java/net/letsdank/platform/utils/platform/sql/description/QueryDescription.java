@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 public class QueryDescription {
-    private final List<QueryDescriptionOp> operators = new ArrayList<>(); // TODO: Is it QueryDescriptionOp or QueryDescription?
+    private final List<QueryDescriptionOperator> operators = new ArrayList<>(); // TODO: Is it QueryDescriptionOp or QueryDescription?
     private final List<String> order = new ArrayList<>();
     private final List<String> indexFields = new ArrayList<>();
     private String tableToPlace;

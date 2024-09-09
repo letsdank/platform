@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Getter
 @Setter
-public class QueryDescriptionOp {
+public class QueryDescriptionOperator {
     private String joinType;
     private boolean distinct;
     private Integer recordCount;
