@@ -16,4 +16,9 @@ public record Either<L, R>(L left, R right) {
     public static <L, R> Either<L, R> right(R right) {
         return new Either<>(null, right);
     }
+
+    @Override
+    public String toString() {
+        return left == null ? right.toString() : left.toString();
+    }
 }

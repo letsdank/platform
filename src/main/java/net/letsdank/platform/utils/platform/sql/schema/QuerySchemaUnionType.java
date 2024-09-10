@@ -1,4 +1,6 @@
 package net.letsdank.platform.utils.platform.sql.schema;
 
-public class QuerySchemaPacket {
+public enum QuerySchemaUnionType {
+    UNION,
+    UNION_ALL
 }
