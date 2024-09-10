@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Getter
 @Setter
-public class FilterUsageDescription {
+public class HRPR_FilterUsageDescription {
     private String filterTableAlias;
     private String registryTableAlias;
     private String parameterNamePostfix;

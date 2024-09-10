@@ -5,7 +5,7 @@ import net.letsdank.platform.module.salary.hr.base.entity.HRBD_RegistryDescripti
 import net.letsdank.platform.module.salary.hr.ir.BaseSalaryHRIntervalRegisters;
 import net.letsdank.platform.module.salary.hr.pr.context.CreateTTRegistryNameBuildContext;
 import net.letsdank.platform.module.salary.hr.pr.context.TTRegistryNameBuildContext;
-import net.letsdank.platform.module.salary.hr.pr.filter.FilterUsageDescription;
+import net.letsdank.platform.module.salary.hr.pr.filter.HRPR_FilterUsageDescription;
 import net.letsdank.platform.module.salary.hr.pr.description.HRPR_RegistryQueriesDescriptionPacket;
 import net.letsdank.platform.utils.data.Either;
 import net.letsdank.platform.module.salary.hr.pr.description.HRPR_QueryDescription;
@@ -116,7 +116,7 @@ public class HRPR_RegistryQuery {
 
         HRPR_QueryDescriptionOperator queryOperator = queryDescription.getOperators().get(0);
 
-        FilterUsageDescription filterUsageDescription = HRPR_QueryFilter.getFilterUsageDescription();
+        HRPR_FilterUsageDescription filterUsageDescription = HRPR_QueryFilter.getFilterUsageDescription();
         HRPR_QueryFilter.initializeFilterUsage(filterUsageDescription, filter, registryDescription, "date_from, date_to",
                 queryOperator, parameterNamePostfix, false);
 
