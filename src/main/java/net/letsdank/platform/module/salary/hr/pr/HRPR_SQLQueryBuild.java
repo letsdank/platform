@@ -57,7 +57,7 @@ public class HRPR_SQLQueryBuild {
             for (QuerySchemaExpression groupExpression : operator.getGroup()) {
                 String groupElement = groupExpression.toString();
                 if (!isTemplateExpression(groupElement)) {
-                    HRPR_InternalFunctions.addGroup(queryDescriptionOperator, groupElement);
+                    queryDescriptionOperator.addGroup(groupElement);
                 }
             }
 
@@ -67,7 +67,7 @@ public class HRPR_SQLQueryBuild {
                     if (filterExpression.containsAggregationFunction()) {
                         queryDescriptionOperator.getHaving().add(filterElement);
                     } else {
-                        HRPR_SQLQuery.addCondition(queryDescriptionOperator, filterElement);
+                        queryDescriptionOperator.addCondition(filterElement);
                     }
                 }
             }
@@ -137,7 +137,7 @@ public class HRPR_SQLQueryBuild {
 
             if (addColumn) {
                 for (int opIndex = 0; opIndex < addingFields.size(); opIndex++) {
-                    HRPR_SQLQuery.addFieldToQueryDescription(description, opIndex, addingFields.get(opIndex), columnAlias, false);
+                    description.addField(opIndex, addingFields.get(opIndex), columnAlias, false);
                 }
             }
         }

@@ -5,8 +5,11 @@ import net.letsdank.platform.module.salary.hr.base.entity.HRBD_RegistryDescripti
 import net.letsdank.platform.module.salary.hr.ir.BaseSalaryHRIntervalRegisters;
 import net.letsdank.platform.module.salary.hr.pr.context.CreateTTRegistryNameBuildContext;
 import net.letsdank.platform.module.salary.hr.pr.context.TTRegistryNameBuildContext;
+import net.letsdank.platform.module.salary.hr.pr.period.HRPR_CastPeriodOption;
+import net.letsdank.platform.module.salary.hr.pr.period.HRPR_PeriodFieldDescription;
 import net.letsdank.platform.module.salary.hr.pr.filter.HRPR_FilterUsageDescription;
 import net.letsdank.platform.module.salary.hr.pr.description.HRPR_RegistryQueriesDescriptionPacket;
+import net.letsdank.platform.module.salary.hr.pr.period.HRPR_PeriodMultiplicity;
 import net.letsdank.platform.utils.data.Either;
 import net.letsdank.platform.module.salary.hr.pr.description.HRPR_QueryDescription;
 import net.letsdank.platform.module.salary.hr.pr.description.HRPR_QueryDescriptionOperator;
@@ -48,8 +51,6 @@ public class HRPR_RegistryQuery {
 
         addQueryTTAvailableRecordsByRegistryName(packet, registryName, onlyDistrict, filter, ttNameAvailableRecords, buildContext);
         addQueryTTRegistryTable(packet, registryName, onlyDistrict, filter, ttNameAvailableRecords, buildContext, resultTTName);
-
-        // TODO: implement
     }
 
     // Alias: ДобавитьЗапросВТДоступныеЗаписиИмяРегистра
@@ -116,18 +117,77 @@ public class HRPR_RegistryQuery {
 
         HRPR_QueryDescriptionOperator queryOperator = queryDescription.getOperators().get(0);
 
-        HRPR_FilterUsageDescription filterUsageDescription = HRPR_QueryFilter.getFilterUsageDescription();
-        HRPR_QueryFilter.initializeFilterUsage(filterUsageDescription, filter, registryDescription, "date_from, date_to",
+        HRPR_FilterUsageDescription filterUsageDescription = new HRPR_FilterUsageDescription();
+        filterUsageDescription.initialize(filter, registryDescription, "date_from, date_to",
                 queryOperator, parameterNamePostfix, false);
 
         filterUsageDescription.setTemplateConditionJoinPeriod(templateConditionJoinPeriod); // TODO:
 
-        HRPR_SQLQuery.replaceTableInQueryOperator(queryOperator, "info_registry", registryName);
+        queryOperator.replaceTable("info_registry", registryName);
 
-        Object filterDateStart = addFieldDescriptionFilterPeriod(filterUsageDescription, "date_from", "filter_date_from");
-        Object filterDateEnd = addFieldDescriptionFilterPeriod(filterUsageDescription, "date_to", "filter_date_to");
-        Object filterDateEndGiven = addFieldDescriptionFilterPeriod(filterUsageDescription, "date_to", "filter_date_to_given");
+        HRPR_PeriodFieldDescription filterDateStart = filterUsageDescription.addPeriodOfFilter("date_from", "filter_date_from");
+        HRPR_PeriodFieldDescription filterDateEnd = filterUsageDescription.addPeriodOfFilter("date_to", "filter_date_to");
+        HRPR_PeriodFieldDescription filterDateEndGiven = filterUsageDescription.addPeriodOfFilter("date_to", "filter_date_to_given");
 
+        HRPR_PeriodFieldDescription periodRegistry = new HRPR_PeriodFieldDescription("period", "info_registry");
+
+        filterDateEndGiven.setEmptyValueAsMaximum(true);
+
+        HRPR_PeriodMultiplicity multiplicity = HRPR_PeriodMultiplicity.getMultiplicity(registryDescription, buildContext);
+        periodRegistry.setMultiplicity(multiplicity);
+        filterDateEndGiven.setMultiplicity(multiplicity);
+        filterDateEndGiven.setCastPeriodOption(HRPR_CastPeriodOption.ENDPERIOD);
+
+        if (includeRecordsInPeriodStart) {
+            filterDateStart.setMultiplicity(multiplicity);
+            filterDateStart.setOffset(1);
+        } else if (HRPR_QueryBuildOptions.isFormFromPeriodicityDay(buildContext, registryDescription)) {
+            filterDateStart.setMultiplicity(multiplicity);
+        }
+
+        filterUsageDescription.putPeriodExpressionInJoinTemplate("&filter_start_date_", filterDateStart);
+        filterUsageDescription.putPeriodExpressionInJoinTemplate("&filter_end_date_", filterDateEnd);
+        filterUsageDescription.putPeriodExpressionInJoinTemplate("&filter_end_date_given_", filterDateEndGiven);
+
+        queryDescription.addField(0, periodRegistry.getPeriodFieldExpression(), "period");
+        queryDescription.addField(0, "info_registry.period", "period_record");
+
+        String fieldRecordOfPeriod = templateFieldRecordOfPeriod.replace("&filter_start_date_", filterDateStart.getPeriodFieldExpression());
+        fieldRecordOfPeriod = fieldRecordOfPeriod.replace("&filter_end_date_given_", filterDateEndGiven.getPeriodFieldExpression());
+
+        queryDescription.addField(0, fieldRecordOfPeriod, "record_of_period");
+
+        if (registryDescription.isHasReturnEvents()) {
+            String fieldReturnRecord = templateFieldReturnRecord.replace("&filter_end_date_", filterDateEnd.getPeriodFieldExpression());
+            fieldReturnRecord = fieldReturnRecord.replace("&filter_end_date_given_", filterDateEndGiven.getPeriodFieldExpression());
+
+            queryDescription.addField(0, fieldReturnRecord, "return_record");
+            queryDescription.addField(0, "info_registry.valid_to", "valid_to");
+        }
+
+        for (String dimension : registryDescription.getDimensions()) {
+            queryDescription.addField(0, "info_registry." + dimension, dimension);
+        }
+
+        for (String resource : registryDescription.getReturnedResources()) {
+            queryDescription.addField(0, "info_registry." + resource, resource);
+            String returnResourceName = resource + "_on_end";
+            queryDescription.addField(0, "info_registry." + returnResourceName, returnResourceName);
+        }
+
+        for (String resource : registryDescription.getResources()) {
+            queryDescription.addField(0, "info_registry." + resource, resource);
+        }
+
+        for (String request : registryDescription.getRequests()) {
+            queryDescription.addField(0, "info_registry." + request, request);
+        }
+
+        for (String request : registryDescription.getStandardRequests()) {
+            queryDescription.addField(0, "info_registry." + request, request);
+        }
+
+        packet.putFilter(filter, filterUsageDescription, buildContext);
         // TODO: implement
     }
 }

@@ -13,7 +13,7 @@ public class HRPR_QueryDescriptionJoin {
     private String joiningTable;
     private int joinOrder;
     private List<String> conditions = new ArrayList<>();
-    private String joinType;
+    private String joinType; // TODO: Can be enum
 
     private String templateJoinCondition;
 }

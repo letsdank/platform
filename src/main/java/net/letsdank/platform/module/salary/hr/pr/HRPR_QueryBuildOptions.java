@@ -7,6 +7,11 @@ import net.letsdank.platform.utils.platform.metadata.registry.InfoRegistryPeriod
 
 // Параметры построения запросов
 public class HRPR_QueryBuildOptions {
+    // Alias: ФормироватьСПериодичностьДень
+    public static boolean isFormFromPeriodicityDay(TTRegistryNameBuildContext buildContext, HRBD_RegistryDescription registryDescription) {
+        return buildContext.isFormPeriodicityDay() && registryDescription.getPeriodicity() == InfoRegistryPeriodicity.SECOND;
+    }
+
     // Alias: ВключатьЗаписиНаНачалоПериода
     public static boolean isIncludeRecordsAtPeriodStart(TTRegistryNameBuildContext buildContext, HRBD_RegistryDescription registryDescription) {
         // TODO: Мы можем использовать CreateTTRegistryNameBuildContext или оставить TTRegistryNameBuildContext?
@@ -40,6 +45,7 @@ public class HRPR_QueryBuildOptions {
         for (Object filter : buildContext.getFilters()) {
 
         }
+
         return true;
     }
 }

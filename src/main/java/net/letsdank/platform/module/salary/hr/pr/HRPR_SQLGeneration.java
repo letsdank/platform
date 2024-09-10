@@ -333,6 +333,7 @@ public class HRPR_SQLGeneration {
         }
     }
 
+    // Alias: ТекстУсловияСоединения
     public static String getJoinConditionString(HRPR_QueryDescriptionOperator operator, String joiningTableAlias) {
         Optional<HRPR_QueryDescriptionJoin> join = operator.getJoins().stream()
                 .filter(j -> j.getJoiningTable().equals(joiningTableAlias))
@@ -341,17 +342,21 @@ public class HRPR_SQLGeneration {
         return join.map(queryDescriptionJoin -> getConditionsString(queryDescriptionJoin.getConditions())).orElse(null);
     }
 
-    static String getConditionsString(List<String> conditions) {
+    // Alias: ТекстУсловия
+    public static String getConditionsString(List<String> conditions) {
         if (conditions.isEmpty()) return "";
         if (conditions.size() == 1) return conditions.get(0);
         return String.join(COND_DELIMITER, conditions);
     }
 
+    // Alias: ТипОбъединенияСтрокой
     static String getUnionTypeAsString(QuerySchemaUnionType type) {
         if (type == QuerySchemaUnionType.UNION) return "UNION";
         return "UNION ALL";
     }
-    
+
+    // Alias: РазделительУсловий
     public static final String COND_DELIMITER = "\n\tAND ";
+    // Alias: РазделительПолей
     public static final String FIELD_DELIMITER = ",\n\t";
 }

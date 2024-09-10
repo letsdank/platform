@@ -4,8 +4,4 @@ import net.letsdank.platform.module.salary.hr.pr.description.HRPR_QueryDescripti
 
 // Служебные процедуры и функции
 public class HRPR_InternalFunctions {
-    // Alias: ДобавитьГруппировку
-    public static void addGroup(HRPR_QueryDescriptionOperator operator, String groupExpression) {
-        operator.getGroups().add(groupExpression);
-    }
 }

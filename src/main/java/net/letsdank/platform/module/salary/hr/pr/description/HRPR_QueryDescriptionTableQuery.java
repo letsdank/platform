@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class HRPR_QueryDescriptionTableQuery {
+    // Alias: НовыйОписаниеТаблицыЗапроса
     private String name;
     private String alias;
     private String type;

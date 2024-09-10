@@ -22,6 +22,7 @@ public class TTRegistryNameBuildContext {
     private Map<String, String> fieldAliasCorrespondenceForComposition;
     private boolean excludeUnusedFields;
 
+    // Alias: ПараметрыПостроенияВТИмяРегистра
     public TTRegistryNameBuildContext() {
         filters = new ArrayList<>();
         formPeriodicityDay = true;
