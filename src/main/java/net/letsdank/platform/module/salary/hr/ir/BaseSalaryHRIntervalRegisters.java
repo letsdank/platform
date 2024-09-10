@@ -1,7 +1,7 @@
 package net.letsdank.platform.module.salary.hr.ir;
 
 import net.letsdank.platform.module.salary.hr.pr.context.TTRegistryNameBuildContext;
-import net.letsdank.platform.module.salary.hr.pr.entity.HRPR_RegistryQueriesDescriptionPacket;
+import net.letsdank.platform.module.salary.hr.pr.description.HRPR_RegistryQueriesDescriptionPacket;
 
 // Alias: ИнтервальныеРегистрыБЗК
 // БЗК - Базовая Зарплата Кадры

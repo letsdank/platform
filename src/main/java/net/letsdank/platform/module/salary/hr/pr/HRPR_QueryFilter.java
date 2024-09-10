@@ -1,9 +1,9 @@
 package net.letsdank.platform.module.salary.hr.pr;
 
 import net.letsdank.platform.module.salary.hr.base.entity.HRBD_RegistryDescription;
-import net.letsdank.platform.module.salary.hr.pr.entity.FilterUsageDescription;
-import net.letsdank.platform.module.salary.hr.pr.entity.HRPR_QueryDescriptionJoin;
-import net.letsdank.platform.module.salary.hr.pr.entity.HRPR_QueryDescriptionOperator;
+import net.letsdank.platform.module.salary.hr.pr.filter.FilterUsageDescription;
+import net.letsdank.platform.module.salary.hr.pr.description.HRPR_QueryDescriptionJoin;
+import net.letsdank.platform.module.salary.hr.pr.description.HRPR_QueryDescriptionOperator;
 import net.letsdank.platform.utils.string.StringUtils;
 
 import java.util.List;

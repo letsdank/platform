@@ -2,6 +2,7 @@ package net.letsdank.platform.module.salary.hr.pr.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.letsdank.platform.module.salary.hr.pr.description.HRPR_QueryDescriptionOperator;
 
 import java.util.ArrayList;
 import java.util.List;

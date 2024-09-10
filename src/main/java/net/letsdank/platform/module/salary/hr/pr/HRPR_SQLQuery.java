@@ -1,11 +1,8 @@
 package net.letsdank.platform.module.salary.hr.pr;
 
-import net.letsdank.platform.module.salary.hr.pr.entity.HRPR_QueryDescriptionCompositionField;
-import net.letsdank.platform.module.salary.hr.pr.entity.HRPR_QueryDescriptionOperator;
-import net.letsdank.platform.module.salary.hr.pr.entity.HRPR_RegistryQueriesDescriptionPacket;
+import net.letsdank.platform.module.salary.hr.pr.description.*;
 import net.letsdank.platform.utils.data.Either;
 import net.letsdank.platform.utils.platform.sql.SQLQuery;
-import net.letsdank.platform.module.salary.hr.pr.entity.HRPR_QueryDescription;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +47,14 @@ public class HRPR_SQLQuery {
 
         query.setSql(String.join("", queriesPacket));
         return query;
+    }
+
+    // Alias: ЗаменитьТаблицуВОператореЗапроса
+    public static void replaceTableInQueryOperator(HRPR_QueryDescriptionOperator operator, String replacementTableAlias, String newTableName) {
+        Either<HRPR_QueryDescriptionNestedQuery, HRPR_QueryDescriptionTableQuery> tableDescription = operator.getSources().get(replacementTableAlias);
+        if (tableDescription.isRight()) {
+            tableDescription.right().setName(newTableName);
+        }
     }
 
     // Alias: ДобавитьПолеВОписаниеЗапроса

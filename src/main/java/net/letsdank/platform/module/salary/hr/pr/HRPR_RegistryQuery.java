@@ -5,11 +5,11 @@ import net.letsdank.platform.module.salary.hr.base.entity.HRBD_RegistryDescripti
 import net.letsdank.platform.module.salary.hr.ir.BaseSalaryHRIntervalRegisters;
 import net.letsdank.platform.module.salary.hr.pr.context.CreateTTRegistryNameBuildContext;
 import net.letsdank.platform.module.salary.hr.pr.context.TTRegistryNameBuildContext;
-import net.letsdank.platform.module.salary.hr.pr.entity.FilterUsageDescription;
-import net.letsdank.platform.module.salary.hr.pr.entity.HRPR_RegistryQueriesDescriptionPacket;
+import net.letsdank.platform.module.salary.hr.pr.filter.FilterUsageDescription;
+import net.letsdank.platform.module.salary.hr.pr.description.HRPR_RegistryQueriesDescriptionPacket;
 import net.letsdank.platform.utils.data.Either;
-import net.letsdank.platform.module.salary.hr.pr.entity.HRPR_QueryDescription;
-import net.letsdank.platform.module.salary.hr.pr.entity.HRPR_QueryDescriptionOperator;
+import net.letsdank.platform.module.salary.hr.pr.description.HRPR_QueryDescription;
+import net.letsdank.platform.module.salary.hr.pr.description.HRPR_QueryDescriptionOperator;
 
 // Формирование запросов к регистрам
 public class HRPR_RegistryQuery {
@@ -122,7 +122,7 @@ public class HRPR_RegistryQuery {
 
         filterUsageDescription.setTemplateConditionJoinPeriod(templateConditionJoinPeriod); // TODO:
 
-        replaceTableInQueryOperator(queryOperator, "info_registry", registryName);
+        HRPR_SQLQuery.replaceTableInQueryOperator(queryOperator, "info_registry", registryName);
 
         Object filterDateStart = addFieldDescriptionFilterPeriod(filterUsageDescription, "date_from", "filter_date_from");
         Object filterDateEnd = addFieldDescriptionFilterPeriod(filterUsageDescription, "date_to", "filter_date_to");

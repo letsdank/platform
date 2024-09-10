@@ -2,7 +2,7 @@ package net.letsdank.platform.module.salary.hr.pr;
 
 import net.letsdank.platform.module.salary.hr.pr.context.CreateTTRegistryNameBuildContext;
 import net.letsdank.platform.module.salary.hr.pr.context.TTRegistryNameBuildContext;
-import net.letsdank.platform.module.salary.hr.pr.entity.HRPR_RegistryQueriesDescriptionPacket;
+import net.letsdank.platform.module.salary.hr.pr.description.HRPR_RegistryQueriesDescriptionPacket;
 import net.letsdank.platform.module.salary.hr.pr.event.SalaryHRPROnTTRegistryNameQueryEvent;
 import net.letsdank.platform.utils.event.EventPublisherHolder;
 import net.letsdank.platform.utils.platform.sql.SQLQuery;

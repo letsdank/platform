@@ -1,4 +1,4 @@
-package net.letsdank.platform.module.salary.hr.pr.entity;
+package net.letsdank.platform.module.salary.hr.pr.description;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

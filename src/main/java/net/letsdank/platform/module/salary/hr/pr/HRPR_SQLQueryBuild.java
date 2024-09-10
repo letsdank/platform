@@ -1,6 +1,6 @@
 package net.letsdank.platform.module.salary.hr.pr;
 
-import net.letsdank.platform.module.salary.hr.pr.entity.*;
+import net.letsdank.platform.module.salary.hr.pr.description.*;
 import net.letsdank.platform.utils.data.Either;
 import net.letsdank.platform.utils.platform.sql.schema.*;
 import net.letsdank.platform.utils.platform.sql.schema.join.QuerySchemaQuerySourceJoin;
