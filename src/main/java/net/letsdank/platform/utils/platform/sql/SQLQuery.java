@@ -10,6 +10,14 @@ public class SQLQuery {
     private final JdbcTemplate template = new JdbcTemplate();
     private String sql;
 
+    public SQLQuery() {
+
+    }
+
+    public SQLQuery(String query) {
+        this.sql = query;
+    }
+
     public void addParameter(String name, Object value) {
         parameters.put(name, value);
     }
