@@ -1,4 +1,4 @@
-package net.letsdank.platform.module.salary.hr.pr.entity;
+package net.letsdank.platform.module.salary.hr.pr.filter;
 
 import lombok.Getter;
 import lombok.Setter;
