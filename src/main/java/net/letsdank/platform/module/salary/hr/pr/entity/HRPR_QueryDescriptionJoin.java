@@ -12,7 +12,7 @@ public class HRPR_QueryDescriptionJoin {
     private String leadingTable;
     private String joiningTable;
     private int joinOrder;
-    private final List<String> conditions = new ArrayList<>();
+    private List<String> conditions = new ArrayList<>();
     private String joinType;
 
     private String templateJoinCondition;

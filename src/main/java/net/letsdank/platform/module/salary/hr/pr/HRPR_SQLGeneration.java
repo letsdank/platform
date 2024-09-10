@@ -1,7 +1,8 @@
 package net.letsdank.platform.module.salary.hr.pr;
 
 import net.letsdank.platform.module.salary.hr.pr.entity.*;
-import net.letsdank.platform.utils.platform.sql.description.*;
+import net.letsdank.platform.utils.data.Either;
+import net.letsdank.platform.utils.platform.sql.schema.QuerySchemaUnionType;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -16,7 +17,7 @@ public class HRPR_SQLGeneration {
     }
 
     // Alias: ОписаниеЗапросаВМассивСтрок
-    static void performQueryDescriptionToStrings(List<String> strings, HRPR_QueryDescription description, boolean showReportElements) {
+    static void performQueryDescriptionToStrings(List<String> strings, HRPR_QueryDescription description, boolean showCompositionElements) {
         int opIndex = 0;
 
         for (HRPR_QueryDescriptionOperator op : description.getOperators()) {
@@ -27,7 +28,7 @@ public class HRPR_SQLGeneration {
                 strings.add("\n");
             }
 
-            performQueryOpToStrings(description, op, strings, opIndex == 0, showReportElements);
+            performQueryOpToStrings(description, op, strings, opIndex == 0, showCompositionElements);
             opIndex++;
         }
 
@@ -81,7 +82,8 @@ public class HRPR_SQLGeneration {
     }
 
     // Alias: ОператорЗапросаВМассивСтрок
-    static void performQueryOpToStrings(HRPR_QueryDescription description, HRPR_QueryDescriptionOperator operator, List<String> strings, boolean isFirstOperator, boolean showReportElements) {
+    static void performQueryOpToStrings(HRPR_QueryDescription description, HRPR_QueryDescriptionOperator operator, List<String> strings,
+                                        boolean isFirstOperator, boolean showCompositionElements) {
         strings.add("SELECT");
 
         if (isFirstOperator && description.isDistinct()) {
@@ -91,8 +93,8 @@ public class HRPR_SQLGeneration {
         performQueryOpModifierToStrings(description, operator, strings);
         performQueryOpFieldsToStrings(description, operator, strings);
 
-        if (showReportElements && isFirstOperator) {
-            performReportElementsToStrings(operator, strings);
+        if (showCompositionElements && isFirstOperator) {
+            performCompositionElementsToStrings(operator, strings);
         }
 
         strings.add("\n");
@@ -107,8 +109,8 @@ public class HRPR_SQLGeneration {
 
         performQueryOpConditionsToStrings(operator, strings);
 
-        if (showReportElements) {
-            performQueryOpReportElementsToStrings(operator, strings);
+        if (showCompositionElements) {
+            performQueryOpCompositionElementsToStrings(operator, strings);
         }
 
         strings.add("\n");
@@ -148,19 +150,19 @@ public class HRPR_SQLGeneration {
     }
 
     // Alias: ПоляСКДОператораЗапросаВМассивСтрок
-    static void performReportElementsToStrings(HRPR_QueryDescriptionOperator operator, List<String> strings) {
-        if (!operator.getSelectedReportFields().isEmpty()) {
+    static void performCompositionElementsToStrings(HRPR_QueryDescriptionOperator operator, List<String> strings) {
+        if (!operator.getSelectedCompositionFields().isEmpty()) {
             strings.add("\n");
             strings.add("{SELECT"); // TODO: Это поддерживается силами pgsql?
             strings.add("\n");
             strings.add("\t");
 
             int fieldIndex = 0;
-            for (HRPR_QueryDescriptionReportField field : operator.getSelectedReportFields()) {
+            for (HRPR_QueryDescriptionCompositionField field : operator.getSelectedCompositionFields()) {
                 strings.add(field.getField());
                 strings.add(" AS ");
-                strings.add(field.getReportAlias());
-                if (fieldIndex != operator.getSelectedReportFields().size() - 1) {
+                strings.add(field.getCompositionAlias());
+                if (fieldIndex != operator.getSelectedCompositionFields().size() - 1) {
                     strings.add(FIELD_DELIMITER);
                 }
                 fieldIndex++;
@@ -178,8 +180,9 @@ public class HRPR_SQLGeneration {
         }
 
         int tableIndex = 0;
-        for (HRPR_QueryDescriptionTable table : operator.getTables()) {
-            if (operator.getJoins().stream().anyMatch(join -> join.getJoiningTable().equals(table.getAlias()))) {
+        for (Either<HRPR_QueryDescriptionNestedQuery, HRPR_QueryDescriptionTableQuery> table : operator.getTables()) {
+            String tableAlias = table.isLeft() ? table.left().getAlias() : table.right().getAlias();
+            if (operator.getJoins().stream().anyMatch(join -> join.getJoiningTable().equals(tableAlias))) {
                 continue;
             }
 
@@ -189,19 +192,19 @@ public class HRPR_SQLGeneration {
             }
 
             // TODO: Что-то сделать с этим
-            if (table.getType() == "InnerJoinDescription") {
+            if (table.isLeft()) {
                 strings.add("(");
-                performQueryDescriptionToStrings(strings, table.getQueryDescription(), false);
+                performQueryDescriptionToStrings(strings, table.left().getQueryDescription(), false);
                 strings.add(")");
             } else {
-                strings.add(table.getName());
+                strings.add(table.right().getName());
             }
 
             strings.add(" AS ");
-            strings.add(table.getAlias());
+            strings.add(tableAlias);
 
             List<HRPR_QueryDescriptionJoin> joins = new ArrayList<>(operator.getJoins().stream()
-                    .filter(join -> join.getLeadingTable().equals(table.getAlias()))
+                    .filter(join -> join.getLeadingTable().equals(tableAlias))
                     .toList());
             joins.sort(Comparator.comparing(HRPR_QueryDescriptionJoin::getJoinOrder));
 
@@ -275,7 +278,8 @@ public class HRPR_SQLGeneration {
 
     // Alias: СоединениеВМассивСтрок
     static void performJoinToStrings(List<String> strings, HRPR_QueryDescriptionJoin join, HRPR_QueryDescriptionOperator joiningQueryDescription) {
-        HRPR_QueryDescriptionTable joiningTableDescription = joiningQueryDescription.getSources().get(join.getJoiningTable());
+        // TODO: Нужно делать проверку isRight()?
+        HRPR_QueryDescriptionTableQuery joiningTableDescription = joiningQueryDescription.getSources().get(join.getJoiningTable()).right();
         strings.add("\n\t");
         strings.add(join.getJoinType());
         strings.add(" JOIN ");
@@ -309,17 +313,17 @@ public class HRPR_SQLGeneration {
     }
 
     // Alias: ОтборыСКДОператораЗапросаВМассивСтрок
-    static void performQueryOpReportElementsToStrings(HRPR_QueryDescriptionOperator operator, List<String> strings) {
-        if (!operator.getReportFieldConditions().isEmpty()) {
+    static void performQueryOpCompositionElementsToStrings(HRPR_QueryDescriptionOperator operator, List<String> strings) {
+        if (!operator.getCompositionFieldConditions().isEmpty()) {
             strings.add("\n");
             strings.add("{WHERE"); // TODO: Это поддерживается силами pgsql?
             strings.add("\n");
             strings.add("\t");
 
             int fieldConditionIndex = 0;
-            for (String fieldCondition : operator.getReportFieldConditions()) {
+            for (String fieldCondition : operator.getCompositionFieldConditions()) {
                 strings.add(fieldCondition);
-                if (fieldConditionIndex != operator.getReportFieldConditions().size() - 1) {
+                if (fieldConditionIndex != operator.getCompositionFieldConditions().size() - 1) {
                     strings.add(COND_DELIMITER);
                 }
                 fieldConditionIndex++;
@@ -343,8 +347,8 @@ public class HRPR_SQLGeneration {
         return String.join(COND_DELIMITER, conditions);
     }
 
-    static String getJoinTypeString(QueryDescriptionUnionType type) {
-        if (type == QueryDescriptionUnionType.UNION) return "UNION";
+    static String getUnionTypeAsString(QuerySchemaUnionType type) {
+        if (type == QuerySchemaUnionType.UNION) return "UNION";
         return "UNION ALL";
     }
     

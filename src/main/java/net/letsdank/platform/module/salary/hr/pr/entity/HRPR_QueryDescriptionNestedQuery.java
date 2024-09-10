@@ -5,10 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class HRPR_QueryDescriptionTable {
-    private String name;
+public class HRPR_QueryDescriptionNestedQuery {
     private String alias;
     private String type;
-
     private HRPR_QueryDescription queryDescription;
 }

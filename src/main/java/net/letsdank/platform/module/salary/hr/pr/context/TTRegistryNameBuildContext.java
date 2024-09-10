@@ -15,20 +15,20 @@ public class TTRegistryNameBuildContext {
     private Object indexingBy;
     private List<Object> filters;
     private boolean formPeriodicityDay;
-    private boolean useLanguageQueryExtensionForReports;
+    private boolean useLanguageQueryExtensionForComposition;
     private List<Object> constantFields;
     private boolean excludedRegisters;
     private Map<String, String> fieldAliasCorrespondence;
-    private Map<String, String> fieldAliasCorrespondenceForReports;
+    private Map<String, String> fieldAliasCorrespondenceForComposition;
     private boolean excludeUnusedFields;
 
     public TTRegistryNameBuildContext() {
         filters = new ArrayList<>();
         formPeriodicityDay = true;
-        useLanguageQueryExtensionForReports = true;
+        useLanguageQueryExtensionForComposition = true;
         excludedRegisters = false;
         fieldAliasCorrespondence = new HashMap<>();
-        fieldAliasCorrespondenceForReports = new HashMap<>();
+        fieldAliasCorrespondenceForComposition = new HashMap<>();
         excludeUnusedFields = true;
     }
 }

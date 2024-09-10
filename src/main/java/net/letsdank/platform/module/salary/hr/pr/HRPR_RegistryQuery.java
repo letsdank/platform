@@ -108,7 +108,7 @@ public class HRPR_RegistryQuery {
                         : ")"
                 );
 
-        HRPR_QueryDescription queryDescription = getQueryDescriptionByText(querySelectRegistryRecords);
+        HRPR_QueryDescription queryDescription = HRPR_SQLQueryBuild.getQueryDescriptionByText(querySelectRegistryRecords);
         packet.getDataQueries().add(Either.right(queryDescription));
 
         queryDescription.setDistinct(onlyDistrict);

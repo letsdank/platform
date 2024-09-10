@@ -285,6 +285,6 @@ public class SalaryHRPeriodicRegisters {
         HRPR_RegistryQueriesDescriptionPacket packet = new HRPR_RegistryQueriesDescriptionPacket();
         HRPR_RegistryQuery.addQueryTTRegistryName(packet, registryName, onlyDistrict, filter, buildContext, resultTTName);
 
-        return HRPR_SQLQuery.getQueryByDescriptionPacket(packet, buildContext.isUseLanguageQueryExtensionForReports());
+        return HRPR_SQLQuery.getQueryByDescriptionPacket(packet, buildContext.isUseLanguageQueryExtensionForComposition());
     }
 }

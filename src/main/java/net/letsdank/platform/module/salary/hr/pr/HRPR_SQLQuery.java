@@ -1,5 +1,7 @@
 package net.letsdank.platform.module.salary.hr.pr;
 
+import net.letsdank.platform.module.salary.hr.pr.entity.HRPR_QueryDescriptionCompositionField;
+import net.letsdank.platform.module.salary.hr.pr.entity.HRPR_QueryDescriptionOperator;
 import net.letsdank.platform.module.salary.hr.pr.entity.HRPR_RegistryQueriesDescriptionPacket;
 import net.letsdank.platform.utils.data.Either;
 import net.letsdank.platform.utils.platform.sql.SQLQuery;
@@ -12,7 +14,7 @@ import java.util.Map;
 // Работа с моделью запроса
 public class HRPR_SQLQuery {
     // Alias: ЗапросПоОписаниюПакета
-    public static SQLQuery getQueryByDescriptionPacket(HRPR_RegistryQueriesDescriptionPacket packet, boolean showReportElements) {
+    public static SQLQuery getQueryByDescriptionPacket(HRPR_RegistryQueriesDescriptionPacket packet, boolean showCompositionElements) {
         SQLQuery query = new SQLQuery();
 
         for (Map.Entry<String, Object> entry : packet.getParameters().entrySet()) {
@@ -23,7 +25,7 @@ public class HRPR_SQLQuery {
         List<String> queriesPacket = new ArrayList<>();
 
         if (packet.getInitFiltersQueryDescription() != null) {
-            HRPR_SQLGeneration.performQueryDescriptionToStrings(queriesPacket, packet.getInitFiltersQueryDescription(), showReportElements);
+            HRPR_SQLGeneration.performQueryDescriptionToStrings(queriesPacket, packet.getInitFiltersQueryDescription(), showCompositionElements);
             queriesPacket.add(delimiter);
         }
 
@@ -33,7 +35,7 @@ public class HRPR_SQLQuery {
             if (queryDescription.isLeft()) {
                 queriesPacket.add(queryDescription.left().getSql());
             } else {
-                HRPR_SQLGeneration.performQueryDescriptionToStrings(queriesPacket, queryDescription.right(), showReportElements);
+                HRPR_SQLGeneration.performQueryDescriptionToStrings(queriesPacket, queryDescription.right(), showCompositionElements);
             }
 
             if (queryIndex != packet.getDataQueries().size()) {
@@ -48,5 +50,48 @@ public class HRPR_SQLQuery {
 
         query.setSql(String.join("", queriesPacket));
         return query;
+    }
+
+    // Alias: ДобавитьПолеВОписаниеЗапроса
+    public static void addFieldToQueryDescription(HRPR_QueryDescription queryDescription, int operatorDescriptionIndex, String expression,
+                                                  String alias) {
+        addFieldToQueryDescription(queryDescription, operatorDescriptionIndex, expression, alias, true);
+    }
+
+    // Alias: ДобавитьПолеВОписаниеЗапроса
+    public static void addFieldToQueryDescription(HRPR_QueryDescription queryDescription, int queryOperatorIndex, String expression,
+                                                  String alias, boolean addFieldToComposition) {
+        int fieldIndex = queryDescription.getColumns().indexOf(alias);
+
+        if (fieldIndex == -1) {
+            queryDescription.getColumns().add(alias);
+            int queryIndex = 0;
+            for (HRPR_QueryDescriptionOperator query : queryDescription.getOperators()) {
+                queryDescription.getOperators().get(queryIndex).getSelectedFields().add
+                        (queryIndex == queryOperatorIndex ? expression : "NULL");
+
+                query.getFieldAliases().add(alias);
+                queryIndex++;
+            }
+        } else {
+            queryDescription.getOperators().get(queryOperatorIndex).getSelectedFields().set(fieldIndex, expression);
+        }
+
+        if (addFieldToComposition && queryOperatorIndex == 0) {
+            queryDescription.getOperators().get(queryOperatorIndex).getSelectedCompositionFields().add(
+                    new HRPR_QueryDescriptionCompositionField(alias, null));
+        }
+    }
+
+    // Alias: ДобавитьУсловие
+    public static void addCondition(HRPR_QueryDescriptionOperator operator, String conditions) {
+        operator.getConditions().add(conditions);
+    }
+
+    // Alias: ДобавитьУсловие
+    public static void addCondition(HRPR_QueryDescriptionOperator operator, List<String> conditions) {
+        for (String condition : conditions) {
+            operator.getConditions().add(condition);
+        }
     }
 }
