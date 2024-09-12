@@ -63,4 +63,15 @@ public class HRPR_QueryDescription {
             }
         }
     }
+
+    // Alias: УдалитьКолонкуИзОписаниеЗапроса
+    public void removeColumn(String columnName) {
+        int fieldIndex = columns.indexOf(columnName);
+        columns.remove(fieldIndex);
+
+        for (HRPR_QueryDescriptionOperator query : operators) {
+            query.getSelectedFields().remove(fieldIndex);
+            query.getFieldAliases().remove(fieldIndex);
+        }
+    }
 }

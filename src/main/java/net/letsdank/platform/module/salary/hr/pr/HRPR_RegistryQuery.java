@@ -13,8 +13,10 @@ import net.letsdank.platform.module.salary.hr.pr.period.HRPR_PeriodMultiplicity;
 import net.letsdank.platform.utils.data.Either;
 import net.letsdank.platform.module.salary.hr.pr.description.HRPR_QueryDescription;
 import net.letsdank.platform.module.salary.hr.pr.description.HRPR_QueryDescriptionOperator;
+import net.letsdank.platform.utils.platform.sql.SQLQuery;
 
 // Формирование запросов к регистрам
+// TODO: Перенести все в ООП, есть для этого HRPR_RegistryQueriesDescriptionPacket
 public class HRPR_RegistryQuery {
     // Alias: ДобавитьЗапросВТИмяРегистра
     static void addQueryTTRegistryName(HRPR_RegistryQueriesDescriptionPacket packet, String registryName,
@@ -38,7 +40,7 @@ public class HRPR_RegistryQuery {
 
         String ttNameAvailableRecords = HRPR_Utils.getAdditionalTTNameAvailableRecords(registryName, buildContext);
         if (HRPR_Utils.isAvailableIntervalRegistry(registryName)) {
-            if (HRPR_QueryBuildOptions.useFirstRegistry(buildContext, registryName)) {
+            if (buildContext != null && buildContext.isUseFirstRegistry(registryName)) {
                 BaseSalaryHRIntervalRegisters.addQueryTTTransactionByFirstRegistry(packet, registryName,
                         onlyDistrict, filter, buildContext);
             } else {
@@ -71,7 +73,7 @@ public class HRPR_RegistryQuery {
 
         HRBD_RegistryDescription registryDescription = SalaryHRBaseDataset.getInfoRegistryDescription(registryName,
                 filter.getFilterDimensions(), buildContext.isExcludeUnusedFields());
-        boolean includeRecordsInPeriodStart = HRPR_QueryBuildOptions.isIncludeRecordsAtPeriodStart(buildContext, registryDescription);
+        boolean includeRecordsInPeriodStart = buildContext.isIncludeRecordsAtPeriodStart(registryDescription);
 
         // TODO: Full hardcore - try to separate it
         String querySelectRegistryRecords = "SELECT DISTINCT" +
@@ -141,7 +143,7 @@ public class HRPR_RegistryQuery {
         if (includeRecordsInPeriodStart) {
             filterDateStart.setMultiplicity(multiplicity);
             filterDateStart.setOffset(1);
-        } else if (HRPR_QueryBuildOptions.isFormFromPeriodicityDay(buildContext, registryDescription)) {
+        } else if (buildContext.isFormFromPeriodicityDay(registryDescription)) {
             filterDateStart.setMultiplicity(multiplicity);
         }
 
@@ -190,5 +192,150 @@ public class HRPR_RegistryQuery {
         packet.putFilter(filter, filterUsageDescription, buildContext);
         queryOperator.putConditionInRegistry(buildContext.getFilters(), packet.getParameters(), parameterNamePostfix);
         queryDescription.putAdditionalFieldsByFUD(0, filterUsageDescription);
+    }
+
+    // Alias: ДобавитьЗапросВТТаблицаРегистра
+    static void addQueryTTRegistryTable(HRPR_RegistryQueriesDescriptionPacket packet, String registryName, boolean onlyDistrict, Object filter,
+                                        String ttNameAvailableRecords) {
+        addQueryTTRegistryTable(packet, registryName, onlyDistrict, filter, ttNameAvailableRecords, null);
+    }
+
+    // Alias: ДобавитьЗапросВТТаблицаРегистра
+    static void addQueryTTRegistryTable(HRPR_RegistryQueriesDescriptionPacket packet, String registryName, boolean onlyDistrict, Object filter,
+                                        String ttNameAvailableRecords, TTRegistryNameBuildContext buildContext) {
+        addQueryTTRegistryTable(packet, registryName, onlyDistrict, filter, ttNameAvailableRecords, buildContext, null);
+    }
+
+    // Alias: ДобавитьЗапросВТТаблицаРегистра
+    static void addQueryTTRegistryTable(HRPR_RegistryQueriesDescriptionPacket packet, String registryName, boolean onlyDistrict, Object filter,
+                                        String ttNameAvailableRecords, TTRegistryNameBuildContext buildContext, String resultTTName) {
+        if (buildContext == null) {
+            buildContext = new TTRegistryNameBuildContext();
+        }
+
+        if (resultTTName == null) {
+            resultTTName = "vt_" + registryName;
+        }
+
+        HRBD_RegistryDescription registryDescription = SalaryHRBaseDataset.getInfoRegistryDescription(registryName,
+                filter.getFilterDimensions(), buildContext.isExcludeUnusedFields());
+        boolean formFromPeriodicityDay = buildContext.isFormFromPeriodicityDay(registryDescription);
+        boolean includeRecordsInPeriodStart = buildContext.isIncludeRecordsAtPeriodStart(registryDescription);
+
+        String templateAllRecordsView = "SELECT " +
+                " INTO vt_all_records_view " +
+                "  available_records.period as period," +
+                "  available_records.period_record as period_record," +
+                "  FALSE as return_record," +
+                "  available_records.valid_to as valid_to," +
+                "  &tmpl_dimensions as dimensions," +
+                "  &tmpl_resources as resources," +
+                "  &tmpl_requests as requests," +
+                "  &tmpl_standard_requests as standard_requests" +
+                " FROM vt_available_records AS available_records" +
+                " WHERE available_records.record_of_period <> NULL" +
+                " UNION ALL SELECT" +
+                "  available_records.valid_to," +
+                "  available_records.valid_to," +
+                "  TRUE," +
+                "  NULL," +
+                "  &tmpl_dimensions," +
+                "  &tmpl_resources," +
+                "  &tmpl_requests," +
+                "  &tmpl_standard_requests" +
+                " FROM vt_available_records AS available_records" +
+                " {LEFT JOIN #info_registry AS info_registry_auxiliary" +
+                "  ON available_records.period_of_record < info_registry_auxiliary.period" +
+                "     AND available_records.valid_to >= info_registry_auxiliary.period" +
+                "     AND (&tmpl_dimension_join_condition)}" +
+                " WHERE info_registry_auxiliary.period IS NULL AND available_records.return_record IS TRUE";
+
+        HRPR_QueryDescription queryDescription = HRPR_SQLQueryBuild.getQueryDescriptionByText(templateAllRecordsView);
+        packet.getDataQueries().add(Either.right(queryDescription));
+        queryDescription.setDistinct(onlyDistrict);
+
+        HRPR_QueryDescriptionOperator qdoMainRecords = queryDescription.getOperators().get(0);
+        HRPR_QueryDescriptionOperator qdoReturnRecords = queryDescription.getOperators().get(1);
+        qdoMainRecords.replaceTable("available_records", ttNameAvailableRecords);
+        qdoReturnRecords.replaceTable("available_records", ttNameAvailableRecords);
+
+        if (!registryDescription.isHasReturnEvents()) {
+            qdoReturnRecords = null;
+            queryDescription.getOperators().remove(1);
+
+            queryDescription.removeColumn("is_return_event");
+            queryDescription.removeColumn("return_event_period");
+        } else {
+            qdoReturnRecords.replaceTable("info_registry_auxiliary", registryName);
+        }
+
+        for (String dimension : registryDescription.getDimensions()) {
+            queryDescription.addField(0, "available_records." + dimension, dimension);
+
+            if (qdoReturnRecords != null && !dimension.equalsIgnoreCase("start_date") && !dimension.equalsIgnoreCase("end_date")) {
+                queryDescription.addField(1, "available_records." + dimension, dimension);
+                String templateJoinCondition = "available_records." + dimension + " = info_registry_auxiliary." + dimension;
+                qdoReturnRecords.addJoinCondition("info_registry_auxiliary", templateJoinCondition);
+            }
+        }
+
+        for (String resource : registryDescription.getResources()) {
+            queryDescription.addField(0, "available_records." + resource, resource);
+        }
+
+        for (String resource : registryDescription.getReturnedResources()) {
+            String onEndResourceName = resource + "_on_end";
+            queryDescription.addField(0, "available_records." + resource, resource);
+            queryDescription.addField(1, "available_records." + onEndResourceName, resource);
+        }
+
+        for (String request : registryDescription.getRequests()) {
+            queryDescription.addField(0, "available_records." + request, request);
+            if (qdoReturnRecords != null) {
+                queryDescription.addField(1, "available_records." + request, request);
+            }
+        }
+
+        for (String request : registryDescription.getStandardRequests()) {
+            queryDescription.addField(0, "available_records." + request, request);
+            if (qdoReturnRecords != null) {
+                queryDescription.addField(1, "available_records." + request, request);
+            }
+        }
+
+        if (formFromPeriodicityDay) {
+            String ttNameAllRecordsView = "vt_all_records_view_" + registryName;
+            queryDescription.setTableToPlace(ttNameAllRecordsView);
+
+            addQueryRecordsWithDayPeriodicity(packet, registryDescription, buildContext, ttNameAllRecordsView, resultTTName);
+            addQueryDestroyTT(packet, ttNameAllRecordsView);
+        } else {
+            queryDescription.setTableToPlace(resultTTName);
+        }
+
+        // TODO: implement
+        // HRPR_QueryDescription resultQueryDescription =
+    }
+
+    // Alias: ДобавитьЗапросПолученияЗаписейСПериодичностьюДень
+    static void addQueryRecordsWithDayPeriodicity(HRPR_RegistryQueriesDescriptionPacket packet,
+                                                  HRBD_RegistryDescription registryDescription, TTRegistryNameBuildContext buildContext,
+                                                  String ttNameAllRecordsView) {
+        addQueryRecordsWithDayPeriodicity(packet, registryDescription, buildContext, ttNameAllRecordsView, null);
+    }
+
+    // Alias: ДобавитьЗапросПолученияЗаписейСПериодичностьюДень
+    static void addQueryRecordsWithDayPeriodicity(HRPR_RegistryQueriesDescriptionPacket packet,
+                                                  HRBD_RegistryDescription registryDescription, TTRegistryNameBuildContext buildContext,
+                                                  String ttNameAllRecordsView, String resultTTName) {
+        // TODO: Implement
+    }
+
+    // Alias: ДобавитьЗапросУничтоженияВТ
+    static void addQueryDestroyTT(HRPR_RegistryQueriesDescriptionPacket packet, String ttNameAllRecordsView) {
+        SQLQuery query = new SQLQuery();
+        packet.getDataQueries().add(Either.left(query));
+
+        query.setSql("DROP TABLE " + ttNameAllRecordsView);
     }
 }

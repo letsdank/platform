@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 // TODO: Переименовать
+// TODO: Это разве не HRBD_FilterDescription?
 @Getter
 @Setter
 public class HRPR_Filter {

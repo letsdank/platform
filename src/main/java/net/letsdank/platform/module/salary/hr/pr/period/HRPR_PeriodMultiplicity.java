@@ -16,7 +16,7 @@ public enum HRPR_PeriodMultiplicity {
     YEAR;
 
     public static HRPR_PeriodMultiplicity getMultiplicity(HRBD_RegistryDescription registryDescription, TTRegistryNameBuildContext buildContext) {
-        boolean formFromPeriodicityDay = HRPR_QueryBuildOptions.isFormFromPeriodicityDay(buildContext, registryDescription);
+        boolean formFromPeriodicityDay = buildContext.isFormFromPeriodicityDay(registryDescription);
 
         return switch (registryDescription.getPeriodicity()) {
             case SECOND -> formFromPeriodicityDay ? DAY : SECOND;

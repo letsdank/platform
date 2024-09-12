@@ -6,10 +6,7 @@ import net.letsdank.platform.module.salary.hr.pr.HRPR_Utils;
 import net.letsdank.platform.module.salary.hr.pr.filter.HRPR_Filter;
 import net.letsdank.platform.utils.data.Either;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Getter
 @Setter
@@ -60,6 +57,29 @@ public class HRPR_QueryDescriptionOperator {
         this.conditions.addAll(conditions);
     }
 
+    // Alias: ДобавитьУсловиеСоединения
+    public void addJoinCondition(String joiningTableAlias, String conditions) {
+        Optional<HRPR_QueryDescriptionJoin> joinDescription = joins.stream()
+                .filter(join -> join.getJoiningTable().equals(joiningTableAlias))
+                .findFirst();
+
+        joinDescription.ifPresent(hrprQueryDescriptionJoin -> hrprQueryDescriptionJoin.getConditions().add("(" + conditions + ")"));
+    }
+
+    // Alias: ДобавитьУсловиеСоединения
+    public void addJoinCondition(String joiningTableAlias, List<String> conditions) {
+        Optional<HRPR_QueryDescriptionJoin> joinDescription = joins.stream()
+                .filter(join -> join.getJoiningTable().equals(joiningTableAlias))
+                .findFirst();
+
+        joinDescription.ifPresent(join ->
+                join.getConditions().addAll(
+                        conditions
+                            .stream()
+                            .map(condition -> "(" + condition + ")")
+                            .toList()
+        ));
+    }
 
     // Alias: ДобавитьГруппировку
     public void addGroup(String groupExpression) {

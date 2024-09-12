@@ -2,6 +2,8 @@ package net.letsdank.platform.module.salary.hr.pr.context;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.letsdank.platform.module.salary.hr.base.entity.HRBD_RegistryDescription;
+import net.letsdank.platform.utils.platform.metadata.registry.InfoRegistryPeriodicity;
 
 import java.util.List;
 
@@ -21,5 +23,17 @@ public class CreateTTRegistryNameBuildContext extends TTRegistryNameBuildContext
         ttNameAtPeriodStart = "";
         usedTTNameAtPeriodStart = "";
         filtersAtPeriodStart = null;
+    }
+
+    // Alias: ВключатьЗаписиНаНачалоПериода
+    @Override
+    public boolean isIncludeRecordsAtPeriodStart(HRBD_RegistryDescription registryDescription) {
+        return includeRecordsAtPeriodStart &&
+            (
+                registryDescription.getPeriodicity() == InfoRegistryPeriodicity.DAY ||
+                registryDescription.getPeriodicity() == InfoRegistryPeriodicity.MONTH ||
+                registryDescription.getPeriodicity() == InfoRegistryPeriodicity.QUARTER ||
+                registryDescription.getPeriodicity() == InfoRegistryPeriodicity.YEAR
+            );
     }
 }
