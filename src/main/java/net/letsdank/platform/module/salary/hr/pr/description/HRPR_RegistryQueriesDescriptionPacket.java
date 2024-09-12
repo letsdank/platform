@@ -29,13 +29,13 @@ public class HRPR_RegistryQueriesDescriptionPacket {
 
     // Alias: УстановитьФильтрВОписаниеПакетаЗапросовКРегистру
     public void putFilter(Object filter, HRPR_FilterUsageDescription filterUsageDescription, TTRegistryNameBuildContext buildContext) {
-        List<String> receiverJoinCondition = null;
+        List<String> receiverJoinConditions = null;
 
         if (filterUsageDescription.isFilterAsTT()) {
             HRPR_QueryDescriptionJoin joinDescription = filterUsageDescription.getJoinDescriptionWithTableFilter();
 
             if (joinDescription != null) {
-                receiverJoinCondition = joinDescription.getConditions();
+                receiverJoinConditions = joinDescription.getConditions();
 
                 if (filterUsageDescription.isAllRecords() && joinDescription.getLeadingTable().equals(filterUsageDescription.getFilterTableAlias())) {
                     joinDescription.setJoinType("LEFT");
@@ -60,6 +60,100 @@ public class HRPR_RegistryQueriesDescriptionPacket {
             if (filterUsageDescription.getRegistryTableAlias() != null && !filterUsageDescription.getRegistryTableAlias().isEmpty()) {
                 HRPR_QueryDescriptionJoin joinDescription = filterUsageDescription.getQueryOperator().getJoinDescriptionByJoiningTable(filterUsageDescription.getRegistryTableAlias());
 
+                if (joinDescription != null) {
+                    receiverJoinConditions = joinDescription.getConditions();
+                } else {
+                    receiverJoinConditions = filterUsageDescription.getQueryOperator().getConditions();
+                }
+            }
+        }
+
+        putDimensionFilterParameters(filter, filterUsageDescription);
+
+        if (receiverJoinConditions != null) {
+            putJoinConditionsWithFilter(filterUsageDescription, receiverJoinConditions, filter);
+        }
+
+        putConditionsComposition(filterUsageDescription, buildContext);
+    }
+
+    // Alias: УстановитьПараметрыИзмеренияФильтра
+    private void putDimensionFilterParameters(Object filter, HRPR_FilterUsageDescription filterUsageDescription) {
+        if (filterUsageDescription.isFilterAsTT()) {
+            for (String filterDimensionKey : filterUsageDescription.getFilterDimensions().keySet()) {
+                String filterFieldExpression = filterUsageDescription.getFilterDimensionExpression(filterDimensionKey);
+                String parameterName = filterFieldExpression.replace("&", "");
+                Object parameterValue;
+
+                if (filterUsageDescription.isAllRecords()) {
+                    parameterValue = filter.getFilterValue().getDimensionValues().empty() ? null :
+                            filter.getFilterValue().getDimensionValues().get(0);
+                } else {
+                    parameterValue = filter.getFilterValue().getDimensionValues();
+                }
+
+                parameters.put(parameterName, parameterValue);
+            }
+        }
+    }
+
+    // Alias: УстановитьЭлементыОтбораСКД
+    private void putConditionsComposition(HRPR_FilterUsageDescription filterUsageDescription) {
+        putConditionsComposition(filterUsageDescription, null);
+    }
+
+
+    // Alias: УстановитьЭлементыОтбораСКД
+    private void putConditionsComposition(HRPR_FilterUsageDescription filterUsageDescription, TTRegistryNameBuildContext buildContext) {
+        if (filterUsageDescription.getRegistryTableAlias() == null || filterUsageDescription.getRegistryTableAlias().isEmpty()) {
+            return;
+        }
+
+        if (filterUsageDescription.isFilterAsTT()) {
+            for (String filterDimensionKey : filterUsageDescription.getFilterDimensions().keySet()) {
+                String conditionAlias = null;
+                if (buildContext != null) {
+                    conditionAlias = buildContext.getFieldAliasCorrespondenceForComposition().get(filterDimensionKey);
+                }
+
+                String filterFieldExpression = filterUsageDescription.getRegistryTableAlias() + "." + filterDimensionKey + ".*";
+                if (conditionAlias != null) {
+                    filterFieldExpression += " AS " + conditionAlias;
+                    filterUsageDescription.getQueryOperator().getCompositionFieldConditions().add(filterFieldExpression);
+                }
+            }
+        }
+    }
+
+    // Alias: УстановитьУсловияСвязиСФильтром
+    private void putJoinConditionsWithFilter(HRPR_FilterUsageDescription filterUsageDescription, List<String> receiverJoinConditions, Object filter) {
+        if (filterUsageDescription.getTemplateJoinCondition() != null && !filterUsageDescription.getTemplateJoinCondition().isEmpty()) {
+            receiverJoinConditions.add(filterUsageDescription.getTemplateJoinCondition());
+        }
+
+        for (String filterDimensionKey : filterUsageDescription.getFilterDimensions().keySet()) {
+            String filterFieldExpression = filterUsageDescription.getFilterDimensionExpression(filterDimensionKey);
+            if (filterUsageDescription.isFilterAsTT()) {
+                if (receiverJoinConditions != null) {
+                    String queryCondition = filterUsageDescription.getRegistryTableAlias() + "." + filterDimensionKey +
+                            " = " + filterFieldExpression;
+                    receiverJoinConditions.add(queryCondition);
+                }
+            } else {
+                String parameterName = filterFieldExpression.replace("&", "");
+
+                if (receiverJoinConditions != null) {
+                    String queryCondition;
+                    if (filterUsageDescription.isAllRecords()) {
+                        queryCondition = filterUsageDescription.getRegistryTableAlias() + "." + filterDimensionKey +
+                                " = " + filterFieldExpression;
+                    } else {
+                        queryCondition = filterUsageDescription.getRegistryTableAlias() + "." + filterDimensionKey +
+                                " IN (" + filterFieldExpression + ")";
+                    }
+
+                    receiverJoinConditions.add(queryCondition);
+                }
             }
         }
     }

@@ -3,6 +3,7 @@ package net.letsdank.platform.module.salary.hr.pr;
 import net.letsdank.platform.module.salary.hr.base.entity.HRBD_RegistryDescription;
 import net.letsdank.platform.module.salary.hr.pr.context.CreateTTRegistryNameBuildContext;
 import net.letsdank.platform.module.salary.hr.pr.context.TTRegistryNameBuildContext;
+import net.letsdank.platform.module.salary.hr.pr.filter.HRPR_Filter;
 import net.letsdank.platform.utils.platform.metadata.registry.InfoRegistryPeriodicity;
 
 // Параметры построения запросов
@@ -42,7 +43,7 @@ public class HRPR_QueryBuildOptions {
         }
 
         // TODO: implement
-        for (Object filter : buildContext.getFilters()) {
+        for (HRPR_Filter filter : buildContext.getFilters()) {
 
         }
 

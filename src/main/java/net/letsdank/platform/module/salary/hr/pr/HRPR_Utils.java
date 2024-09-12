@@ -8,6 +8,23 @@ public class HRPR_Utils {
         return "vt_" + registryName;
     }
 
+    // Alias: УникальноеИмяПараметраЗапроса
+    public static String getUniqueQueryParameterName(String tableName) {
+        return getUniqueQueryParameterName(tableName, null);
+    }
+
+    // Alias: УникальноеИмяПараметраЗапроса
+    public static String getUniqueQueryParameterName(String tableName, Integer parameterIndex) {
+        String uniqueParameterName = tableName + "_param";
+
+        if (parameterIndex != null) {
+            uniqueParameterName += parameterIndex;
+            parameterIndex++;
+        }
+
+        return uniqueParameterName;
+    }
+
     // Alias: ДоступенИнтервальныйРегистрСведений
     public static boolean isAvailableIntervalRegistry(String registryName) {
         // TODO: implement

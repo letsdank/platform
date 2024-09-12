@@ -188,6 +188,7 @@ public class HRPR_RegistryQuery {
         }
 
         packet.putFilter(filter, filterUsageDescription, buildContext);
-        // TODO: implement
+        queryOperator.putConditionInRegistry(buildContext.getFilters(), packet.getParameters(), parameterNamePostfix);
+        queryDescription.putAdditionalFieldsByFUD(0, filterUsageDescription);
     }
 }

@@ -59,6 +59,16 @@ public class HRPR_FilterUsageDescription {
         }
     }
 
+    // Alias: ВыражениеИзмерениеФильтра
+    public String getFilterDimensionExpression(String dimension) {
+        if (filterAsTT) {
+            String filterFieldName = filterDimensions.get(dimension);
+            return filterTableAlias + "." + filterFieldName;
+        }
+        // TODO: Implement
+        return "&" + getParameterNameByFilterElement(dimension, parameterNamePostfix);
+    }
+
     // Alias: ИнициализироватьИспользованиеФильтра
     public void initialize(Object filter, HRBD_RegistryDescription registryDescription,
                            String periodFields, HRPR_QueryDescriptionOperator operator) {

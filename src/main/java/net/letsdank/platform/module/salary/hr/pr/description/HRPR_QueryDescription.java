@@ -2,6 +2,8 @@ package net.letsdank.platform.module.salary.hr.pr.description;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.letsdank.platform.module.salary.hr.pr.HRPR_InternalFunctions;
+import net.letsdank.platform.module.salary.hr.pr.filter.HRPR_FilterUsageDescription;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +45,22 @@ public class HRPR_QueryDescription {
         if (addFieldToComposition && queryOperatorIndex == 0) {
             operators.get(queryOperatorIndex).getSelectedCompositionFields().add
                     (new HRPR_QueryDescriptionCompositionField(alias, null));
+        }
+    }
+
+    // Alias: ДобавитьДополнительныеПоляПоОписаниюИспользованияФильтра
+    public void putAdditionalFieldsByFUD(int opIndex, HRPR_FilterUsageDescription fud) {
+        putAdditionalFieldsByFUD(opIndex, fud, false);
+    }
+
+    // Alias: ДобавитьДополнительныеПоляПоОписаниюИспользованияФильтра
+    public void putAdditionalFieldsByFUD(int opIndex, HRPR_FilterUsageDescription fud, boolean addToGrouping) {
+        for (String additionalFieldKey : fud.getAdditionalFields().keySet()) {
+            String fieldExpression = HRPR_InternalFunctions.getAdditionalFieldExpressionByFUD(additionalFieldKey, fud);
+            addField(opIndex, fieldExpression, additionalFieldKey);
+            if (addToGrouping) {
+                operators.get(opIndex).addGroup(fieldExpression);
+            }
         }
     }
 }

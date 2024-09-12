@@ -2,6 +2,8 @@ package net.letsdank.platform.module.salary.hr.pr.description;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.letsdank.platform.module.salary.hr.pr.HRPR_Utils;
+import net.letsdank.platform.module.salary.hr.pr.filter.HRPR_Filter;
 import net.letsdank.platform.utils.data.Either;
 
 import java.util.ArrayList;
@@ -64,6 +66,24 @@ public class HRPR_QueryDescriptionOperator {
         groups.add(groupExpression);
     }
 
+    // Alias: ВыраженияПолейОператораЗапроса
+    public Map<String, String> getFieldExpressions() {
+        Map<String, String> result = new HashMap<>();
+        for (int fieldIndex = 0; fieldIndex < selectedFields.size(); fieldIndex++) {
+            result.put(fieldAliases.get(fieldIndex).toLowerCase(), selectedFields.get(fieldIndex));
+        }
+
+        return result;
+    }
+
+    // Alias: ОписаниеСоединенияПоПрисоединяемойТаблице
+    public HRPR_QueryDescriptionJoin getJoinDescriptionByJoiningTable(String joiningTableAlias) {
+        return joins.stream()
+                .filter(join -> join.getJoiningTable().equals(joiningTableAlias))
+                .findFirst()
+                .orElse(null);
+    }
+
 
     // Alias: ОписаниеСоединенияСТаблицейФильтра
     public HRPR_QueryDescriptionJoin getJoinDescriptionWithTableFilter(String filterTableAlias, String registryTableAlias) {
@@ -82,5 +102,92 @@ public class HRPR_QueryDescriptionOperator {
         }
 
         return null;
+    }
+
+    // Alias: УстановитьОтборВОператорЗапросаДанныхРегистра
+    public void putConditionInRegistry(List<HRPR_Filter> filters, Map<String, Object> parameters, String parameterPostfix) {
+        putConditionInRegistry(filters, parameters, parameterPostfix, 1);
+    }
+
+    // Alias: УстановитьОтборВОператорЗапросаДанныхРегистра
+    public void putConditionInRegistry(List<HRPR_Filter> filters, Map<String, Object> parameters, String parameterPostfix,
+                                       int parametersCount) {
+        putConditionInRegistry(filters, parameters, parameterPostfix, parametersCount, "info_registry");
+    }
+
+    // Alias: УстановитьОтборВОператорЗапросаДанныхРегистра
+    public void putConditionInRegistry(List<HRPR_Filter> filters, Map<String, Object> parameters, String parameterPostfix,
+                                       int parametersCount, String predicate) {
+        putConditionInRegistry(filters, parameters, parameterPostfix, parametersCount, predicate, "info_registry");
+    }
+
+    // Alias: УстановитьОтборВОператорЗапросаДанныхРегистра
+    public void putConditionInRegistry(List<HRPR_Filter> filters, Map<String, Object> parameters, String parameterPostfix,
+                                       int parametersCount, String predicate, String registryAlias) {
+        putConditionInRegistry(filters, parameters, parameterPostfix, parametersCount, predicate, registryAlias, true);
+    }
+
+    // Alias: УстановитьОтборВОператорЗапросаДанныхРегистра
+    public void putConditionInRegistry(List<HRPR_Filter> filters, Map<String, Object> parameters, String parameterPostfix,
+                                       int parametersCount, String predicate, String registryAlias, boolean byExcludingRegistrators) {
+        putConditionInRegistry(filters, parameters, parameterPostfix, parametersCount, predicate, registryAlias, byExcludingRegistrators, false);
+    }
+
+    // Alias: УстановитьОтборВОператорЗапросаДанныхРегистра
+    public void putConditionInRegistry(List<HRPR_Filter> filters, Map<String, Object> queryParameters, String parameterPostfix,
+                                       int parametersCount, String predicate, String registryAlias, boolean byExcludingRegistrators,
+                                       boolean byJoinCondition) {
+        if (filters == null) {
+            return;
+        }
+
+        HRPR_QueryDescriptionJoin joinDescription = getJoinDescriptionWithTableFilter("dates_dimensions", registryAlias);
+
+        List<String> receiverConditions = null;
+        if (joinDescription != null && byJoinCondition) {
+            receiverConditions = joinDescription.getConditions();
+        }
+
+        Map<String, String> fieldExpressions = getFieldExpressions();
+
+        for (HRPR_Filter filter : filters) {
+            if (isConditionByExcludingRegistrator(filter) && !byExcludingRegistrators) {
+                continue;
+            }
+
+            String parameterDescription;
+            String filterText;
+            if (filter.getRightValue() instanceof String) {
+                parameterDescription = filter.getRightValue().toString();
+            } else {
+                String parameterName = HRPR_Utils.getUniqueQueryParameterName(parameterPostfix, parametersCount);
+                parameterDescription = "&" + parameterName;
+                queryParameters.put(parameterName, filter.getRightValue());
+            }
+
+            if (filter.getRelativePath() == null || filter.getRelativePath()) {
+                String leftValueExpression = fieldExpressions.get(filter.getLeftValue().toLowerCase());
+                if (leftValueExpression == null && registryAlias != null) {
+                    leftValueExpression = registryAlias + "." + filter.getLeftValue();
+                }
+
+                filterText = predicate + leftValueExpression + " " + filter.getComparison() + "(" + parameterDescription + ")";
+            } else {
+                filterText = predicate + filter.getLeftValue() + " " + filter.getComparison() + " " + parameterDescription + " ";
+            }
+
+            if (receiverConditions == null) {
+                addCondition(filterText);
+            } else {
+                receiverConditions.add(filterText);
+            }
+        }
+    }
+
+    // Alias: ЭтоЭлементОтбораПоИсключаемомуРегистратору
+    // TODO: Перенести
+    public boolean isConditionByExcludingRegistrator(HRPR_Filter filter) {
+        return filter.getLeftValue().equalsIgnoreCase("registrator") &&
+                (filter.getComparison().equalsIgnoreCase("<>") || filter.getComparison().equalsIgnoreCase("NOT IN"));
     }
 }
