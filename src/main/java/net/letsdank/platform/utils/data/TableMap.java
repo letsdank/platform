@@ -1,9 +1,13 @@
 package net.letsdank.platform.utils.data;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 // Таблица значений. Использовать на свой страх и риск.
+@Getter
 public class TableMap {
     private final List<Column> columns;
     private final List<Row> rows;
@@ -37,7 +41,7 @@ public class TableMap {
 
     private int getColumnIndex(String columnName) {
         for (int i = 0; i < columns.size(); i++) {
-            if (columns.get(i).getName().equals(columnName)) {
+            if (columns.get(i).name().equals(columnName)) {
                 return i;
             }
         }
@@ -45,25 +49,52 @@ public class TableMap {
         throw new RuntimeException("Column " + columnName + " not found");
     }
 
-    private class Column {
-        private final String name;
-        private final Class<?> type;
-
-        public Column(String name, Class<?> type) {
-            this.type = type;
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public Class<?> getType() {
-            return type;
-        }
+    public int size() {
+        return rows.size();
     }
 
-    private class Row {
+    public TableMap copy(Map<String, Object> rowFilter, String columns) {
+        TableMap tableMap = new TableMap();
+        List<String> newColumns = List.of(columns.split(","));
+
+        for (Column column : this.columns) {
+            if (newColumns.contains(column.name())) {
+                tableMap.addColumn(column.name(), column.type());
+            }
+        }
+
+        for (Row row : rows) {
+            for (int i = 0; i < row.cells.length; i++) {
+                if (!rowFilter.containsKey(this.columns.get(i).name()) ||
+                        rowFilter.get(this.columns.get(i).name()).equals(row.getCell(i))) {
+                    tableMap.rows.get(tableMap.rows.size() - 1).setCell(i, row.getCell(i));
+                }
+            }
+        }
+
+        return tableMap;
+    }
+
+    public Row getRow(int index) {
+        return rows.get(index);
+    }
+
+    public Row getRow(String name) {
+        return rows.stream().filter(row -> row.getCell(0).equals(name)).findFirst().orElse(null);
+    }
+
+    public List<Object> getValues(String columnName) {
+        List<Object> values = new ArrayList<>();
+        for (Row row : rows) {
+            values.add(row.getCell(getColumnIndex(columnName)));
+        }
+        return values;
+    }
+
+    public record Column(String name, Class<?> type) {
+    }
+
+    public static class Row {
         private final Object[] cells;
 
         public Row(int columnCount) {

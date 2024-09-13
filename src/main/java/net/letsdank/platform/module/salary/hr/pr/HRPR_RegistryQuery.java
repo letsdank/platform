@@ -313,8 +313,20 @@ public class HRPR_RegistryQuery {
             queryDescription.setTableToPlace(resultTTName);
         }
 
-        // TODO: implement
-        // HRPR_QueryDescription resultQueryDescription =
+        HRPR_QueryDescription resultQueryDescription = packet.getPacketQueryDescriptionByTTName(resultTTName);
+
+        if (includeRecordsInPeriodStart) {
+            HRPR_QueryDescriptionOperator qdoGetSlice = packet.addQueryRecordsByPeriodStart(onlyDistrict, registryDescription,
+                    filter, buildContext, resultTTName);
+            // Add a condition to strict slice records if slice is running on empty date
+            String slicePeriodFieldExpression = qdoGetSlice.getFieldExpressionByAlias("period");
+            String condition = slicePeriodFieldExpression + " <> NULL";
+            qdoGetSlice.addCondition(condition);
+        }
+
+        resultQueryDescription = packet.getPacketQueryDescriptionByTTName(resultTTName);
+
+
     }
 
     // Alias: ДобавитьЗапросПолученияЗаписейСПериодичностьюДень

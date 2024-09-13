@@ -210,4 +210,15 @@ public class HRPR_QueryDescriptionOperator {
         return filter.getLeftValue().equalsIgnoreCase("registrator") &&
                 (filter.getComparison().equalsIgnoreCase("<>") || filter.getComparison().equalsIgnoreCase("NOT IN"));
     }
+
+    // Alias: ВыражениеПоляПоПсевдониму
+    public String getFieldExpressionByAlias(String fieldAlias) {
+        for (int fieldIndex = 0; fieldIndex < selectedFields.size(); fieldIndex++) {
+            if (fieldAliases.get(fieldIndex).equals(fieldAlias)) {
+                return selectedFields.get(fieldIndex);
+            }
+        }
+
+        return null;
+    }
 }

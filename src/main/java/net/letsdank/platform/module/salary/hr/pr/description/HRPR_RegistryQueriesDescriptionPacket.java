@@ -2,9 +2,13 @@ package net.letsdank.platform.module.salary.hr.pr.description;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.letsdank.platform.module.salary.hr.base.entity.HRBD_RegistryDescription;
 import net.letsdank.platform.module.salary.hr.pr.HRPR_SQLQueryBuild;
 import net.letsdank.platform.module.salary.hr.pr.context.TTRegistryNameBuildContext;
+import net.letsdank.platform.module.salary.hr.pr.filter.CreateTTRegistryNameFilter;
 import net.letsdank.platform.module.salary.hr.pr.filter.HRPR_FilterUsageDescription;
+import net.letsdank.platform.module.salary.hr.pr.filter.HRPR_FilterValueList;
+import net.letsdank.platform.module.salary.hr.pr.filter.HRPR_FilterValueTableMap;
 import net.letsdank.platform.module.salary.hr.pr.period.HRPR_PeriodFieldDescription;
 import net.letsdank.platform.utils.data.Either;
 import net.letsdank.platform.utils.data.TableMap;
@@ -28,7 +32,8 @@ public class HRPR_RegistryQueriesDescriptionPacket {
     }
 
     // Alias: УстановитьФильтрВОписаниеПакетаЗапросовКРегистру
-    public void putFilter(Object filter, HRPR_FilterUsageDescription filterUsageDescription, TTRegistryNameBuildContext buildContext) {
+    public void putFilter(CreateTTRegistryNameFilter<HRPR_FilterValueList> filter, HRPR_FilterUsageDescription filterUsageDescription,
+                          TTRegistryNameBuildContext buildContext) {
         List<String> receiverJoinConditions = null;
 
         if (filterUsageDescription.isFilterAsTT()) {
@@ -48,7 +53,7 @@ public class HRPR_RegistryQueriesDescriptionPacket {
             filterUsageDescription.getQueryOperator().deleteTable(filterUsageDescription.getFilterTableAlias());
 
             for (HRPR_PeriodFieldDescription periodFieldDescription : filterUsageDescription.getCalculatedPeriodParametersDescription()) {
-                String periodField = HRPR_FilterUsageDescription.getFilterTableField(filter, periodFieldDescription.getSourceFieldName());
+                String periodField = filter.getFilterTableField(periodFieldDescription.getSourceFieldName());
                 LocalDateTime value = periodFieldDescription.getFieldValue((LocalDateTime) filter.getFilterValue().getPeriodDescription().get(periodField));
                 parameters.put(periodFieldDescription.getFieldName(), value);
             }
@@ -177,15 +182,15 @@ public class HRPR_RegistryQueriesDescriptionPacket {
     }
 
     // Alias: УстановитьОписаниеЗапросаИнициализацииВТФильтр
-    private void putFilterTTInitQueryDescription(Object filter, Map<String, String> filterPeriodFields, String filterTTName, String parameterNamePostfix) {
+    private void putFilterTTInitQueryDescription(CreateTTRegistryNameFilter<?> filter, Map<String, String> filterPeriodFields, String filterTTName, String parameterNamePostfix) {
         TableMap filterTable;
         if (filter.getFilterValue().getType() == HRPR_FilterUsageDescription.TYPE_FILTER_VALUE_MAP) {
-            filterTable = filter.getFilterValue().getMap();
+            filterTable = ((HRPR_FilterValueTableMap) filter.getFilterValue()).getTableMap();
         } else {
             filterTable = filterListIntoTable(filter, filterPeriodFields);
         }
 
-        List<String> tableFields = getFilterTableAllFields(filter, filterPeriodFields);
+        List<String> tableFields = filter.getFilterTableAllFields(filterPeriodFields);
 
         String queryTemplate = " SELECT INTO vt_filter " +
                 "  &tmpl_filter_field AS tmpl_filter_field " +
@@ -205,32 +210,6 @@ public class HRPR_RegistryQueriesDescriptionPacket {
         initFiltersQueryDescription = initQueryDescription;
     }
 
-    // TODO: Перенести в класс фильтра с применением ООП
-    public List<String> getFilterTableAllFields(Object filter) {
-        return getFilterTableAllFields(filter, null);
-    }
-
-    // TODO: Перенести в класс фильтра с применением ООП
-    public List<String> getFilterTableAllFields(Object filter, Map<String, String> periodFields) {
-        List<String> fields = new ArrayList<>();
-
-        for (Object dimension : filter.getFilterDimensions()) {
-            String filterField = HRPR_FilterUsageDescription.getFilterTableField(filter, dimension);
-            fields.add(filterField);
-        }
-
-        for (Object field : filter.getAdditionalFilterFields()) {
-            String filterField = HRPR_FilterUsageDescription.getFilterTableField(filter, field);
-            fields.add(filterField);
-        }
-
-        if (periodFields != null) {
-            fields.addAll(periodFields.values());
-        }
-
-        return fields;
-    }
-
     // Alias: ДополнитьОписаниеЗапросаИнициализацииВТФильтр
     private void appendFilterTTInitQueryDescription(HRPR_QueryDescription initQueryDescription, Map<String, String> filterPeriodFields) {
         for (String field : filterPeriodFields.values()) {
@@ -240,12 +219,12 @@ public class HRPR_RegistryQueriesDescriptionPacket {
 
     // Alias: ФильтрСписокЗначенийВТаблицуЗначений
     // TODO: Оооочень спорная функция - надо понять, действительно она нужна или нет
-    private TableMap filterListIntoTable(Object filter, Map<String, String> filterPeriodFields) {
+    private TableMap filterListIntoTable(CreateTTRegistryNameFilter<HRPR_FilterValueList> filter, Map<String, String> filterPeriodFields) {
         TableMap filterTable = new TableMap();
         if (filter.getFilterDimensions().size() == 1) {
             List<Class<?>> filterTypes = new ArrayList<>();
 
-            for (Object value : filter.getFilterValues().getDimensionValues()) {
+            for (Object value : filter.getFilterValue().getDimensionValues()) {
                 if (!filterTypes.contains(value.getClass())) {
                     filterTypes.add(value.getClass());
                 }
@@ -258,19 +237,20 @@ public class HRPR_RegistryQueriesDescriptionPacket {
                 filterTable.addColumn(filter.getFilterDimensions().get(0), null);
             }
 
-            filterTable.loadColumn(filter.getFilterValues().getDimensionValues(), filter.getFilterDimensions().get(0));
+            filterTable.loadColumn(filter.getFilterValue().getDimensionValues(), filter.getFilterDimensions().get(0));
         } else {
             filterTable.addRow();
         }
 
-        for (Map.Entry<String, LocalDateTime> periodField : filter.getFilterValues().getPeriodDescription()) {
+        // TODO: Подумать
+        for (Map.Entry<String, LocalDateTime> periodField : filter.getFilterValue().getPeriodDescription().entrySet()) {
             if (periodField.getValue() != null) {
                 filterTable.addColumn(periodField.getKey(), LocalDateTime.class);
                 filterTable.fillValues(periodField.getValue(), periodField.getKey());
             }
         }
 
-        for (Map.Entry<String, Object> additionalField : filter.getFilterValues().getAdditionalFields()) {
+        for (Map.Entry<String, Object> additionalField : filter.getFilterValue().getAdditionalFields().entrySet()) {
             if (additionalField.getValue() != null) {
                 filterTable.addColumn(additionalField.getKey(), List.class);
                 filterTable.fillValues(additionalField.getValue(), additionalField.getKey());
@@ -278,5 +258,44 @@ public class HRPR_RegistryQueriesDescriptionPacket {
         }
 
         return filterTable;
+    }
+
+    // Alias: ОписаниеЗапросаПакетаПоИмениВТ
+    public HRPR_QueryDescription getPacketQueryDescriptionByTTName(String resultTTName) {
+        for (Either<SQLQuery, HRPR_QueryDescription> packetQuery : dataQueries) {
+            if (packetQuery.isRight() && packetQuery.right().getTableToPlace().equals(resultTTName)) {
+                return packetQuery.right();
+            }
+        }
+
+        return null;
+    }
+
+    // Alias: ОписаниеФильтраДляПолученияЗаписейНаНачалоПериода
+    private Object getFilterDescriptionRecordsByPeriodStart(Object filterTransactions) {
+        return getFilterDescriptionRecordsByPeriodStart(filterTransactions, false);
+    }
+
+    // Alias: ОписаниеФильтраДляПолученияЗаписейНаНачалоПериода
+    private Object getFilterDescriptionRecordsByPeriodStart(Object filterTransactions, boolean allRecords) {
+        Object result = null;
+
+        if (HRPR_FilterUsageDescription.isUseTTFilter(filterTransactions, allRecords) &&
+            filterTransactions.getFilterValue().getType() != HRPR_FilterUsageDescription.TYPE_FILTER_TEMP_TABLE) {
+            String tempFilterTTName = getTTFilterMapName();
+
+            // TODO: Implement
+        }
+    }
+
+    // Alias: ИмяВТТаблицыЗначенийФильтра
+    private String getTTFilterMapName() {
+        return initFiltersQueryDescription != null ? initFiltersQueryDescription.getTableToPlace() : null;
+    }
+
+    // Alias: ДобавитьЗапросПолученияЗаписейНаНачалоПериода
+    public HRPR_QueryDescriptionOperator addQueryRecordsByPeriodStart(boolean onlyDistrict, HRBD_RegistryDescription registryDescription, Object filter,
+                                                                      TTRegistryNameBuildContext buildContext, String resultTTName) {
+        // TODO: Implement
     }
 }

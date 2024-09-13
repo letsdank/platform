@@ -70,20 +70,20 @@ public class HRPR_FilterUsageDescription {
     }
 
     // Alias: ИнициализироватьИспользованиеФильтра
-    public void initialize(Object filter, HRBD_RegistryDescription registryDescription,
+    public void initialize(CreateTTRegistryNameFilter<?> filter, HRBD_RegistryDescription registryDescription,
                            String periodFields, HRPR_QueryDescriptionOperator operator) {
         initialize(filter, registryDescription, periodFields, operator, "");
     }
 
     // Alias: ИнициализироватьИспользованиеФильтра
-    public void initialize(Object filter, HRBD_RegistryDescription registryDescription,
+    public void initialize(CreateTTRegistryNameFilter<?> filter, HRBD_RegistryDescription registryDescription,
                            String periodFields, HRPR_QueryDescriptionOperator operator,
                            String parameterNamePostfix) {
         initialize(filter, registryDescription, periodFields, operator, parameterNamePostfix, false);
     }
 
     // Alias: ИнициализироватьИспользованиеФильтра
-    public void initialize(Object filter, HRBD_RegistryDescription registryDescription,
+    public void initialize(CreateTTRegistryNameFilter<?> filter, HRBD_RegistryDescription registryDescription,
                            String periodFields, HRPR_QueryDescriptionOperator operator,
                            String parameterNamePostfix, boolean allRecords) {
         this.parameterNamePostfix = parameterNamePostfix;
@@ -106,7 +106,7 @@ public class HRPR_FilterUsageDescription {
         }
 
         for (String dimension : filter.getFilterDimensions()) {
-            String filterField = getFilterTableField(filter, dimension);
+            String filterField = filter.getFilterTableField(dimension);
             filterDimensions.put(dimension, filterField);
 
             if (filter.getDimensionsForSearch().get(dimension.toUpperCase()) != null) {
@@ -117,11 +117,11 @@ public class HRPR_FilterUsageDescription {
         List<String> periodFieldsList = StringUtils.splitStringToSubstringArray(periodFields, ",", true, true);
 
         for (String periodField : periodFieldsList) {
-            String filterField = getFilterTableField(filter, periodField);
+            String filterField = filter.getFilterTableField(periodField);
             filterPeriodFields.put(periodField, filterField);
         }
 
-        for (String additionalField : filter.getAdditionalFields()) {
+        for (String additionalField : filter.getAdditionalFilterFields()) {
             if (filterAsTT) {
                 additionalFields.put(additionalField, filterTableAlias + "." + additionalField);
             } else {
@@ -139,26 +139,6 @@ public class HRPR_FilterUsageDescription {
     // Alias: ОписаниеСоединенияСТаблицейФильтра
     public HRPR_QueryDescriptionJoin getJoinDescriptionWithTableFilter() {
         return queryOperator.getJoinDescriptionWithTableFilter(filterTableAlias, registryTableAlias);
-    }
-
-    // Alias: ИспользоватьВТФильтр
-    // TODO: Вынести в ООП в другой класс
-    public static boolean isUseTTFilter(Object filter, boolean allRecords) {
-        if (filter.getFilterValue().getType() == TYPE_FILTER_VALUE_LIST) {
-            return allRecords;
-        }
-
-        return true;
-    }
-
-    // Alias: ПолеТаблицыФильтра
-    // TODO: Вынести в ООП в другой класс
-    public static String getFilterTableField(Object filter, String registryFilterFieldName) {
-        if (filter.getRegistryDimensionFilterDimensionMap().contains(registryFilterFieldName)) {
-            return filter.getRegistryDimensionFilterDimensionMap().get(registryFilterFieldName);
-        }
-
-        return registryFilterFieldName;
     }
 
     //
