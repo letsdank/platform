@@ -127,7 +127,7 @@ public class HRPR_RegistryQuery {
         filterUsageDescription.initialize(filter, registryDescription, "date_from, date_to",
                 queryOperator, parameterNamePostfix, false);
 
-        filterUsageDescription.setTemplateConditionJoinPeriod(templateConditionJoinPeriod); // TODO:
+        filterUsageDescription.setTemplateJoinCondition(templateConditionJoinPeriod);
 
         queryOperator.replaceTable("info_registry", registryName);
 
@@ -199,19 +199,22 @@ public class HRPR_RegistryQuery {
     }
 
     // Alias: ДобавитьЗапросВТТаблицаРегистра
-    static void addQueryTTRegistryTable(HRPR_RegistryQueriesDescriptionPacket packet, String registryName, boolean onlyDistrict, Object filter,
+    static void addQueryTTRegistryTable(HRPR_RegistryQueriesDescriptionPacket packet, String registryName, boolean onlyDistrict,
+                                        CreateTTRegistryNameFilter<HRPR_FilterValueList> filter,
                                         String ttNameAvailableRecords) {
         addQueryTTRegistryTable(packet, registryName, onlyDistrict, filter, ttNameAvailableRecords, null);
     }
 
     // Alias: ДобавитьЗапросВТТаблицаРегистра
-    static void addQueryTTRegistryTable(HRPR_RegistryQueriesDescriptionPacket packet, String registryName, boolean onlyDistrict, Object filter,
+    static void addQueryTTRegistryTable(HRPR_RegistryQueriesDescriptionPacket packet, String registryName, boolean onlyDistrict,
+                                        CreateTTRegistryNameFilter<HRPR_FilterValueList> filter,
                                         String ttNameAvailableRecords, TTRegistryNameBuildContext buildContext) {
         addQueryTTRegistryTable(packet, registryName, onlyDistrict, filter, ttNameAvailableRecords, buildContext, null);
     }
 
     // Alias: ДобавитьЗапросВТТаблицаРегистра
-    static void addQueryTTRegistryTable(HRPR_RegistryQueriesDescriptionPacket packet, String registryName, boolean onlyDistrict, Object filter,
+    static void addQueryTTRegistryTable(HRPR_RegistryQueriesDescriptionPacket packet, String registryName, boolean onlyDistrict,
+                                        CreateTTRegistryNameFilter<HRPR_FilterValueList> filter,
                                         String ttNameAvailableRecords, TTRegistryNameBuildContext buildContext, String resultTTName) {
         if (buildContext == null) {
             buildContext = new TTRegistryNameBuildContext();
@@ -311,7 +314,7 @@ public class HRPR_RegistryQuery {
             String ttNameAllRecordsView = "vt_all_records_view_" + registryName;
             queryDescription.setTableToPlace(ttNameAllRecordsView);
 
-            addQueryRecordsWithDayPeriodicity(packet, registryDescription, buildContext, ttNameAllRecordsView, resultTTName);
+            addQueryRecordsWithPeriodicityDay(packet, registryDescription, buildContext, ttNameAllRecordsView, resultTTName);
             addQueryDestroyTT(packet, ttNameAllRecordsView);
         } else {
             queryDescription.setTableToPlace(resultTTName);
@@ -336,17 +339,91 @@ public class HRPR_RegistryQuery {
     }
 
     // Alias: ДобавитьЗапросПолученияЗаписейСПериодичностьюДень
-    static void addQueryRecordsWithDayPeriodicity(HRPR_RegistryQueriesDescriptionPacket packet,
+    static void addQueryRecordsWithPeriodicityDay(HRPR_RegistryQueriesDescriptionPacket packet,
                                                   HRBD_RegistryDescription registryDescription, TTRegistryNameBuildContext buildContext,
                                                   String ttNameAllRecordsView) {
-        addQueryRecordsWithDayPeriodicity(packet, registryDescription, buildContext, ttNameAllRecordsView, null);
+        addQueryRecordsWithPeriodicityDay(packet, registryDescription, buildContext, ttNameAllRecordsView, null);
     }
 
     // Alias: ДобавитьЗапросПолученияЗаписейСПериодичностьюДень
-    static void addQueryRecordsWithDayPeriodicity(HRPR_RegistryQueriesDescriptionPacket packet,
+    static void addQueryRecordsWithPeriodicityDay(HRPR_RegistryQueriesDescriptionPacket packet,
                                                   HRBD_RegistryDescription registryDescription, TTRegistryNameBuildContext buildContext,
                                                   String ttNameAllRecordsView, String resultTTName) {
-        // TODO: Implement
+        String templateTTPeriodsOfSlice = "SELECT " +
+                " INTO vt_periods_of_slice" +
+                "   info_registry.period AS period," +
+                "   MAX(info_registry.period_of_record) AS period_of_record," +
+                "   &tmpl_dimensions AS dimensions" +
+                " FROM vt_all_records_view AS info_registry" +
+                " " +
+                " GROUP BY info_registry.period, &tmpl_dimensions";
+
+        String templateRecords = "SELECT " +
+                "   info_registry.period AS period," +
+                "   info_registry.period_of_record AS period_of_record," +
+                "   info_registry.is_return_event AS is_return_event," +
+                "   info_registry.return_event_period AS return_event_period," +
+                "   &tmpl_dimensions AS dimensions," +
+                "   &tmpl_resources AS resources," +
+                "   &tmpl_requests AS requests," +
+                "   &tmpl_standard_requests AS standard_requests" +
+                " FROM vt_periods_of_slice AS info_registry_slice" +
+                "   INNER JOIN vt_all_records_view AS info_registry" +
+                "   ON info_registry_slice.period = info_registry.period" +
+                "      AND info_registry_slice.period_of_record = info_registry.period_of_record" +
+                "      AND &tmpl_dimensions_join_condition";
+
+        String ttNameMaxPeriodsByDays = HRPR_Utils.getAdditionalTTNamePeriodsOfSliceByStartDay(registryDescription.getRegistryName(), buildContext);
+
+        HRPR_QueryDescription qdTTPeriodsOfSlice = HRPR_SQLQueryBuild.getQueryDescriptionByText(templateTTPeriodsOfSlice);
+        packet.getDataQueries().add(Either.right(qdTTPeriodsOfSlice));
+
+        qdTTPeriodsOfSlice.setTableToPlace(ttNameMaxPeriodsByDays);
+
+        HRPR_QueryDescriptionOperator qdoMaxDates = qdTTPeriodsOfSlice.getOperators().get(0);
+        qdoMaxDates.replaceTable("info_registry", ttNameAllRecordsView);
+
+        HRPR_QueryDescription qdResult = HRPR_SQLQueryBuild.getQueryDescriptionByText(templateRecords);
+        packet.getDataQueries().add(Either.right(qdResult));
+
+        HRPR_QueryDescriptionOperator qdoRecords = qdResult.getOperators().get(0);
+        qdoRecords.replaceTable("info_registry", ttNameAllRecordsView);
+        qdoRecords.replaceTable("info_registry_slice", ttNameMaxPeriodsByDays);
+
+        if (!registryDescription.isHasReturnEvents()) {
+            qdResult.removeColumn("is_return_event");
+            qdResult.removeColumn("return_event_period");
+        }
+
+        qdoMaxDates.getGroups().add("info_registry.period");
+        for (String dimension : registryDescription.getDimensions()) {
+            qdTTPeriodsOfSlice.addField(0, "info_registry." + dimension, dimension);
+            qdResult.addField(0, "info_registry." + dimension, dimension);
+
+            String templateJoinCondition = "info_registry_slice." + dimension + " = info_registry." + dimension;
+            qdoRecords.addJoinCondition("info_registry", templateJoinCondition);
+
+            qdoMaxDates.addGroup("info_registry." + dimension);
+        }
+
+        for (String resource : registryDescription.getResources()) {
+            qdResult.addField(0, "info_registry." + resource, resource);
+        }
+
+        for (String resource : registryDescription.getReturnedResources()) {
+            qdResult.addField(0, "info_registry." + resource, resource);
+        }
+
+        for (String request : registryDescription.getRequests()) {
+            qdResult.addField(0, "info_registry." + request, request);
+        }
+
+        for (String request : registryDescription.getStandardRequests()) {
+            qdResult.addField(0, "info_registry." + request, request);
+        }
+
+        qdResult.setTableToPlace(resultTTName);
+        addQueryDestroyTT(packet, ttNameMaxPeriodsByDays);
     }
 
     // Alias: ДобавитьЗапросУничтоженияВТ

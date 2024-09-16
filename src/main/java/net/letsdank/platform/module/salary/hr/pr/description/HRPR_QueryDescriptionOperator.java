@@ -5,6 +5,7 @@ import lombok.Setter;
 import net.letsdank.platform.module.salary.hr.base.entity.HRBD_FilterDescription;
 import net.letsdank.platform.module.salary.hr.pr.HRPR_Utils;
 import net.letsdank.platform.utils.data.Either;
+import net.letsdank.platform.utils.platform.sql.schema.join.QuerySchemaJoinType;
 
 import java.util.*;
 
@@ -149,13 +150,13 @@ public class HRPR_QueryDescriptionOperator {
 
     // Alias: УстановитьОтборВОператорЗапросаДанныхРегистра
     public void putConditionInRegistry(List<HRBD_FilterDescription> filters, Map<String, Object> parameters, String parameterPostfix,
-                                       int parametersCount, String predicate, String registryAlias, boolean byExcludingRegistrators) {
-        putConditionInRegistry(filters, parameters, parameterPostfix, parametersCount, predicate, registryAlias, byExcludingRegistrators, false);
+                                       int parametersCount, String predicate, String registryAlias, boolean byExcludingRegistrars) {
+        putConditionInRegistry(filters, parameters, parameterPostfix, parametersCount, predicate, registryAlias, byExcludingRegistrars, false);
     }
 
     // Alias: УстановитьОтборВОператорЗапросаДанныхРегистра
     public void putConditionInRegistry(List<HRBD_FilterDescription> filters, Map<String, Object> queryParameters, String parameterPostfix,
-                                       int parametersCount, String predicate, String registryAlias, boolean byExcludingRegistrators,
+                                       int parametersCount, String predicate, String registryAlias, boolean byExcludingRegistrars,
                                        boolean byJoinCondition) {
         if (filters == null) {
             return;
@@ -171,7 +172,7 @@ public class HRPR_QueryDescriptionOperator {
         Map<String, String> fieldExpressions = getFieldExpressions();
 
         for (HRBD_FilterDescription filter : filters) {
-            if (isConditionByExcludingRegistrator(filter) && !byExcludingRegistrators) {
+            if (isConditionByExcludingRegistrars(filter) && !byExcludingRegistrars) {
                 continue;
             }
 
@@ -206,8 +207,8 @@ public class HRPR_QueryDescriptionOperator {
 
     // Alias: ЭтоЭлементОтбораПоИсключаемомуРегистратору
     // TODO: Перенести
-    public boolean isConditionByExcludingRegistrator(HRBD_FilterDescription filter) {
-        return filter.leftValue().equalsIgnoreCase("registrator") &&
+    public boolean isConditionByExcludingRegistrars(HRBD_FilterDescription filter) {
+        return filter.leftValue().equalsIgnoreCase("registrar") &&
                 (filter.compareType().equalsIgnoreCase("<>") || filter.compareType().equalsIgnoreCase("NOT IN"));
     }
 
@@ -220,5 +221,32 @@ public class HRPR_QueryDescriptionOperator {
         }
 
         return null;
+    }
+
+    // Alias: ЗаменитьВедущуюТаблицуВСоединении
+    public void replaceLeadingTableInJoin(String joiningTableAlias, String newLeadingTableAlias) {
+        Optional<HRPR_QueryDescriptionJoin> joinDescription = joins.stream()
+                .filter(join -> join.getJoiningTable().equals(joiningTableAlias))
+                .findFirst();
+
+        joinDescription.ifPresent(join -> join.setLeadingTable(newLeadingTableAlias));
+    }
+
+    // Alias: ОчиститьУсловияСоединения
+    public void clearJoinConditions(String joiningTableAlias) {
+        Optional<HRPR_QueryDescriptionJoin> joinDescription = joins.stream()
+                .filter(join -> join.getJoiningTable().equals(joiningTableAlias))
+                .findFirst();
+
+        joinDescription.ifPresent(join -> join.getConditions().clear());
+    }
+
+    // Alias: УстановитьТипСоединения
+    public void setJoinType(String joiningTableAlias, String joinType) {
+        Optional<HRPR_QueryDescriptionJoin> joinDescription = joins.stream()
+                .filter(join -> join.getJoiningTable().equals(joiningTableAlias))
+                .findFirst();
+
+        joinDescription.ifPresent(join -> join.setJoinType(joinType));
     }
 }

@@ -6,6 +6,8 @@ package net.letsdank.platform.utils.platform;
 // Возможно, он когда-нибудь не нужен будет, поскольку основные функции
 // можно расположить по другим утилитным классам
 public class PUtils {
+    // TODO: Вынести как сессию
+    private static boolean privileged = true;
     /**
      * Returns count of <code>substr</code> occurrences in <code>source</code> string.
      * @param source The source string.
@@ -52,5 +54,17 @@ public class PUtils {
         }
 
         return str.substring(0, i);
+    }
+
+    /**
+     * Returns <code>true</code> if current thread is privileged.
+     * @return <code>true</code> if current thread is privileged, otherwise <code>false</code>.
+     */
+    public static boolean isPrivileged() {
+        return PUtils.privileged;
+    }
+
+    public static void setPrivileged(boolean privileged) {
+        PUtils.privileged = privileged;
     }
 }

@@ -4,10 +4,14 @@ import net.letsdank.platform.module.salary.hr.pr.context.CreateTTRegistryNameBui
 import net.letsdank.platform.module.salary.hr.pr.context.TTRegistryNameBuildContext;
 import net.letsdank.platform.module.salary.hr.pr.description.HRPR_RegistryQueriesDescriptionPacket;
 import net.letsdank.platform.module.salary.hr.pr.event.SalaryHRPROnTTRegistryNameQueryEvent;
+import net.letsdank.platform.module.salary.hr.pr.filter.CreateTTRegistryNameFilter;
+import net.letsdank.platform.module.salary.hr.pr.filter.HRPR_FilterValueList;
+import net.letsdank.platform.utils.data.TableMap;
 import net.letsdank.platform.utils.event.EventPublisherHolder;
 import net.letsdank.platform.utils.platform.sql.SQLQuery;
 import net.letsdank.platform.utils.platform.sql.TempTableManager;
 
+import java.util.List;
 import java.util.Map;
 
 // Alias: ЗарплатаКадрыПериодическиеРегистры
@@ -18,11 +22,12 @@ public class SalaryHRPeriodicRegisters {
      * @param registryName Periodic registry name, how it sets into the registry.
      * @param ttManager TempTableManager
      * @param onlyDistrict Allow only district.
-     * @param filter TODO
-     * @return Map
+     * @param filter CreateTTRegistryNameFilter with HRPR_FilterValueList value
+     * @return table map
      */
     // Alias: ТаблицаВТИмяРегистра
-    public static Map<String, Object> getTTRegistryName(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter) {
+    public static List<Map<String, Object>> getTTRegistryName(String registryName, TempTableManager ttManager, boolean onlyDistrict,
+                                             CreateTTRegistryNameFilter<HRPR_FilterValueList> filter) {
         return getTTRegistryName(registryName, ttManager, onlyDistrict, filter, null);
     }
 
@@ -31,14 +36,16 @@ public class SalaryHRPeriodicRegisters {
      * @param registryName Periodic registry name, how it sets into the registry.
      * @param ttManager TempTableManager
      * @param onlyDistrict Allow only district.
-     * @param filter TODO
-     * @param buildContext TODO
-     * @return Map
+     * @param filter CreateTTRegistryNameFilter with HRPR_FilterValueList value
+     * @param buildContext CreateTTRegistryNameBuildContext
+     * @return table map
      */
     // Alias: ТаблицаВТИмяРегистра
-    public static Map<String, Object> getTTRegistryName(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
-        SQLQuery queryResult = HRPR_GetData.runQueryToGetRegistryTransactions(registryName, ttManager, onlyDistrict, filter, buildContext, "");
-        return queryResult.execute();
+    public static List<Map<String, Object>> getTTRegistryName(String registryName, TempTableManager ttManager, boolean onlyDistrict,
+                                                              CreateTTRegistryNameFilter<HRPR_FilterValueList> filter,
+                                                              CreateTTRegistryNameBuildContext buildContext) {
+        TableMap queryResult = HRPR_GetData.runQueryToGetRegistryTransactions(registryName, ttManager, onlyDistrict, filter, buildContext, "");
+        return queryResult.toTableMap();
     }
 
     /**
@@ -47,10 +54,10 @@ public class SalaryHRPeriodicRegisters {
      * @param ttManager TempTableManager
      * @param onlyDistrict Allow only district.
      * @param filter TODO
-     * @return Map
+     * @return table map
      */
     // Alias: ТаблицаВТИмяРегистраСрезПоследних
-    public static Map<String, Object> getTTRegistryNameSliceLast(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter) {
+    public static List<Map<String, Object>> getTTRegistryNameSliceLast(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter) {
         return getTTRegistryNameSliceLast(registryName, ttManager, onlyDistrict, filter, null);
     }
 
@@ -61,12 +68,12 @@ public class SalaryHRPeriodicRegisters {
      * @param onlyDistrict Allow only district.
      * @param filter TODO
      * @param buildContext TODO
-     * @return Map
+     * @return table map
      */
     // Alias: ТаблицаВТИмяРегистраСрезПоследних
-    public static Map<String, Object> getTTRegistryNameSliceLast(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
-        SQLQuery queryResult = HRPR_GetData.runQueryToGetRegistrySlice(registryName, ttManager, onlyDistrict, filter, buildContext, true, "");
-        return queryResult.execute();
+    public static List<Map<String, Object>> getTTRegistryNameSliceLast(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
+        TableMap queryResult = HRPR_GetData.runQueryToGetRegistrySlice(registryName, ttManager, onlyDistrict, filter, buildContext, true, "");
+        return queryResult.toTableMap();
     }
 
     /**
@@ -77,7 +84,8 @@ public class SalaryHRPeriodicRegisters {
      * @param filter TODO
      */
     // Alias: СоздатьВТИмяРегистра
-    public static void createTTRegistry(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter) {
+    public static void createTTRegistry(String registryName, TempTableManager ttManager, boolean onlyDistrict,
+                                        CreateTTRegistryNameFilter<HRPR_FilterValueList> filter) {
         createTTRegistry(registryName, ttManager, onlyDistrict, filter, null);
     }
 
@@ -90,7 +98,9 @@ public class SalaryHRPeriodicRegisters {
      * @param buildContext TODO
      */
     // Alias: СоздатьВТИмяРегистра
-    public static void createTTRegistry(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
+    public static void createTTRegistry(String registryName, TempTableManager ttManager, boolean onlyDistrict,
+                                        CreateTTRegistryNameFilter<HRPR_FilterValueList> filter,
+                                        CreateTTRegistryNameBuildContext buildContext) {
         createTTRegistry(registryName, ttManager, onlyDistrict, filter, buildContext, null);
     }
 
@@ -104,7 +114,9 @@ public class SalaryHRPeriodicRegisters {
      * @param resultTTName Name of resulting temporary table, if not set, it will be generated as <code>vt_&lt;registryName&gt;</code>.
      */
     // Alias: СоздатьВТИмяРегистра
-    public static void createTTRegistry(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter, Object buildContext, String resultTTName) {
+    public static void createTTRegistry(String registryName, TempTableManager ttManager, boolean onlyDistrict,
+                                        CreateTTRegistryNameFilter<HRPR_FilterValueList> filter,
+                                        CreateTTRegistryNameBuildContext buildContext, String resultTTName) {
         HRPR_GetData.runQueryToGetRegistryTransactions(registryName, ttManager, onlyDistrict, filter, buildContext, resultTTName);
     }
 
@@ -114,10 +126,10 @@ public class SalaryHRPeriodicRegisters {
      * @param ttManager TempTableManager
      * @param onlyDistrict Allow only district.
      * @param filter TODO
-     * @return Map
+     * @return table map
      */
     // Alias: ТаблицаВТИмяРегистраПериоды
-    public static Map<String, Object> getTTRegistryPeriods(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter) {
+    public static List<Map<String, Object>> getTTRegistryPeriods(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter) {
         return getTTRegistryPeriods(registryName, ttManager, onlyDistrict, filter, null);
     }
 
@@ -128,12 +140,12 @@ public class SalaryHRPeriodicRegisters {
      * @param onlyDistrict Allow only district.
      * @param filter TODO
      * @param buildContext TODO
-     * @return Map
+     * @return table map
      */
     // Alias: ТаблицаВТИмяРегистраПериоды
-    public static Map<String, Object> getTTRegistryPeriods(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
-        SQLQuery queryResult = HRPR_GetData.runQueryToGetRegistryPeriods(registryName, ttManager, onlyDistrict, filter, buildContext, "");
-        return queryResult.execute();
+    public static List<Map<String, Object>> getTTRegistryPeriods(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
+        TableMap queryResult = HRPR_GetData.runQueryToGetRegistryPeriods(registryName, ttManager, onlyDistrict, filter, buildContext, "");
+        return queryResult.toTableMap();
     }
 
     /**
@@ -254,17 +266,19 @@ public class SalaryHRPeriodicRegisters {
     }
 
     // Alias: ЗапросВТИмяРегистра
-    public static SQLQuery getQueryTTRegistryName(String registryName, boolean onlyDistrict, Object filter) {
+    public static SQLQuery getQueryTTRegistryName(String registryName, boolean onlyDistrict, CreateTTRegistryNameFilter<HRPR_FilterValueList> filter) {
         return getQueryTTRegistryName(registryName, onlyDistrict, filter, null);
     }
 
     // Alias: ЗапросВТИмяРегистра
-    public static SQLQuery getQueryTTRegistryName(String registryName, boolean onlyDistrict, Object filter, TTRegistryNameBuildContext buildContext) {
+    public static SQLQuery getQueryTTRegistryName(String registryName, boolean onlyDistrict, CreateTTRegistryNameFilter<HRPR_FilterValueList> filter,
+                                                  TTRegistryNameBuildContext buildContext) {
         return getQueryTTRegistryName(registryName, onlyDistrict, filter, buildContext, null);
     }
 
     // Alias: ЗапросВТИмяРегистра
-    public static SQLQuery getQueryTTRegistryName(String registryName, boolean onlyDistrict, Object filter, TTRegistryNameBuildContext buildContext, String resultTTName) {
+    public static SQLQuery getQueryTTRegistryName(String registryName, boolean onlyDistrict, CreateTTRegistryNameFilter<HRPR_FilterValueList> filter,
+                                                  TTRegistryNameBuildContext buildContext, String resultTTName) {
         if (resultTTName == null) {
             resultTTName = "vt_" + registryName;
         }

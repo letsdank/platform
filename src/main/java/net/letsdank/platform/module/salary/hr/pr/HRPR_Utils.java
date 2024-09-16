@@ -1,11 +1,17 @@
 package net.letsdank.platform.module.salary.hr.pr;
 
+import net.letsdank.platform.module.salary.hr.pr.context.TTRegistryNameBuildContext;
+
 // Вспомогательные методы
 public class HRPR_Utils {
-    // TODO: Определиться с ООП
     // Alias: ИмяВспомогательнойВТДоступныеЗаписи
-    public static String getAdditionalTTNameAvailableRecords(String registryName, Object buildContext) {
-        return "vt_" + registryName;
+    public static String getAdditionalTTNameAvailableRecords(String registryName, TTRegistryNameBuildContext buildContext) {
+        return "vt_available_records_" + registryName;
+    }
+
+    // Alias: ИмяВспомогательнойВТПериодыСрезаНаНачалоДня
+    public static String getAdditionalTTNamePeriodsOfSliceByStartDay(String registryName, TTRegistryNameBuildContext buildContext) {
+        return "vt_periods_of_slice_by_start_day_" + registryName;
     }
 
     // Alias: УникальноеИмяПараметраЗапроса
@@ -26,6 +32,7 @@ public class HRPR_Utils {
     }
 
     // Alias: ДоступенИнтервальныйРегистрСведений
+    // Alias: ИспользоватьИнтервальныйРегистрСведений (один и тот же функционал)
     public static boolean isAvailableIntervalRegistry(String registryName) {
         // TODO: implement
         return false;

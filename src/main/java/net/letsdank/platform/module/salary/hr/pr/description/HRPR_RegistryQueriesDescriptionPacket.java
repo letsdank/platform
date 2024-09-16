@@ -81,7 +81,7 @@ public class HRPR_RegistryQueriesDescriptionPacket {
     }
 
     // Alias: УстановитьПараметрыИзмеренияФильтра
-    private void putDimensionFilterParameters(Object filter, HRPR_FilterUsageDescription filterUsageDescription) {
+    private void putDimensionFilterParameters(CreateTTRegistryNameFilter<HRPR_FilterValueList> filter, HRPR_FilterUsageDescription filterUsageDescription) {
         if (filterUsageDescription.isFilterAsTT()) {
             for (String filterDimensionKey : filterUsageDescription.getFilterDimensions().keySet()) {
                 String filterFieldExpression = filterUsageDescription.getFilterDimensionExpression(filterDimensionKey);
@@ -89,7 +89,7 @@ public class HRPR_RegistryQueriesDescriptionPacket {
                 Object parameterValue;
 
                 if (filterUsageDescription.isAllRecords()) {
-                    parameterValue = filter.getFilterValue().getDimensionValues().empty() ? null :
+                    parameterValue = filter.getFilterValue().getDimensionValues().isEmpty() ? null :
                             filter.getFilterValue().getDimensionValues().get(0);
                 } else {
                     parameterValue = filter.getFilterValue().getDimensionValues();
@@ -162,9 +162,9 @@ public class HRPR_RegistryQueriesDescriptionPacket {
     }
 
     // Alias: ИнициализироватьВТФильтр
-    private String initFilterTT(Object filter, HRPR_FilterUsageDescription filterUsageDescription) {
+    private String initFilterTT(CreateTTRegistryNameFilter<?> filter, HRPR_FilterUsageDescription filterUsageDescription) {
         if (filter.getFilterValue().getType() == HRPR_FilterUsageDescription.TYPE_FILTER_TEMP_TABLE) {
-            return filter.getFilterValue().getTtName();
+            return ((HRPR_FilterValueTempTable) filter.getFilterValue()).getTtName();
         } else if (initFiltersQueryDescription == null) {
             String filterTTName = "vt_filter_for_" + filterUsageDescription.getParameterNamePostfix();
             putFilterTTInitQueryDescription(filter, filterUsageDescription.getFilterPeriodFields(), filterTTName, filterUsageDescription.getParameterNamePostfix());
@@ -185,7 +185,7 @@ public class HRPR_RegistryQueriesDescriptionPacket {
         if (filter.getFilterValue().getType() == HRPR_FilterUsageDescription.TYPE_FILTER_VALUE_MAP) {
             filterTable = ((HRPR_FilterValueTableMap) filter.getFilterValue()).getTableMap();
         } else {
-            filterTable = filterListIntoTable(filter, filterPeriodFields);
+            filterTable = filterListIntoTable((CreateTTRegistryNameFilter<HRPR_FilterValueList>) filter, filterPeriodFields);
         }
 
         List<String> tableFields = filter.getFilterTableAllFields(filterPeriodFields);
@@ -270,20 +270,23 @@ public class HRPR_RegistryQueriesDescriptionPacket {
     }
 
     // Alias: ОписаниеФильтраДляПолученияЗаписейНаНачалоПериода
-    private Object getFilterDescriptionRecordsByPeriodStart(Object filterTransactions) {
+    private Object getFilterDescriptionRecordsByPeriodStart(CreateTTRegistryNameFilter<?> filterTransactions) {
         return getFilterDescriptionRecordsByPeriodStart(filterTransactions, false);
     }
 
     // Alias: ОписаниеФильтраДляПолученияЗаписейНаНачалоПериода
-    private Object getFilterDescriptionRecordsByPeriodStart(Object filterTransactions, boolean allRecords) {
+    private Object getFilterDescriptionRecordsByPeriodStart(CreateTTRegistryNameFilter<?> filterTransactions, boolean allRecords) {
         Object result = null;
 
-        if (HRPR_FilterUsageDescription.isUseTTFilter(filterTransactions, allRecords) &&
+        if (filterTransactions.isUseTTFilter(allRecords) &&
             filterTransactions.getFilterValue().getType() != HRPR_FilterUsageDescription.TYPE_FILTER_TEMP_TABLE) {
             String tempFilterTTName = getTTFilterMapName();
 
             // TODO: Implement
         }
+
+        // TODO: Implement
+        return null;
     }
 
     // Alias: ИмяВТТаблицыЗначенийФильтра

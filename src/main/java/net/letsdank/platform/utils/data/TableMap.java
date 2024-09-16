@@ -91,6 +91,11 @@ public class TableMap {
         return values;
     }
 
+    public List<Map<String, Object>> toTableMap() {
+        // TODO: Implement
+        return null;
+    }
+
     public record Column(String name, Class<?> type) {
     }
 

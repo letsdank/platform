@@ -1,5 +1,6 @@
 package net.letsdank.platform.utils.platform.sql;
 
+import net.letsdank.platform.utils.data.TableMap;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.HashMap;
@@ -9,6 +10,7 @@ public class SQLQuery {
     private final Map<String, Object> parameters = new HashMap<>();
     private final JdbcTemplate template = new JdbcTemplate();
     private String sql;
+    private TempTableManager tempTableManager;
 
     public SQLQuery() {
 
@@ -30,8 +32,12 @@ public class SQLQuery {
         this.sql = sql;
     }
 
-    public Map<String, Object> execute() {
+    public TableMap execute() {
         // TODO: implement
-        return Map.of();
+        return new TableMap();
+    }
+
+    public void setTempTableManager(TempTableManager ttManager) {
+        this.tempTableManager = ttManager;
     }
 }

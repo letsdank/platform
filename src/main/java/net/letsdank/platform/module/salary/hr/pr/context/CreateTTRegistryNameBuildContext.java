@@ -2,6 +2,7 @@ package net.letsdank.platform.module.salary.hr.pr.context;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.letsdank.platform.module.salary.hr.base.entity.HRBD_FilterDescription;
 import net.letsdank.platform.module.salary.hr.base.entity.HRBD_RegistryDescription;
 import net.letsdank.platform.utils.platform.metadata.registry.InfoRegistryPeriodicity;
 
@@ -14,7 +15,7 @@ public class CreateTTRegistryNameBuildContext extends TTRegistryNameBuildContext
     private boolean includeRecordsAtPeriodStart;
     private String ttNameAtPeriodStart;
     private String usedTTNameAtPeriodStart;
-    private List<Object> filtersAtPeriodStart;
+    private List<HRBD_FilterDescription> filtersAtPeriodStart;
 
     // Alias: ПараметрыПостроенияДляСоздатьВТИмяРегистра
     public CreateTTRegistryNameBuildContext() {

@@ -14,7 +14,7 @@ public class HRPR_QueryDescriptionJoin {
     private String joiningTable;
     private int joinOrder;
     private List<String> conditions = new ArrayList<>();
-    private QuerySchemaJoinType joinType;
+    private String joinType;
 
     private String templateJoinCondition;
 }

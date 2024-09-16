@@ -100,7 +100,7 @@ public class HRPR_SQLQueryBuild {
                         joinDescription = new HRPR_QueryDescriptionJoin();
                         joinDescription.setLeadingTable(schemaSource.getSourceAlias());
                         joinDescription.setJoiningTable(join.getSource().getSourceAlias());
-                        joinDescription.setJoinType(join.getJoinType());
+                        joinDescription.setJoinType(join.getJoinType().getSchemaType());
                         joinDescription.setConditions(new ArrayList<>());
                         joinDescription.setJoinOrder(joinOrder);
 

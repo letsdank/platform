@@ -58,8 +58,8 @@ public class TTRegistryNameBuildContext {
     }
 
     // Alias: ИспользоватьПервичныйРегистр
-    // TODO: countAllowedExcludedRegistrators - правильно переведено?
-    public boolean isUseFirstRegistry(String registryName, boolean isSlice, int countAllowedExcludedRegistrators) {
+    // TODO: countAllowedExcludedRegistrars - правильно переведено?
+    public boolean isUseFirstRegistry(String registryName, boolean isSlice, int countAllowedExcludedRegistrars) {
         if (filters == null) {
             return false;
         }
