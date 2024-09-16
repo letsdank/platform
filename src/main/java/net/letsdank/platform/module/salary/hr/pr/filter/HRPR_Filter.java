@@ -12,4 +12,9 @@ public class HRPR_Filter {
     private Object rightValue;
     private Boolean relativePath;
     private String comparison;
+
+    // Alias: ИмяПараметраЭлементаФильтра
+    public static String getParameterNameByFilterElement(String parameterName, String tableName) {
+        return parameterName + "_" + tableName;
+    }
 }

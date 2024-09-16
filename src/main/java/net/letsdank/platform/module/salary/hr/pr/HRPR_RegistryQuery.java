@@ -5,6 +5,8 @@ import net.letsdank.platform.module.salary.hr.base.entity.HRBD_RegistryDescripti
 import net.letsdank.platform.module.salary.hr.ir.BaseSalaryHRIntervalRegisters;
 import net.letsdank.platform.module.salary.hr.pr.context.CreateTTRegistryNameBuildContext;
 import net.letsdank.platform.module.salary.hr.pr.context.TTRegistryNameBuildContext;
+import net.letsdank.platform.module.salary.hr.pr.filter.CreateTTRegistryNameFilter;
+import net.letsdank.platform.module.salary.hr.pr.filter.HRPR_FilterValueList;
 import net.letsdank.platform.module.salary.hr.pr.period.HRPR_CastPeriodOption;
 import net.letsdank.platform.module.salary.hr.pr.period.HRPR_PeriodFieldDescription;
 import net.letsdank.platform.module.salary.hr.pr.filter.HRPR_FilterUsageDescription;
@@ -57,14 +59,15 @@ public class HRPR_RegistryQuery {
 
     // Alias: ДобавитьЗапросВТДоступныеЗаписиИмяРегистра
     static void addQueryTTAvailableRecordsByRegistryName(HRPR_RegistryQueriesDescriptionPacket packet, String registryName,
-                                                         boolean onlyDistrict, Object filter, String ttNameAvailableRecords) {
+                                                         boolean onlyDistrict, CreateTTRegistryNameFilter<HRPR_FilterValueList> filter,
+                                                         String ttNameAvailableRecords) {
         addQueryTTAvailableRecordsByRegistryName(packet, registryName, onlyDistrict, filter, ttNameAvailableRecords, null);
     }
 
     // Alias: ДобавитьЗапросВТДоступныеЗаписиИмяРегистра
     static void addQueryTTAvailableRecordsByRegistryName(HRPR_RegistryQueriesDescriptionPacket packet, String registryName,
-                                                         boolean onlyDistrict, Object filter, String ttNameAvailableRecords,
-                                                         TTRegistryNameBuildContext buildContext) {
+                                                         boolean onlyDistrict, CreateTTRegistryNameFilter<HRPR_FilterValueList> filter,
+                                                         String ttNameAvailableRecords, TTRegistryNameBuildContext buildContext) {
         String parameterNamePostfix = ttNameAvailableRecords;
 
         if (buildContext == null) {
@@ -72,7 +75,7 @@ public class HRPR_RegistryQuery {
         }
 
         HRBD_RegistryDescription registryDescription = SalaryHRBaseDataset.getInfoRegistryDescription(registryName,
-                filter.getFilterDimensions(), buildContext.isExcludeUnusedFields());
+                Either.right(filter.getFilterDimensions()), buildContext.isExcludeUnusedFields());
         boolean includeRecordsInPeriodStart = buildContext.isIncludeRecordsAtPeriodStart(registryDescription);
 
         // TODO: Full hardcore - try to separate it
@@ -325,8 +328,10 @@ public class HRPR_RegistryQuery {
         }
 
         resultQueryDescription = packet.getPacketQueryDescriptionByTTName(resultTTName);
-
-
+        packet.addConstantFields(resultQueryDescription, buildContext.getConstantFields(), resultTTName);
+        resultQueryDescription.putFieldAliases(buildContext);
+        addQueryDestroyTT(packet, ttNameAvailableRecords);
+        resultQueryDescription.addIndexFields(buildContext.getIndexingBy());
     }
 
     // Alias: ДобавитьЗапросПолученияЗаписейСПериодичностьюДень

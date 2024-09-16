@@ -66,7 +66,7 @@ public class HRPR_FilterUsageDescription {
             return filterTableAlias + "." + filterFieldName;
         }
         // TODO: Implement
-        return "&" + getParameterNameByFilterElement(dimension, parameterNamePostfix);
+        return "&" + HRPR_Filter.getParameterNameByFilterElement(dimension, parameterNamePostfix);
     }
 
     // Alias: ИнициализироватьИспользованиеФильтра
@@ -109,7 +109,7 @@ public class HRPR_FilterUsageDescription {
             String filterField = filter.getFilterTableField(dimension);
             filterDimensions.put(dimension, filterField);
 
-            if (filter.getDimensionsForSearch().get(dimension.toUpperCase()) != null) {
+            if (registryDescription.getDimensionsForSearch().get(dimension.toUpperCase()) != null) {
                 joinDimensions.put(dimension, filterField);
             }
         }
@@ -153,7 +153,7 @@ public class HRPR_FilterUsageDescription {
         if (filterAsTT) {
             fieldDescription = new HRPR_PeriodFieldDescription(fieldNameFilterTable, filterTableAlias);
         } else {
-            String parameterName = getParameterNameByFilterElement(calculatedFieldAlias, parameterNamePostfix); // TODO:
+            String parameterName = HRPR_Filter.getParameterNameByFilterElement(calculatedFieldAlias, parameterNamePostfix); // TODO:
 
             fieldDescription = new HRPR_PeriodFieldDescription(parameterName);
             fieldDescription.setSourceFieldName(fieldNameFilterTable);

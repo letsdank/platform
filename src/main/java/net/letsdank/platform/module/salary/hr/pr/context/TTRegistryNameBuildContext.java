@@ -15,11 +15,11 @@ import java.util.Map;
 @Setter
 public class TTRegistryNameBuildContext {
     // TODO: JavaDoc
-    private Object indexingBy;
+    private List<String> indexingBy;
     private List<HRPR_Filter> filters;
     private boolean formPeriodicityDay;
     private boolean useLanguageQueryExtensionForComposition;
-    private List<Object> constantFields;
+    private Map<String, Object> constantFields;
     private boolean excludedRegisters;
     private Map<String, String> fieldAliasCorrespondence;
     private Map<String, String> fieldAliasCorrespondenceForComposition;

@@ -5,10 +5,7 @@ import lombok.Setter;
 import net.letsdank.platform.module.salary.hr.base.entity.HRBD_RegistryDescription;
 import net.letsdank.platform.module.salary.hr.pr.HRPR_SQLQueryBuild;
 import net.letsdank.platform.module.salary.hr.pr.context.TTRegistryNameBuildContext;
-import net.letsdank.platform.module.salary.hr.pr.filter.CreateTTRegistryNameFilter;
-import net.letsdank.platform.module.salary.hr.pr.filter.HRPR_FilterUsageDescription;
-import net.letsdank.platform.module.salary.hr.pr.filter.HRPR_FilterValueList;
-import net.letsdank.platform.module.salary.hr.pr.filter.HRPR_FilterValueTableMap;
+import net.letsdank.platform.module.salary.hr.pr.filter.*;
 import net.letsdank.platform.module.salary.hr.pr.period.HRPR_PeriodFieldDescription;
 import net.letsdank.platform.utils.data.Either;
 import net.letsdank.platform.utils.data.TableMap;
@@ -298,4 +295,24 @@ public class HRPR_RegistryQueriesDescriptionPacket {
                                                                       TTRegistryNameBuildContext buildContext, String resultTTName) {
         // TODO: Implement
     }
+
+    // Alias: ДобавитьПостоянныеПоляВОписаниеЗапроса
+    public void addConstantFields(HRPR_QueryDescription queryDescription, Map<String, Object> constantFields, String parameterNamePostfix) {
+        if (constantFields == null) {
+            return;
+        }
+
+        for (Map.Entry<String, Object> field : constantFields.entrySet()) {
+            String parameterName = HRPR_Filter.getParameterNameByFilterElement(field.getKey(), parameterNamePostfix);
+            parameters.put(parameterName, field.getValue());
+
+            String fieldExpression = "&" + parameterName;
+            int opIndex = 0;
+            for (HRPR_QueryDescriptionOperator operator : queryDescription.getOperators()) {
+                queryDescription.addField(opIndex, fieldExpression, field.getKey());
+            }
+        }
+    }
+
+
 }
