@@ -8,6 +8,6 @@ package net.letsdank.platform.module.salary.hr.base.entity;
  * @param relativePath If <code>true</code>, then in <code>leftValue</code> parameter
  *                     should contains dimension name, resource or registry.
  */
-public record HRBD_FilterDescription(String leftValue, String compareType, Object rightValue, boolean relativePath) {
+public record HRBD_FilterDescription(String leftValue, String compareType, Object rightValue, Boolean relativePath) {
 
 }

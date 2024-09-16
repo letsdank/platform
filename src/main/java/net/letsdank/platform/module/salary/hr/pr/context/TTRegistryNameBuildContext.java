@@ -2,8 +2,8 @@ package net.letsdank.platform.module.salary.hr.pr.context;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.letsdank.platform.module.salary.hr.base.entity.HRBD_FilterDescription;
 import net.letsdank.platform.module.salary.hr.base.entity.HRBD_RegistryDescription;
-import net.letsdank.platform.module.salary.hr.pr.filter.HRPR_Filter;
 import net.letsdank.platform.utils.platform.metadata.registry.InfoRegistryPeriodicity;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.Map;
 public class TTRegistryNameBuildContext {
     // TODO: JavaDoc
     private List<String> indexingBy;
-    private List<HRPR_Filter> filters;
+    private List<HRBD_FilterDescription> filters;
     private boolean formPeriodicityDay;
     private boolean useLanguageQueryExtensionForComposition;
     private Map<String, Object> constantFields;
@@ -65,7 +65,7 @@ public class TTRegistryNameBuildContext {
         }
 
         // TODO: implement
-        for (HRPR_Filter filter : filters) {
+        for (HRBD_FilterDescription filter : filters) {
 
         }
 

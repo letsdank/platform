@@ -22,19 +22,20 @@ import net.letsdank.platform.utils.platform.sql.SQLQuery;
 public class HRPR_RegistryQuery {
     // Alias: ДобавитьЗапросВТИмяРегистра
     static void addQueryTTRegistryName(HRPR_RegistryQueriesDescriptionPacket packet, String registryName,
-                                       boolean onlyDistrict, Object filter) {
+                                       boolean onlyDistrict, CreateTTRegistryNameFilter<HRPR_FilterValueList> filter) {
         addQueryTTRegistryName(packet, registryName, onlyDistrict, filter, null);
     }
 
     // Alias: ДобавитьЗапросВТИмяРегистра
     static void addQueryTTRegistryName(HRPR_RegistryQueriesDescriptionPacket packet, String registryName,
-                                       boolean onlyDistrict, Object filter, TTRegistryNameBuildContext buildContext) {
+                                       boolean onlyDistrict, CreateTTRegistryNameFilter<HRPR_FilterValueList> filter,
+                                       TTRegistryNameBuildContext buildContext) {
         addQueryTTRegistryName(packet, registryName, onlyDistrict, filter, buildContext, null);
     }
 
     // Alias: ДобавитьЗапросВТИмяРегистра
     static void addQueryTTRegistryName(HRPR_RegistryQueriesDescriptionPacket packet, String registryName,
-                                       boolean onlyDistrict, Object filter,
+                                       boolean onlyDistrict, CreateTTRegistryNameFilter<HRPR_FilterValueList> filter,
                                        TTRegistryNameBuildContext buildContext, String resultTTName) {
         if (buildContext instanceof CreateTTRegistryNameBuildContext) {
             ((CreateTTRegistryNameBuildContext) buildContext).setTtNameAtPeriodStart("");
@@ -221,7 +222,7 @@ public class HRPR_RegistryQuery {
         }
 
         HRBD_RegistryDescription registryDescription = SalaryHRBaseDataset.getInfoRegistryDescription(registryName,
-                filter.getFilterDimensions(), buildContext.isExcludeUnusedFields());
+                Either.right(filter.getFilterDimensions()), buildContext.isExcludeUnusedFields());
         boolean formFromPeriodicityDay = buildContext.isFormFromPeriodicityDay(registryDescription);
         boolean includeRecordsInPeriodStart = buildContext.isIncludeRecordsAtPeriodStart(registryDescription);
 

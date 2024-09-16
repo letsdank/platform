@@ -27,7 +27,6 @@ public class HRBD_RegistryDescription {
 
     /**
      * List of names of resources that doesn't have a pair of ...onEnd, exc. validTo.
-     * TODO: What does that mean?
      */
     private List<String> resources;
 

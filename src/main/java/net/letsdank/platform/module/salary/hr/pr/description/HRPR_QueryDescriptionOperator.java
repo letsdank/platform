@@ -2,8 +2,8 @@ package net.letsdank.platform.module.salary.hr.pr.description;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.letsdank.platform.module.salary.hr.base.entity.HRBD_FilterDescription;
 import net.letsdank.platform.module.salary.hr.pr.HRPR_Utils;
-import net.letsdank.platform.module.salary.hr.pr.filter.HRPR_Filter;
 import net.letsdank.platform.utils.data.Either;
 
 import java.util.*;
@@ -125,36 +125,36 @@ public class HRPR_QueryDescriptionOperator {
     }
 
     // Alias: УстановитьОтборВОператорЗапросаДанныхРегистра
-    public void putConditionInRegistry(List<HRPR_Filter> filters, Map<String, Object> parameters, String parameterPostfix) {
+    public void putConditionInRegistry(List<HRBD_FilterDescription> filters, Map<String, Object> parameters, String parameterPostfix) {
         putConditionInRegistry(filters, parameters, parameterPostfix, 1);
     }
 
     // Alias: УстановитьОтборВОператорЗапросаДанныхРегистра
-    public void putConditionInRegistry(List<HRPR_Filter> filters, Map<String, Object> parameters, String parameterPostfix,
+    public void putConditionInRegistry(List<HRBD_FilterDescription> filters, Map<String, Object> parameters, String parameterPostfix,
                                        int parametersCount) {
         putConditionInRegistry(filters, parameters, parameterPostfix, parametersCount, "info_registry");
     }
 
     // Alias: УстановитьОтборВОператорЗапросаДанныхРегистра
-    public void putConditionInRegistry(List<HRPR_Filter> filters, Map<String, Object> parameters, String parameterPostfix,
+    public void putConditionInRegistry(List<HRBD_FilterDescription> filters, Map<String, Object> parameters, String parameterPostfix,
                                        int parametersCount, String predicate) {
         putConditionInRegistry(filters, parameters, parameterPostfix, parametersCount, predicate, "info_registry");
     }
 
     // Alias: УстановитьОтборВОператорЗапросаДанныхРегистра
-    public void putConditionInRegistry(List<HRPR_Filter> filters, Map<String, Object> parameters, String parameterPostfix,
+    public void putConditionInRegistry(List<HRBD_FilterDescription> filters, Map<String, Object> parameters, String parameterPostfix,
                                        int parametersCount, String predicate, String registryAlias) {
         putConditionInRegistry(filters, parameters, parameterPostfix, parametersCount, predicate, registryAlias, true);
     }
 
     // Alias: УстановитьОтборВОператорЗапросаДанныхРегистра
-    public void putConditionInRegistry(List<HRPR_Filter> filters, Map<String, Object> parameters, String parameterPostfix,
+    public void putConditionInRegistry(List<HRBD_FilterDescription> filters, Map<String, Object> parameters, String parameterPostfix,
                                        int parametersCount, String predicate, String registryAlias, boolean byExcludingRegistrators) {
         putConditionInRegistry(filters, parameters, parameterPostfix, parametersCount, predicate, registryAlias, byExcludingRegistrators, false);
     }
 
     // Alias: УстановитьОтборВОператорЗапросаДанныхРегистра
-    public void putConditionInRegistry(List<HRPR_Filter> filters, Map<String, Object> queryParameters, String parameterPostfix,
+    public void putConditionInRegistry(List<HRBD_FilterDescription> filters, Map<String, Object> queryParameters, String parameterPostfix,
                                        int parametersCount, String predicate, String registryAlias, boolean byExcludingRegistrators,
                                        boolean byJoinCondition) {
         if (filters == null) {
@@ -170,30 +170,30 @@ public class HRPR_QueryDescriptionOperator {
 
         Map<String, String> fieldExpressions = getFieldExpressions();
 
-        for (HRPR_Filter filter : filters) {
+        for (HRBD_FilterDescription filter : filters) {
             if (isConditionByExcludingRegistrator(filter) && !byExcludingRegistrators) {
                 continue;
             }
 
             String parameterDescription;
             String filterText;
-            if (filter.getRightValue() instanceof String) {
-                parameterDescription = filter.getRightValue().toString();
+            if (filter.rightValue() instanceof String) {
+                parameterDescription = filter.rightValue().toString();
             } else {
                 String parameterName = HRPR_Utils.getUniqueQueryParameterName(parameterPostfix, parametersCount);
                 parameterDescription = "&" + parameterName;
-                queryParameters.put(parameterName, filter.getRightValue());
+                queryParameters.put(parameterName, filter.rightValue());
             }
 
-            if (filter.getRelativePath() == null || filter.getRelativePath()) {
-                String leftValueExpression = fieldExpressions.get(filter.getLeftValue().toLowerCase());
+            if (filter.relativePath() == null || filter.relativePath()) {
+                String leftValueExpression = fieldExpressions.get(filter.leftValue().toLowerCase());
                 if (leftValueExpression == null && registryAlias != null) {
-                    leftValueExpression = registryAlias + "." + filter.getLeftValue();
+                    leftValueExpression = registryAlias + "." + filter.leftValue();
                 }
 
-                filterText = predicate + leftValueExpression + " " + filter.getComparison() + "(" + parameterDescription + ")";
+                filterText = predicate + leftValueExpression + " " + filter.compareType() + "(" + parameterDescription + ")";
             } else {
-                filterText = predicate + filter.getLeftValue() + " " + filter.getComparison() + " " + parameterDescription + " ";
+                filterText = predicate + filter.leftValue() + " " + filter.compareType() + " " + parameterDescription + " ";
             }
 
             if (receiverConditions == null) {
@@ -206,9 +206,9 @@ public class HRPR_QueryDescriptionOperator {
 
     // Alias: ЭтоЭлементОтбораПоИсключаемомуРегистратору
     // TODO: Перенести
-    public boolean isConditionByExcludingRegistrator(HRPR_Filter filter) {
-        return filter.getLeftValue().equalsIgnoreCase("registrator") &&
-                (filter.getComparison().equalsIgnoreCase("<>") || filter.getComparison().equalsIgnoreCase("NOT IN"));
+    public boolean isConditionByExcludingRegistrator(HRBD_FilterDescription filter) {
+        return filter.leftValue().equalsIgnoreCase("registrator") &&
+                (filter.compareType().equalsIgnoreCase("<>") || filter.compareType().equalsIgnoreCase("NOT IN"));
     }
 
     // Alias: ВыражениеПоляПоПсевдониму

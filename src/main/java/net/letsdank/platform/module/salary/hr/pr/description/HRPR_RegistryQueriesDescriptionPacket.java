@@ -2,6 +2,7 @@ package net.letsdank.platform.module.salary.hr.pr.description;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.letsdank.platform.module.salary.hr.base.entity.HRBD_FilterDescription;
 import net.letsdank.platform.module.salary.hr.base.entity.HRBD_RegistryDescription;
 import net.letsdank.platform.module.salary.hr.pr.HRPR_SQLQueryBuild;
 import net.letsdank.platform.module.salary.hr.pr.context.TTRegistryNameBuildContext;
@@ -303,7 +304,7 @@ public class HRPR_RegistryQueriesDescriptionPacket {
         }
 
         for (Map.Entry<String, Object> field : constantFields.entrySet()) {
-            String parameterName = HRPR_Filter.getParameterNameByFilterElement(field.getKey(), parameterNamePostfix);
+            String parameterName = HRPR_FilterValue.getParameterNameByFilterElement(field.getKey(), parameterNamePostfix);
             parameters.put(parameterName, field.getValue());
 
             String fieldExpression = "&" + parameterName;
