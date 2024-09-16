@@ -1,9 +1,11 @@
 package net.letsdank.platform.module.salary.hr.pr;
 
 import net.letsdank.platform.module.salary.hr.pr.context.CreateTTRegistryNameBuildContext;
+import net.letsdank.platform.module.salary.hr.pr.context.CreateTTRegistryNameSliceBuildContext;
 import net.letsdank.platform.module.salary.hr.pr.context.TTRegistryNameBuildContext;
 import net.letsdank.platform.module.salary.hr.pr.description.HRPR_RegistryQueriesDescriptionPacket;
 import net.letsdank.platform.module.salary.hr.pr.event.SalaryHRPROnTTRegistryNameQueryEvent;
+import net.letsdank.platform.module.salary.hr.pr.event.SalaryHRPROnTTRegistryNameSliceQueryEvent;
 import net.letsdank.platform.module.salary.hr.pr.filter.CreateTTRegistryNameFilter;
 import net.letsdank.platform.module.salary.hr.pr.filter.HRPR_FilterValueList;
 import net.letsdank.platform.utils.data.TableMap;
@@ -53,11 +55,12 @@ public class SalaryHRPeriodicRegisters {
      * @param registryName Periodic registry name, how it sets into the registry.
      * @param ttManager TempTableManager
      * @param onlyDistrict Allow only district.
-     * @param filter TODO
+     * @param filter CreateTTRegistryNameFilter with HRPR_FilterValueList value
      * @return table map
      */
     // Alias: ТаблицаВТИмяРегистраСрезПоследних
-    public static List<Map<String, Object>> getTTRegistryNameSliceLast(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter) {
+    public static List<Map<String, Object>> getTTRegistryNameSliceLast(String registryName, TempTableManager ttManager, boolean onlyDistrict,
+                                                                       CreateTTRegistryNameFilter<HRPR_FilterValueList> filter) {
         return getTTRegistryNameSliceLast(registryName, ttManager, onlyDistrict, filter, null);
     }
 
@@ -66,12 +69,14 @@ public class SalaryHRPeriodicRegisters {
      * @param registryName Periodic registry name, how it sets into the registry.
      * @param ttManager TempTableManager
      * @param onlyDistrict Allow only district.
-     * @param filter TODO
-     * @param buildContext TODO
+     * @param filter CreateTTRegistryNameFilter with HRPR_FilterValueList value
+     * @param buildContext CreateTTRegistryNameBuildContext
      * @return table map
      */
     // Alias: ТаблицаВТИмяРегистраСрезПоследних
-    public static List<Map<String, Object>> getTTRegistryNameSliceLast(String registryName, TempTableManager ttManager, boolean onlyDistrict, Object filter, Object buildContext) {
+    public static List<Map<String, Object>> getTTRegistryNameSliceLast(String registryName, TempTableManager ttManager, boolean onlyDistrict,
+                                                                       CreateTTRegistryNameFilter<HRPR_FilterValueList> filter,
+                                                                       CreateTTRegistryNameBuildContext buildContext) {
         TableMap queryResult = HRPR_GetData.runQueryToGetRegistrySlice(registryName, ttManager, onlyDistrict, filter, buildContext, true, "");
         return queryResult.toTableMap();
     }
@@ -81,7 +86,7 @@ public class SalaryHRPeriodicRegisters {
      * @param registryName Periodic registry name, how it sets into the registry.
      * @param ttManager TempTableManager
      * @param onlyDistrict Allow only district.
-     * @param filter TODO
+     * @param filter CreateTTRegistryNameFilter with HRPR_FilterValueList value
      */
     // Alias: СоздатьВТИмяРегистра
     public static void createTTRegistry(String registryName, TempTableManager ttManager, boolean onlyDistrict,
@@ -94,8 +99,8 @@ public class SalaryHRPeriodicRegisters {
      * @param registryName Periodic registry name, how it sets into the registry.
      * @param ttManager TempTableManager
      * @param onlyDistrict Allow only district.
-     * @param filter TODO
-     * @param buildContext TODO
+     * @param filter CreateTTRegistryNameFilter with HRPR_FilterValueList value
+     * @param buildContext CreateTTRegistryNameBuildContext
      */
     // Alias: СоздатьВТИмяРегистра
     public static void createTTRegistry(String registryName, TempTableManager ttManager, boolean onlyDistrict,
@@ -109,8 +114,8 @@ public class SalaryHRPeriodicRegisters {
      * @param registryName Periodic registry name, how it sets into the registry.
      * @param ttManager TempTableManager
      * @param onlyDistrict Allow only district.
-     * @param filter TODO
-     * @param buildContext TODO
+     * @param filter CreateTTRegistryNameFilter with HRPR_FilterValueList value
+     * @param buildContext CreateTTRegistryNameBuildContext
      * @param resultTTName Name of resulting temporary table, if not set, it will be generated as <code>vt_&lt;registryName&gt;</code>.
      */
     // Alias: СоздатьВТИмяРегистра
@@ -265,20 +270,50 @@ public class SalaryHRPeriodicRegisters {
         HRPR_GetData.runQueryToGetRegistrySlice(registryName, ttManager, onlyDistrict, filter, buildContext, true, resultTTName);
     }
 
+    /**
+     * Returns query of view vt_registry_name.
+     *
+     * @param registryName Registry name as it sets into the configuration.
+     * @param onlyDistrict Allow only district.
+     * @param filter CreateTTRegistryNameFilter with HRPR_FilterValueList value.
+     *
+     * @return query
+     */
     // Alias: ЗапросВТИмяРегистра
     public static SQLQuery getQueryTTRegistryName(String registryName, boolean onlyDistrict, CreateTTRegistryNameFilter<HRPR_FilterValueList> filter) {
         return getQueryTTRegistryName(registryName, onlyDistrict, filter, null);
     }
 
+    /**
+     * Returns query of view vt_registry_name.
+     *
+     * @param registryName Registry name as it sets into the configuration.
+     * @param onlyDistrict Allow only district.
+     * @param filter CreateTTRegistryNameFilter with HRPR_FilterValueList value.
+     * @param buildContext CreateTTRegistryNameBuildContext
+     *
+     * @return query
+     */
     // Alias: ЗапросВТИмяРегистра
     public static SQLQuery getQueryTTRegistryName(String registryName, boolean onlyDistrict, CreateTTRegistryNameFilter<HRPR_FilterValueList> filter,
-                                                  TTRegistryNameBuildContext buildContext) {
+                                                  CreateTTRegistryNameBuildContext buildContext) {
         return getQueryTTRegistryName(registryName, onlyDistrict, filter, buildContext, null);
     }
 
+    /**
+     * Returns query of view vt_registry_name.
+     *
+     * @param registryName Registry name as it sets into the configuration.
+     * @param onlyDistrict Allow only district.
+     * @param filter CreateTTRegistryNameFilter with HRPR_FilterValueList value.
+     * @param buildContext CreateTTRegistryNameBuildContext
+     * @param resultTTName Name of resulting temporary table, if not set, it will be generated as <code>vt_&lt;registryName&gt;</code>.
+     *
+     * @return query
+     */
     // Alias: ЗапросВТИмяРегистра
     public static SQLQuery getQueryTTRegistryName(String registryName, boolean onlyDistrict, CreateTTRegistryNameFilter<HRPR_FilterValueList> filter,
-                                                  TTRegistryNameBuildContext buildContext, String resultTTName) {
+                                                  CreateTTRegistryNameBuildContext buildContext, String resultTTName) {
         if (resultTTName == null) {
             resultTTName = "vt_" + registryName;
         }
@@ -298,6 +333,91 @@ public class SalaryHRPeriodicRegisters {
 
         HRPR_RegistryQueriesDescriptionPacket packet = new HRPR_RegistryQueriesDescriptionPacket();
         HRPR_RegistryQuery.addQueryTTRegistryName(packet, registryName, onlyDistrict, filter, buildContext, resultTTName);
+
+        return HRPR_SQLQuery.getQueryByDescriptionPacket(packet, buildContext.isUseLanguageQueryExtensionForComposition());
+    }
+
+    /**
+     * Returns query of view vt_registry_name_slice.
+     *
+     * @param registryName Registry name as it sets into the configuration.
+     * @param onlyDistrict Allow only district.
+     * @param filter CreateTTRegistryNameFilter with HRPR_FilterValueList value.
+     *
+     * @return query
+     */
+    // Alias: ЗапросВТИмяРегистраСрез
+    public static SQLQuery getQueryTTRegistryNameSlice(String registryName, boolean onlyDistrict, CreateTTRegistryNameFilter<HRPR_FilterValueList> filter) {
+        return getQueryTTRegistryNameSlice(registryName, onlyDistrict, filter, null);
+    }
+
+    /**
+     * Returns query of view vt_registry_name_slice.
+     *
+     * @param registryName Registry name as it sets into the configuration.
+     * @param onlyDistrict Allow only district.
+     * @param filter CreateTTRegistryNameFilter with HRPR_FilterValueList value.
+     * @param buildContext CreateTTRegistryNameSliceBuildContext.
+     *
+     * @return query
+     */
+    // Alias: ЗапросВТИмяРегистраСрез
+    public static SQLQuery getQueryTTRegistryNameSlice(String registryName, boolean onlyDistrict, CreateTTRegistryNameFilter<HRPR_FilterValueList> filter,
+                                                       CreateTTRegistryNameSliceBuildContext buildContext) {
+        return getQueryTTRegistryNameSlice(registryName, onlyDistrict, filter, buildContext, true);
+    }
+
+    /**
+     * Returns query of view vt_registry_name_slice.
+     *
+     * @param registryName Registry name as it sets into the configuration.
+     * @param onlyDistrict Allow only district.
+     * @param filter CreateTTRegistryNameFilter with HRPR_FilterValueList value.
+     * @param buildContext CreateTTRegistryNameSliceBuildContext.
+     * @param isSliceLast If <code>true</code>, slice last, otherwise slice first.
+     *
+     * @return query
+     */
+    // Alias: ЗапросВТИмяРегистраСрез
+    public static SQLQuery getQueryTTRegistryNameSlice(String registryName, boolean onlyDistrict, CreateTTRegistryNameFilter<HRPR_FilterValueList> filter,
+                                                       CreateTTRegistryNameSliceBuildContext buildContext, boolean isSliceLast) {
+        return getQueryTTRegistryNameSlice(registryName, onlyDistrict, filter, buildContext, isSliceLast, null);
+    }
+
+    /**
+     * Returns query of view vt_registry_name_slice.
+     *
+     * @param registryName Registry name as it sets into the configuration.
+     * @param onlyDistrict Allow only district.
+     * @param filter CreateTTRegistryNameFilter with HRPR_FilterValueList value.
+     * @param buildContext CreateTTRegistryNameSliceBuildContext.
+     * @param isSliceLast If <code>true</code>, slice last, otherwise slice first.
+     * @param resultTTName Name of resulting temporary table, if not set, it will be generated <code>vt_&lt;registryName&gt;_slice_last</code>
+     *                     or <code>vt_&lt;registryName&gt;_slice_first</code>, depending on <code>isSliceLast</code> argument.
+     *
+     * @return query
+     */
+    // Alias: ЗапросВТИмяРегистраСрез
+    public static SQLQuery getQueryTTRegistryNameSlice(String registryName, boolean onlyDistrict, CreateTTRegistryNameFilter<HRPR_FilterValueList> filter,
+                                                       CreateTTRegistryNameSliceBuildContext buildContext, boolean isSliceLast, String resultTTName) {
+        if (resultTTName == null) {
+            resultTTName = "vt_" + registryName + (isSliceLast ? "_slice_last" : "_slice_first");
+        }
+
+        if (buildContext == null) {
+            buildContext = new CreateTTRegistryNameSliceBuildContext();
+        }
+
+        SQLQuery query = null;
+        EventPublisherHolder.publishEvent(new SalaryHRPROnTTRegistryNameSliceQueryEvent(new SalaryHRPeriodicRegisters(), query,
+                registryName, onlyDistrict, filter, buildContext, isSliceLast, resultTTName));
+
+        if (query != null) {
+            return query;
+        }
+
+        HRPR_RegistryQueriesDescriptionPacket packet = new HRPR_RegistryQueriesDescriptionPacket();
+        HRPR_RegistryQuery.addQueryTTRegistryNameSlice(packet, registryName, onlyDistrict, filter, buildContext, isSliceLast, resultTTName);
 
         return HRPR_SQLQuery.getQueryByDescriptionPacket(packet, buildContext.isUseLanguageQueryExtensionForComposition());
     }
